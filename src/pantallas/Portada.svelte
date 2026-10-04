@@ -44,7 +44,7 @@
 <main class="pantalla">
   <header>
     <h1>Formúlalo</h1>
-    <p>La tabla periódica es el mapa.</p>
+    <p>No lo memorices: dedúcelo.</p>
   </header>
 
   <section class="hoy">
