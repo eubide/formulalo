@@ -35,7 +35,7 @@
       <p>Te faltó: <Numeros numeros={correccion.faltaron} /></p>
     {/if}
     {#if correccion.sobraron.length > 0}
-      <p>Te sobró: <Numeros numeros={correccion.sobraron} /></p>
+      <p>No está en tu lista: <Numeros numeros={correccion.sobraron} /></p>
     {/if}
     {#if correccion.regla}
       <p>

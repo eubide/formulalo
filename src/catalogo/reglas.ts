@@ -12,7 +12,7 @@ const REGLAS: Regla[] = [
   {
     grupo: 18,
     acabaEn: 'p⁶ (el He, 1s²)',
-    puente: 'Capa llena: ni le sobra ni le falta.',
+    puente: 'Ocho electrones (el He, 2): ni le sobra ni le falta.',
     numeros: [0],
     excepciones: { Xe: 'además +2, +4 y +6.' },
   },
@@ -68,18 +68,18 @@ const REGLAS: Regla[] = [
     acabaEn: 'p¹',
     puente: '3 electrones: los pierde.',
     numeros: [3],
-    excepciones: { B: 'además −3. El +3 es el principal.', Tl: 'además +1.' },
+    excepciones: { B: 'además −3, que no sale de la regla. El +3 es el principal.', Tl: 'además +1.' },
   },
 ]
 
 export const REGLAS_GENERALES = [
-  'Un metal nunca tiene número negativo. Un no metal siempre tiene uno, o el 0 de los gases nobles.',
-  'El positivo más alto es el número de electrones de la capa de valencia, y si hay más, bajan de dos en dos.',
-  'El negativo son los electrones que faltan para llegar a 8.',
+  'Un metal nunca tiene número negativo. Un no metal siempre tiene alguno, o el 0 de los gases nobles. Un metaloide, casi siempre.',
+  'El positivo más alto es, como mucho, el número de electrones de la capa de valencia; los demás bajan de dos en dos.',
+  'El negativo son los electrones que faltan para llegar a 8 (a 2 en el H).',
 ]
 
 export const REGLA_DE_CONFIGURACION =
-  'El periodo da la capa, la zona de la tabla da la letra (grupos 1 y 2, s; grupos 13 a 18, p) y el grupo da los electrones.'
+  'El periodo da la capa, la zona de la tabla da la letra (grupos 1 y 2, s; grupos 13 a 18, p, menos el He, 1s²) y el grupo da los electrones: en s, el número del grupo; en p, el grupo menos 12.'
 
 export function reglaDe(elemento: Elemento): Regla | null {
   return esDeTransicion(elemento) ? null : REGLAS.find((regla) => regla.grupo === elemento.grupo)!

@@ -19,10 +19,10 @@ const DE_SIMBOLO: Record<string, string> = {
 const DE_ORDEN: Record<number, string> = {
   1: '«**H**ay **Li**món, **Na**ranja y **K**iwi: **R**o**b**a **C**e**s**tas de **Fr**uta»',
   2: '«**Be**bé **M**a**g**o **Ca**za **S**e**r**pientes **Ba**ilando **Ra**p»',
-  13: '«**B**usca **al** **Ga**to **Int**e**l**igente»',
+  13: '«**B**usca **Al** **Ga**to **In****T**e**l**igente»',
   14: '«**C**asi **Si**empre la **Ge**nte **S**a**n**a del **P**ue**b**lo»',
   15: '«**N**o **P**idas **As**ado: **S**a**b**e a **Bi**zcocho»',
-  16: '«**O**so **S**abio: **se** **te** **po**ne delante»',
+  16: '«**O**so **S**abio: **Se** **Te** **Po**ne delante»',
   17: '«**F**ui a **Cl**ase y **Br**omeé: **I**dea **At**revida»',
   18: '«**He** **Ne**gado **Ar**mar **K**a**r**aokes: **Xe**nia **R**o**n**ca»',
 }
@@ -45,7 +45,7 @@ const DE_TROZO: { elementos: string[]; historia: string }[] = [
   {
     elementos: ['Cr', 'Mn'],
     historia:
-      'Como metales, igual que sus vecinos Fe, Co y Ni: +2 y +3. Como no metales, llegan a su número de grupo: el Cr, grupo 6, a +6; el Mn, grupo 7, a +7, pasando por +4 y +6.',
+      'Se portan como metales, igual que sus vecinos Fe, Co y Ni: +2 y +3. Se portan como no metales al llegar a su número de grupo: el Cr, grupo 6, a +6; el Mn, grupo 7, a +7, pasando por +4 y +6.',
   },
   {
     elementos: ['Pt'],
