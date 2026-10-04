@@ -4,7 +4,8 @@
   export interface Casilla {
     rotulada?: boolean
     clase?: Clase
-    senal?: 'iluminada' | 'tentativa' | 'acierto' | 'fallo' | 'floja'
+    floja?: boolean
+    senal?: 'iluminada' | 'tentativa' | 'acierto' | 'fallo'
   }
 </script>
 
@@ -45,6 +46,7 @@
           <button
             type="button"
             class="casilla {casilla.senal ?? ''} {casilla.clase ?? ''}"
+            class:floja={casilla.floja}
             style:grid-row={periodo + 1}
             style:grid-column={grupo + 1}
             disabled={!alTocar}
@@ -162,6 +164,10 @@
   .floja {
     border-style: dashed;
     border-color: var(--tenue);
+  }
+
+  .iluminada.floja {
+    border-color: var(--acento);
   }
 
   @container (max-width: 520px) {

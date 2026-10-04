@@ -603,6 +603,21 @@ describe('Tanda', () => {
     expect([...tanda.sabidos].sort()).toEqual(GRUPO_18.filter((simbolo) => simbolo !== fallado).sort())
   })
 
+  it('dice en cuántos días vuelve cada Elemento de la Tanda, del día más cercano al más lejano', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+    let tanda = abrir(estudio)!
+    while (tanda.pregunta!.elemento.simbolo !== 'Xe') tanda = acertarCadena(estudio, tanda)
+
+    tanda = acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
+
+    expect(estudio.vueltas(tanda).map(({ dias, simbolos }) => [dias, [...simbolos].sort()])).toEqual([
+      [1, ['H', 'Li', 'Xe']],
+      [3, ['Ar', 'He', 'Kr', 'Ne', 'Rn']],
+    ])
+  })
+
   it('sin nada que toque ni nada por ver no hay Tanda, y dice el día en que vuelve a tocar', () => {
     const { estudio } = montar()
 

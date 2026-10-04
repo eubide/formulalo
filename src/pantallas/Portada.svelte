@@ -2,8 +2,9 @@
   import { descripcionDeCamino, etiquetaDeCamino, type Camino } from '../catalogo/caminos'
   import { elementoDe } from '../catalogo/catalogo'
   import { etiquetaDePaso, type Estudio } from '../estudio/estudio'
-  import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
+  import Tabla from '../tabla/Tabla.svelte'
   import { textoDelAnuncio } from './anuncio'
+  import { casillasDelDominio } from './casillas'
   import { fechaLarga } from './fecha'
 
   interface Props {
@@ -29,14 +30,7 @@
   let aLaVista = $state.raw(mirar())
   const { camino, entradas, resumen, proximaVuelta, anuncio } = $derived(aLaVista)
 
-  const casillas = $derived<Record<string, Casilla>>(
-    Object.fromEntries(
-      Object.entries(entradas).map(([simbolo, entrada]) => [
-        simbolo,
-        entrada.estado === 'sabido' ? { rotulada: true, clase: elementoDe(simbolo).clase } : { rotulada: true, senal: 'floja' },
-      ]),
-    ),
-  )
+  const casillas = $derived(casillasDelDominio(entradas))
   const flojosConFallo = $derived(Object.entries(entradas).filter(([, entrada]) => entrada.pasosFallados.length > 0))
 
   function elegir(elegido: Camino) {

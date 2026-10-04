@@ -36,6 +36,11 @@ export interface Anuncio {
   quedan: number
 }
 
+export interface Vuelta {
+  dias: number
+  simbolos: string[]
+}
+
 export interface Resumen {
   sabidos: number
   flojos: number
@@ -54,6 +59,7 @@ const ELEMENTOS_POR_TANDA = 8
 const NUEVOS_CON_SITIO_GUARDADO = 2
 const MINUTOS_DE_UNA_TANDA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
+const MILISEGUNDOS_DE_UN_DIA = 86_400_000
 
 // Un Flojo sin fallos solo puede venir de una Presentación: todavía no se le ha preguntado nada.
 function sinPreguntar(entrada: Entrada): boolean {
@@ -152,6 +158,15 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
     proximaVuelta(): string | null {
       const vueltas = Object.values(dominio.entradas()).map((entrada) => entrada.vuelve)
       return vueltas.length > 0 ? vueltas.reduce((primera, vuelve) => (vuelve < primera ? vuelve : primera)) : null
+    },
+
+    vueltas(tanda: Tanda): Vuelta[] {
+      const entradas = dominio.entradas()
+      const dias = [...new Set(tanda.rotulados.map((simbolo) => entradas[simbolo].vuelve))].sort()
+      return dias.map((dia) => ({
+        dias: (Date.parse(dia) - Date.parse(hoy())) / MILISEGUNDOS_DE_UN_DIA,
+        simbolos: tanda.rotulados.filter((simbolo) => entradas[simbolo].vuelve === dia),
+      }))
     },
 
     abrirTanda(): Tanda | null {
