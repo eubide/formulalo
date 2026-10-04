@@ -24,6 +24,7 @@ const CLAVE = 'formulalo:dominio'
 const VERSION = 1
 const CAMINO_PUESTO: Camino = 'gas-noble'
 const INTERVALOS = [1, 3, 7, 14, 30]
+const PASOS_QUE_HAY_QUE_SABER: Paso[] = ['posicion', 'numeros']
 const DIA = /^\d{4}-\d{2}-\d{2}$/
 
 const estudiados = new Set(elementos().map((elemento) => elemento.simbolo))
@@ -141,10 +142,10 @@ export function crearDominio(almacen: Almacen, hoy: () => string) {
       guardar(registro)
     },
 
-    anotar(simbolo: string, pasosFallados: Paso[]) {
+    anotar(simbolo: string, pasosFallados: Paso[]): Estado {
       const registro = leer()
       const { intervalo = 0, fallos = 0 } = registro.elementos[simbolo] ?? {}
-      if (pasosFallados.length > 0) {
+      if (pasosFallados.some((paso) => PASOS_QUE_HAY_QUE_SABER.includes(paso))) {
         registro.elementos[simbolo] = {
           estado: 'flojo',
           intervalo: 0,
@@ -153,16 +154,18 @@ export function crearDominio(almacen: Almacen, hoy: () => string) {
           pasosFallados,
         }
       } else {
-        const siguiente = INTERVALOS.find((dias) => dias > intervalo) ?? INTERVALOS.at(-1)!
+        const crecido = INTERVALOS.find((dias) => dias > intervalo) ?? INTERVALOS.at(-1)!
+        const siguiente = pasosFallados.length > 0 ? intervalo || INTERVALOS[0] : crecido
         registro.elementos[simbolo] = {
           estado: 'sabido',
           intervalo: siguiente,
           vuelve: diasDespues(hoy(), siguiente),
           fallos,
-          pasosFallados: [],
+          pasosFallados,
         }
       }
       guardar(registro)
+      return registro.elementos[simbolo].estado
     },
 
     copia(): string {

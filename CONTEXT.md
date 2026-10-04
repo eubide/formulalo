@@ -73,7 +73,7 @@ Número de oxidación falso que se ofrece junto a los verdaderos de un Elemento.
 _Evitar_: falso, opción falsa, señuelo
 
 **Cadena**:
-Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente, y el Elemento solo se da por sabido si se aciertan todos.
+Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente. Lo que hay que saberse para formular es la Posición y los Números de oxidación; la Clase y la Configuración sirven para deducirlos.
 _Evitar_: secuencia, ficha, pregunta
 
 **Camino**:
@@ -97,7 +97,7 @@ Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena ent
 _Evitar_: ronda, sesión, lote, repaso
 
 **Corrección**:
-Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia. La Cadena continúa después, y el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
+Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
 _Evitar_: feedback, aviso
 
 **Dominio**:
@@ -105,11 +105,11 @@ Lo que la aplicación recuerda de cada Elemento de un día para otro: si está s
 _Evitar_: progreso, nivel, memoria, cajas
 
 **Flojo**:
-Estado de un Elemento cuya última Cadena tuvo algún fallo, o que solo se ha presentado.
+Estado de un Elemento en cuya última Cadena se falló la Posición o los Números de oxidación, o que solo se ha presentado.
 _Evitar_: débil, pendiente, fallado
 
 **Sabido**:
-Estado de un Elemento cuya última Cadena se acertó entera. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo lo devuelve a Flojo.
+Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo.
 _Evitar_: dominado, aprendido, acertado
 
 **Explorar**:
@@ -121,7 +121,7 @@ El código de color, uno por significado. En los Números de oxidación, rojo es
 _Evitar_: leyenda, paleta, estilos, colores
 
 **Intervalo**:
-Los días que tarda en volver un Elemento sabido: 1, 3, 7, 14 y 30 según se va acertando. Un fallo lo devuelve al día siguiente.
+Los días que tarda en volver un Elemento Sabido: 1, 3, 7, 14 y 30. Solo crece cuando la Cadena se acierta entera: con un fallo solo de Clase o de Configuración se queda como estaba, o en 1 día si el Elemento no tenía ninguno. Un fallo en la Posición o en los Números de oxidación devuelve el Elemento al día siguiente.
 _Evitar_: caja, nivel, plazo
 
 ## Relaciones

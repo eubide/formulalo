@@ -25,7 +25,7 @@ export interface Tanda {
   correccion: Correccion | null
   pendientes: string[]
   rotulados: string[]
-  enteros: string[]
+  sabidos: string[]
   vuelven: string[]
 }
 
@@ -99,9 +99,8 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
     const rotulados = tanda.rotulados.includes(simbolo) ? tanda.rotulados : [...tanda.rotulados, simbolo]
     if (tanda.vuelven.includes(simbolo)) return preguntarElSiguiente({ ...tanda, rotulados })
 
-    dominio.anotar(simbolo, fallados)
-    if (fallados.length === 0) {
-      return preguntarElSiguiente({ ...tanda, rotulados, enteros: [...tanda.enteros, simbolo] })
+    if (dominio.anotar(simbolo, fallados) === 'sabido') {
+      return preguntarElSiguiente({ ...tanda, rotulados, sabidos: [...tanda.sabidos, simbolo] })
     }
     const pendientes = [...tanda.pendientes]
     pendientes.splice(ELEMENTOS_HASTA_LA_REINSERCION, 0, simbolo)
@@ -160,7 +159,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
         correccion: null,
         pendientes: barajar([...composicion.repaso, ...composicion.nuevos], azar),
         rotulados: [],
-        enteros: [],
+        sabidos: [],
         vuelven: [],
       }
       return tanda.presentacion ? tanda : preguntarElSiguiente(tanda)

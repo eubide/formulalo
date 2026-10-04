@@ -18,10 +18,10 @@
 <main>
   <h1>Tanda terminada</h1>
 
-  <p class="enteros">
+  <p class="sabidos">
     <span aria-hidden="true">✓</span>
-    {tanda.enteros.length}
-    {tanda.enteros.length === 1 ? 'elemento acertado entero' : 'elementos acertados enteros'}
+    {tanda.sabidos.length}
+    {tanda.sabidos.length === 1 ? 'elemento sabido' : 'elementos sabidos'}
   </p>
   {#if tanda.vuelven.length > 0}
     <p class="vuelven"><span aria-hidden="true">✗</span> Vuelven mañana: {tanda.vuelven.join(', ')}</p>
@@ -51,7 +51,7 @@
     font-size: 24px;
   }
 
-  .enteros span {
+  .sabidos span {
     color: var(--acierto);
   }
 
