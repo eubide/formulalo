@@ -35,11 +35,11 @@ Número con signo que dice cuántos electrones gana, pierde o comparte un Elemen
 _Evitar_: valencia, estado de oxidación
 
 **Hoja de oxidación**:
-La hoja «Formulación y nomenclatura inorgánica» que lista los Números de oxidación de 43 Elementos. Es el canon de esos números.
+La hoja «Formulación y nomenclatura inorgánica» que lista los Números de oxidación de 43 Elementos. Es el canon de esos números, salvo el del B.
 _Evitar_: hoja, tabla de valencias
 
 **Tabla del libro**:
-La tabla periódica del anexo A3 del libro de texto. Da la Clase de todos los Elementos y los Números de oxidación de los 13 que la Hoja de oxidación no trae.
+La tabla periódica del anexo A3 del libro de texto. Da la Clase de todos los Elementos y los Números de oxidación de los 13 que la Hoja de oxidación no trae, además del +3 del B.
 _Evitar_: libro, tabla periódica
 
 **Configuración**:
@@ -141,19 +141,18 @@ _Evitar_: caja, nivel, plazo
 - "Hierro, cobalto, níquel hacia la derecha" de la idea original incluye el Cr y el Mn, que están en el recuadro a boli y en la Hoja de oxidación, y se para en el Zn: Pd no entra.
 - La Hoja de oxidación manda sobre la Tabla del libro: el N lleva −3, +1, +3 y +5 aunque la Tabla del libro no traiga el +1.
 - Los 13 Elementos que la Hoja de oxidación no trae son Ga, In, Tl, Ge, Bi, Po, At y los seis gases nobles.
-- El B es la excepción a que mande la Hoja de oxidación: ella le da −3 y la Tabla del libro +3. Se estudian los dos, con +3 como principal.
+- El B es la excepción a que mande la Hoja de oxidación: ella le da −3 y la Tabla del libro +3. Se estudia solo el +3: el −3 no sale de llenar su Caja p.
 - El Cr y el Mn están dos veces en la Hoja de oxidación, como metal (+2 y +3 los dos) y como no metal (+6 el Cr; +4, +6 y +7 el Mn). Se estudian los dos juegos.
 - La Hoja de oxidación solo reparte en metales y no metales, y pone B, Si, As, Sb y Te entre los no metales. La Clase sigue a la Tabla del libro, que los da como metaloides.
 - "Valencias" en la idea original son los Números de oxidación. La Hoja de oxidación define valencia como otra cosa, la capacidad de un átomo para combinarse, y esa no se estudia.
 - "Acrónimo" en la idea original es el Símbolo.
 - "La parte característica" de la Configuración en la idea original es el subnivel donde entra el último electrón.
 - Los doce metales de transición no se preguntan por su Configuración: cinco de ellos, Cr, Cu, Ag, Au y Pt, no siguen la regla de llenado, y en ninguno explica sus Números de oxidación. Se enseña la real.
-- El Cr y el Mn se responden con todos sus Números de oxidación juntos; que unos sean de metal y otros de no metal se cuenta al corregir y no se pregunta. Del B hay que dar los dos, +3 y −3.
+- El Cr y el Mn se responden con todos sus Números de oxidación juntos; que unos sean de metal y otros de no metal se cuenta al corregir y no se pregunta.
 - Los Números de oxidación se saben de memoria o se deducen rápido: por eso se seleccionan, y las Cajas solo salen cuando el Alumno las pide o falla. Acertar después de pedirlas cuenta como acierto.
 - El número de opciones delata cuántos Números de oxidación tiene un Elemento. Se acepta: dar pistas no es malo.
 - En las Cajas de un metal de transición lo primero que se suelta, la s, no queda al final de la línea. Es el coste de dibujar en orden de llenado.
 - En las Cajas resueltas las flechas se sueltan de derecha a izquierda. Qué electrón de un subnivel se va no significa nada; el orden solo deja las marcas ordenadas.
-- Al B le faltan 5 mitades en su Caja p y solo llena 3: su −3 no sale de lo que le falta para llenar la capa.
 - De los números cuánticos solo se enseñan los del último electrón, y solo en Explorar.
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.

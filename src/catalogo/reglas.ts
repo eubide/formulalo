@@ -68,7 +68,7 @@ const REGLAS: Regla[] = [
     acabaEn: 'p¹',
     puente: '3 electrones: los pierde.',
     numeros: [3],
-    excepciones: { B: 'además −3, que no sale de la regla. El +3 es el principal.', Tl: 'además +1.' },
+    excepciones: { Tl: 'además +1.' },
   },
 ]
 
