@@ -73,6 +73,9 @@ export const REGLAS_GENERALES = [
   'El negativo son los electrones que faltan para llegar a 8 (a 2 en el H).',
 ]
 
+export const REGLA_DE_CLASE =
+  'Los metaloides forman una escalera que baja del B al At. A su izquierda y por debajo, metales; a su derecha y por encima, no metales. El H es no metal.'
+
 export const REGLA_DE_CONFIGURACION =
   'El periodo da la capa, la zona de la tabla da la letra (grupos 1 y 2, s; grupos 13 a 18, p, menos el He, 1s²) y el grupo da los electrones: en s, el número del grupo; en p, el grupo menos 12.'
 

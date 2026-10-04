@@ -10,6 +10,7 @@ import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo, trozosDeTransicion
 import {
   excepcionDe,
   pierdeElNegativo,
+  REGLA_DE_CLASE,
   REGLA_DE_CONFIGURACION,
   reglaDe,
   reglasContiguas,
@@ -144,7 +145,7 @@ export function correccionDe({ elemento }: Pregunta, respuesta: Respuesta): Corr
     case 'posicion':
       return { ...vacia, historias: presentes([historiaDeOrden(elemento), historiaDeSimbolo(elemento)]) }
     case 'clase':
-      return vacia
+      return { ...vacia, historias: [REGLA_DE_CLASE] }
     case 'configuracion':
       return { ...vacia, historias: [REGLA_DE_CONFIGURACION] }
     case 'numeros':

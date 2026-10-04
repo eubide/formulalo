@@ -50,6 +50,12 @@ describe('Los 56 Elementos', () => {
     expect(noMetales.filter((elemento) => !elemento.numeros.some((numero) => numero <= 0))).toEqual([])
   })
 
+  it('los metaloides son justo B, Si, Ge, As, Sb, Te, Po y At', () => {
+    const metaloides = estudiados.filter((elemento) => elemento.clase === 'metaloide')
+
+    expect(metaloides.map((elemento) => elemento.simbolo)).toEqual(['B', 'Si', 'Ge', 'As', 'Sb', 'Te', 'Po', 'At'])
+  })
+
   it('el B lleva solo el +3 de la Tabla del libro', () => {
     expect(elementoDe('B').numeros).toEqual([3])
     expect(elementoDe('B').fuente).toBe('libro')

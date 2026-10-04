@@ -1,6 +1,14 @@
 <script lang="ts">
-  import { electronesDeValencia, elementoDe, esDeTransicion, etiquetaDeClase, type Clase } from '../catalogo/catalogo'
+  import {
+    electronesDeValencia,
+    elementoDe,
+    elementos,
+    esDeTransicion,
+    etiquetaDeClase,
+    type Clase,
+  } from '../catalogo/catalogo'
   import { etiquetaDePaso, pasosDe, type Respuesta, type Tanda } from '../estudio/estudio'
+  import Clases from '../tabla/Clases.svelte'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
   import Configuracion from './Configuracion.svelte'
   import Correccion from './Correccion.svelte'
@@ -30,6 +38,9 @@
 
   const casillas = $derived.by(() => {
     const mapa: Record<string, Casilla> = {}
+    if (correccion?.paso === 'clase') {
+      for (const { simbolo, clase } of elementos()) mapa[simbolo] = { clase }
+    }
     for (const simbolo of tanda.rotulados) {
       if (simbolo !== elemento.simbolo) mapa[simbolo] = { rotulada: true, clase: elementoDe(simbolo).clase }
     }
@@ -86,6 +97,9 @@
 
   <div class="a-la-izquierda">
     <Tabla {casillas} alTocar={pregunta.paso === 'posicion' && !correccion ? tocar : undefined} />
+    {#if correccion?.paso === 'clase'}
+      <Clases />
+    {/if}
   </div>
 
   <section class="panel">

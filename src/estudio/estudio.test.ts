@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { elementoDe, elementos, ultimoSubnivel, type Clase } from '../catalogo/catalogo'
 import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
-import { REGLA_DE_CONFIGURACION } from '../catalogo/reglas'
+import { REGLA_DE_CLASE, REGLA_DE_CONFIGURACION } from '../catalogo/reglas'
 import { almacenEnMemoria, crearEstudio, type Almacen, type Pregunta, type Respuesta, type Tanda } from './estudio'
 
 type Estudio = ReturnType<typeof crearEstudio>
@@ -229,6 +229,17 @@ describe('Corrección', () => {
     const { correccion } = estudio.responder(tanda, { paso: 'posicion', simbolo: 'K' })
 
     expect(correccion).toMatchObject({ paso: 'posicion', historias: [historiaDeOrden(sodio), historiaDeSimbolo(sodio)] })
+  })
+
+  it('la de Clase trae la regla para deducirla de la Posición', () => {
+    const { estudio } = montar()
+    let tanda = abrir(estudio)!
+    const { elemento } = tanda.pregunta!
+    tanda = estudio.responder(tanda, correctaDe(tanda.pregunta!))
+
+    const { correccion } = estudio.responder(tanda, { paso: 'clase', clase: otraClase(elemento.clase) })
+
+    expect(correccion).toMatchObject({ paso: 'clase', historias: [REGLA_DE_CLASE] })
   })
 
   it('la de Configuración trae la regla para deducirla de la Posición', () => {

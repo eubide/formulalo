@@ -1,16 +1,10 @@
 <script lang="ts">
-  import {
-    electronesDeValencia,
-    elementoDe,
-    elementos,
-    esDeTransicion,
-    etiquetaDeClase,
-    type Clase,
-  } from '../catalogo/catalogo'
+  import { electronesDeValencia, elementoDe, elementos, esDeTransicion, etiquetaDeClase } from '../catalogo/catalogo'
   import { ultimoElectronDe } from '../catalogo/cajas'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
   import { excepcionDe, pierdeElNegativo, reglaDe, SIN_EL_NEGATIVO } from '../catalogo/reglas'
+  import Clases from '../tabla/Clases.svelte'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
   import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
@@ -22,8 +16,6 @@
   }
 
   let { alSalir }: Props = $props()
-
-  const CLASES = Object.keys(etiquetaDeClase) as Clase[]
 
   let elegido = $state<string | null>(null)
 
@@ -57,12 +49,7 @@
 
   <div class="a-la-izquierda">
     <Tabla {casillas} alTocar={(simbolo) => (elegido = simbolo)} />
-
-    <ul class="leyenda">
-      {#each CLASES as clase (clase)}
-        <li><i class={clase}></i>{etiquetaDeClase[clase]}</li>
-      {/each}
-    </ul>
+    <Clases />
   </div>
 
   {#if elemento}
@@ -143,26 +130,6 @@
   h1 {
     margin: 0;
     font-size: 20px;
-  }
-
-  .leyenda {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 16px;
-    margin: 10px 0 0;
-    padding: 0;
-    list-style: none;
-    font-size: 13px;
-    color: var(--tenue);
-  }
-
-  .leyenda i {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-    border-radius: 3px;
-    vertical-align: -1px;
   }
 
   .metal {

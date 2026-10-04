@@ -15,6 +15,17 @@ function corregida(simbolo: string, opciones: number[], respuesta: Respuesta): s
   return pintar(Correccion, { pregunta, correccion: correccionDe(pregunta, respuesta), alSeguir: () => {} })
 }
 
+describe('Corrección de Clase', () => {
+  it('dice la Clase del Elemento y la regla para deducirla de la Posición', () => {
+    const texto = corregida('Cl', [], { paso: 'clase', clase: 'metal' })
+
+    expect(texto).toContain('Es no metal .')
+    expect(texto).toContain(
+      'Los metaloides forman una escalera que baja del B al At. A su izquierda y por debajo, metales; a su derecha y por encima, no metales. El H es no metal.',
+    )
+  })
+})
+
 describe('Corrección de Números de oxidación', () => {
   it.each(['Sn', 'Pb', 'Bi'])('del %s dice que pierde el negativo por ser metal, y no que se aparta de la regla', (simbolo) => {
     const texto = corregida(simbolo, [-4, 2, 3, 4, 5], { paso: 'numeros', numeros: [2] })
