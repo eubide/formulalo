@@ -42,10 +42,18 @@ describe('Portada', () => {
     expect(pintarPortada(estudio)).not.toContain(DESDE_EL_GAS_NOBLE)
   })
 
-  it('junto al Camino ofrece guardar y recuperar una copia, sin pedir ni avisar nada hasta que se elige un archivo', () => {
+  it('elige el Camino entre la Tanda de hoy y el resumen', () => {
     const { estudio } = montar()
 
-    expect(pintarPortada(estudio).endsWith(`${DESDE_EL_GAS_NOBLE} Guardar copia Recuperar copia`)).toBe(true)
+    expect(pintarPortada(estudio)).toMatch(/Tanda de hoy .* Explorar Camino .* 0 sabidos/)
+  })
+
+  it('al final ofrece guardar y recuperar una copia, sin pedir ni avisar nada hasta que se elige un archivo', () => {
+    const { estudio } = montar()
+    const tanda = abrir(estudio)!
+    fallar(estudio, tanda, ['clase'])
+
+    expect(pintarPortada(estudio)).toMatch(/Dónde se rompe la cadena .*: Clase Guardar copia Recuperar copia$/)
   })
 
   it('con 56 Elementos por repasar dice cuántos quedan para hoy después de la Tanda', () => {

@@ -91,6 +91,16 @@
     <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar</button>
   </section>
 
+  <section class="camino">
+    <h2>Camino</h2>
+    <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
+      {#each CAMINOS as opcion (opcion)}
+        <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
+      {/each}
+    </select>
+    <p>{descripcionDeCamino[camino]}</p>
+  </section>
+
   <p class="resumen">
     <b>{resumen.sabidos}</b> sabidos · <b>{resumen.flojos}</b> flojos · <b>{resumen.sinVer}</b> sin ver, de {resumen.total}
   </p>
@@ -110,14 +120,7 @@
     </section>
   {/if}
 
-  <section class="camino">
-    <h2>Camino</h2>
-    <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
-      {#each CAMINOS as opcion (opcion)}
-        <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
-      {/each}
-    </select>
-    <p>{descripcionDeCamino[camino]}</p>
+  <section>
     <div class="copia">
       <button type="button" class="boton secundario" onclick={guardarCopia}>Guardar copia</button>
       <button type="button" class="boton secundario" onclick={() => selector.click()}>Recuperar copia</button>
@@ -202,8 +205,7 @@
     margin-top: 16px;
   }
 
-  .camino .aviso {
-    margin-top: 16px;
-    color: var(--tinta);
+  .aviso {
+    margin: 16px 0 0;
   }
 </style>
