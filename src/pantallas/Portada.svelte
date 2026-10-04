@@ -31,7 +31,7 @@
   const { camino, entradas, resumen, proximaVuelta, anuncio } = $derived(aLaVista)
 
   const casillas = $derived(casillasDelDominio(entradas))
-  const flojosConFallo = $derived(Object.entries(entradas).filter(([, entrada]) => entrada.pasosFallados.length > 0))
+  const conPasosFallados = $derived(Object.entries(entradas).filter(([, entrada]) => entrada.pasosFallados.length > 0))
 
   function elegir(elegido: Camino) {
     estudio.elegirCamino(elegido)
@@ -109,11 +109,11 @@
     <Tabla {casillas} />
   </div>
 
-  {#if flojosConFallo.length > 0}
-    <section class="flojos">
+  {#if conPasosFallados.length > 0}
+    <section class="donde-se-rompe">
       <h2>Dónde se rompe la cadena</h2>
       <ul>
-        {#each flojosConFallo as [simbolo, entrada] (simbolo)}
+        {#each conPasosFallados as [simbolo, entrada] (simbolo)}
           <li><b>{simbolo}</b> {elementoDe(simbolo).nombre}: {entrada.pasosFallados.map((paso) => etiquetaDePaso[paso]).join(', ')}</li>
         {/each}
       </ul>
@@ -179,7 +179,7 @@
     margin: 12px 0;
   }
 
-  .flojos ul {
+  .donde-se-rompe ul {
     margin: 0;
     padding-left: 18px;
   }
