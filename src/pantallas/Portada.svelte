@@ -15,15 +15,18 @@
 
   const CAMINOS = Object.keys(etiquetaDeCamino) as Camino[]
 
-  let camino = $derived(estudio.camino())
+  function mirar() {
+    return {
+      camino: estudio.camino(),
+      entradas: estudio.entradas(),
+      resumen: estudio.resumen(),
+      proximaVuelta: estudio.proximaVuelta(),
+      anuncio: estudio.anuncio(),
+    }
+  }
 
-  const entradas = $derived(estudio.entradas())
-  const resumen = $derived(estudio.resumen())
-  const proximaVuelta = $derived(estudio.proximaVuelta())
-  const anuncio = $derived.by(() => {
-    void camino
-    return estudio.anuncio()
-  })
+  let aLaVista = $state.raw(mirar())
+  const { camino, entradas, resumen, proximaVuelta, anuncio } = $derived(aLaVista)
 
   const casillas = $derived<Record<string, Casilla>>(
     Object.fromEntries(
@@ -37,9 +40,15 @@
 
   function elegir(elegido: Camino) {
     estudio.elegirCamino(elegido)
-    camino = elegido
+    aLaVista = mirar()
+  }
+
+  function alCambiarLaVisibilidad() {
+    if (document.visibilityState === 'visible') aLaVista = mirar()
   }
 </script>
+
+<svelte:document onvisibilitychange={alCambiarLaVisibilidad} />
 
 <main class="pantalla">
   <header>
