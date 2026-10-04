@@ -108,6 +108,10 @@ _Evitar_: débil, pendiente, fallado
 Estado de un Elemento cuya última Cadena se acertó entera. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo lo devuelve a Flojo.
 _Evitar_: dominado, aprendido, acertado
 
+**Explorar**:
+Consulta libre: la tabla periódica con los 56 Elementos rotulados, y al tocar uno se ven todos sus datos, su Tira, su Regla y sus Historias. No pregunta nada ni escribe en el Dominio.
+_Evitar_: ficha, consulta, modo libre
+
 **Señales**:
 El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En la Tira resuelta va en gris lo que el Elemento tiene y no usa. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
 _Evitar_: leyenda, paleta, estilos, colores
