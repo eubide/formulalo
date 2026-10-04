@@ -74,14 +74,21 @@ function numerosVecinos(elemento: Elemento): number[] {
 function opcionesDe(elemento: Elemento, azar: Azar): number[] {
   const verdaderos = elemento.numeros
   const cuantos = azar() < 0.5 ? 2 : 3
+  // El 0 nunca es falso: todo Elemento lo tiene cuando está libre.
   const falsos = (numeros: number[]) =>
-    barajar([...new Set(numeros)].filter((numero) => RANGO.includes(numero) && !verdaderos.includes(numero)), azar)
+    barajar(
+      [...new Set(numeros)].filter((numero) => numero !== 0 && RANGO.includes(numero) && !verdaderos.includes(numero)),
+      azar,
+    )
   const candidatos = [
-    ...falsos(verdaderos.map((numero) => -numero)),
-    ...falsos(numerosVecinos(elemento)),
-    ...falsos(RANGO),
+    ...new Set([...falsos(verdaderos.map((numero) => -numero)), ...falsos(numerosVecinos(elemento)), ...falsos(RANGO)]),
   ]
-  return [...verdaderos, ...[...new Set(candidatos)].slice(0, cuantos)].sort((a, b) => a - b)
+  const distractores = candidatos.slice(0, cuantos)
+  // Con solo negativos, a un metal se le acierta sabiendo que no tiene ninguno.
+  if (elemento.clase === 'metal' && !distractores.some((numero) => numero > 0)) {
+    distractores[distractores.length - 1] = candidatos.find((numero) => numero > 0)!
+  }
+  return [...verdaderos, ...distractores].sort((a, b) => a - b)
 }
 
 export function preguntar(elemento: Elemento, azar: Azar): Pregunta {

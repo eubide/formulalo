@@ -297,7 +297,7 @@ describe('Números de oxidación', () => {
     expect(hastaLosNumeros(estudio, 'Na').pregunta!.opciones).toEqual([-1, 1, 2])
   })
 
-  it.each([0, 0.9])('con el azar en %s, cada Elemento ofrece sus verdaderos y dos o tres Distractores, ordenados', (valor) => {
+  it.each([0, 0.3, 0.6, 0.9])('con el azar en %s, cada Elemento ofrece sus verdaderos y dos o tres Distractores, ordenados', (valor) => {
     const { estudio } = montar(() => valor)
     const vistos = new Set<string>()
 
@@ -309,6 +309,10 @@ describe('Números de oxidación', () => {
         expect(distractores.length, elemento.simbolo).toBe(valor < 0.5 ? 2 : 3)
         expect(opciones, elemento.simbolo).toEqual([...new Set(opciones)].sort((a, b) => a - b))
         expect(opciones.every((numero) => numero >= -4 && numero <= 7), elemento.simbolo).toBe(true)
+        expect(distractores, `${elemento.simbolo}: el 0 no es un Distractor`).not.toContain(0)
+        if (elemento.clase === 'metal') {
+          expect(distractores.some((numero) => numero > 0), `${elemento.simbolo}: un metal recibe algún Distractor positivo`).toBe(true)
+        }
         vistos.add(elemento.simbolo)
         tanda = acertarCadena(estudio, tanda)
       }
