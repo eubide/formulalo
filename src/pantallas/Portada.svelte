@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { etiquetaDeCamino, type Camino } from '../catalogo/caminos'
+  import { descripcionDeCamino, etiquetaDeCamino, type Camino } from '../catalogo/caminos'
   import { elementoDe } from '../catalogo/catalogo'
   import { etiquetaDePaso, type Estudio } from '../estudio/estudio'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
@@ -54,6 +54,12 @@
   <header>
     <h1>Formúlalo</h1>
     <p>No lo memorices: dedúcelo.</p>
+    {#if resumen.sinVer === resumen.total}
+      <p class="bienvenida">
+        Aprende dónde está cada elemento en la tabla y deduce de ahí su configuración y sus números de oxidación. Cada tanda dura
+        unos minutos: primero te presenta un grupo y después te pregunta.
+      </p>
+    {/if}
   </header>
 
   <section class="hoy">
@@ -94,6 +100,7 @@
         <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
       {/each}
     </select>
+    <p>{descripcionDeCamino[camino]}</p>
   </section>
 </main>
 
@@ -106,6 +113,11 @@
   header p {
     margin: 4px 0 0;
     color: var(--tenue);
+  }
+
+  header .bienvenida {
+    margin-top: 12px;
+    color: var(--tinta);
   }
 
   h2 {
@@ -145,5 +157,10 @@
     border-radius: 8px;
     background: var(--papel);
     padding: 10px 12px;
+  }
+
+  .camino p {
+    margin: 8px 0 0;
+    color: var(--tenue);
   }
 </style>

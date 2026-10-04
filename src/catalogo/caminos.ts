@@ -8,6 +8,11 @@ export const etiquetaDeCamino: Record<Camino, string> = {
   uso: 'Por uso al formular',
 }
 
+export const descripcionDeCamino: Record<Camino, string> = {
+  'gas-noble': 'Grupos 18, 1, 2, 17, 16, 15, 14 y 13, y después los metales de transición.',
+  uso: 'Primero el H y el O; después los grupos 1, 2, 17, 16, 15, 14 y 13, los metales de transición y el 18.',
+}
+
 const PRIMEROS_POR_USO = ['H', 'O']
 
 function grupo(numero: number, sin: string[] = []): string[] {
