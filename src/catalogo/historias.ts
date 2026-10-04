@@ -1,10 +1,10 @@
 import { esDeTransicion, type Elemento } from './catalogo'
 
 const DE_SIMBOLO: Record<string, string> = {
-  Na: 'Del latín *natrium*, por el natrón, una sal de sodio.',
-  K: 'Del latín *kalium*, la misma raíz árabe que «álcali».',
+  Na: 'Como Nacli, el Pokémon de sal: la sal es NaCl, y Na es el sodio.',
+  K: 'Como Koffing: empieza por K y lleva gases explosivos. El potasio explota al tocar el agua.',
   Fe: 'Del latín *ferrum*: ferretería, ferrocarril, férreo.',
-  Cu: 'Del latín *cuprum*, «metal de Chipre».',
+  Cu: 'Como Cufant: empieza por Cu y tiene el cuerpo de cobre.',
   Ag: 'Del latín *argentum*: Argentina, «el país de la plata».',
   Au: 'Del latín *aurum*: áureo, aureola.',
   Hg: 'Del griego *hydrargyros*, «plata líquida»: agua + plata.',
