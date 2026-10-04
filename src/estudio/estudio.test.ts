@@ -417,6 +417,7 @@ describe('Tanda', () => {
     expect(Object.keys(estudio.entradas())).toHaveLength(13)
 
     acertarTanda(estudio, tanda)
+    expect(estudio.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3 })
     const siguiente = estudio.abrirTanda()!
     const delGrupo1PorPreguntar = GRUPO_1.filter((simbolo) => !preguntados.includes(simbolo))
     expect(siguiente.presentacion).toBeNull()
@@ -429,7 +430,7 @@ describe('Tanda', () => {
 
     const alVolver = montar(() => 0, almacen).estudio
 
-    expect(alVolver.anuncio()).toEqual({ repaso: 5, nuevos: 0, minutos: 3 })
+    expect(alVolver.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3 })
     const tanda = alVolver.abrirTanda()!
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda)).toHaveLength(5)
