@@ -9,6 +9,7 @@ type Estudio = ReturnType<typeof crearEstudio>
 const DIA_1 = '2026-10-05'
 const GRUPO_18 = ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn']
 const GRUPO_1 = ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr']
+const GRUPO_2 = ['Be', 'Mg', 'Ca', 'Sr', 'Ba', 'Ra']
 
 function montar(azar = () => 0, almacen: Almacen = almacenEnMemoria()) {
   const reloj = { dia: DIA_1 }
@@ -474,14 +475,73 @@ describe('Tanda', () => {
     expect(estudio.abrirTanda()!.presentacion).toEqual(GRUPO_1)
   })
 
-  it('si lo que toca hoy llena la Tanda, no presenta nada nuevo', () => {
+  it('con 8 o más Elementos por repasar y alguno nuevo, trae 6 de repaso y 2 nuevos', () => {
     const { estudio, reloj } = montar()
     acertarTanda(estudio, abrir(estudio)!)
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
 
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4 })
     const tanda = estudio.abrirTanda()!
 
+    expect(tanda.presentacion).toEqual(GRUPO_2)
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(2)
+    expect(enLaTanda(tanda).filter((simbolo) => [...GRUPO_18, ...GRUPO_1].includes(simbolo))).toHaveLength(6)
+  })
+
+  it('con menos de 6 por repasar entran tantos nuevos como sitio queda', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-07'
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-08'
+
+    expect(estudio.anuncio()).toEqual({ repaso: 5, nuevos: 3, minutos: 4 })
+    const tanda = estudio.abrirTanda()!
+
+    expect(tanda.presentacion).toEqual(GRUPO_2)
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(3)
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_1.includes(simbolo))).toHaveLength(5)
+  })
+
+  it('los presentados que esperan entran antes que un trozo nuevo, y no se presenta otro mientras quede alguno', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+    acertarTanda(estudio, abrir(estudio)!)
+
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4 })
+    const tanda = estudio.abrirTanda()!
+    expect(tanda.presentacion).toBeNull()
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(2)
+    expect(enLaTanda(tanda)).toHaveLength(8)
+
+    acertarTanda(estudio, tanda)
+    const ultima = estudio.abrirTanda()!
+    expect(ultima.presentacion).toBeNull()
+    expect(enLaTanda(ultima).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(2)
+    expect(enLaTanda(ultima)).toHaveLength(3)
+  })
+
+  it('con un solo nuevo, el repaso ocupa los otros siete', () => {
+    const { estudio, reloj } = montar()
+    hastaPresentar(estudio, 'Pt')
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncio()).toEqual({ repaso: 7, nuevos: 1, minutos: 4 })
+    expect(enLaTanda(estudio.abrirTanda()!)).toContain('Pt')
+  })
+
+  it('sin nada nuevo, la Tanda es toda de repaso', () => {
+    const { estudio, reloj } = montar()
+    estudiarElDia(estudio)
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncio()).toEqual({ repaso: 8, nuevos: 0, minutos: 4 })
+    const tanda = estudio.abrirTanda()!
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda)).toHaveLength(8)
   })
@@ -512,8 +572,8 @@ describe('Tanda', () => {
 
     const preguntados = enLaTanda(estudio.abrirTanda()!)
 
-    expect(sinRepasar).toHaveLength(5)
-    expect(preguntados).toEqual(expect.arrayContaining(sinRepasar))
+    expect(sinRepasar).toHaveLength(7)
+    expect(preguntados.filter((simbolo) => sinRepasar.includes(simbolo))).toHaveLength(6)
   })
 
   it('al terminar no queda pregunta, y dice cuáles se acertaron enteros y cuáles vuelven', () => {

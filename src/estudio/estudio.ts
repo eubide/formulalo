@@ -49,6 +49,7 @@ interface Composicion {
 }
 
 const ELEMENTOS_POR_TANDA = 8
+const NUEVOS_CON_SITIO_GUARDADO = 2
 const MINUTOS_DE_UNA_TANDA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
 
@@ -60,7 +61,7 @@ function sinPreguntar(entrada: Entrada): boolean {
 function queTocan(entradas: Record<string, Entrada>, hoy: string): string[] {
   const tocan = elementos()
     .map((elemento) => elemento.simbolo)
-    .filter((simbolo) => entradas[simbolo] && entradas[simbolo].vuelve <= hoy)
+    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]) && entradas[simbolo].vuelve <= hoy)
   const flojos = tocan
     .filter((simbolo) => entradas[simbolo].estado === 'flojo')
     .sort((a, b) => entradas[b].fallos - entradas[a].fallos)
@@ -71,15 +72,17 @@ function queTocan(entradas: Record<string, Entrada>, hoy: string): string[] {
 }
 
 function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string): Composicion | null {
-  const repaso = queTocan(entradas, hoy).slice(0, ELEMENTOS_POR_TANDA)
-  const huecos = ELEMENTOS_POR_TANDA - repaso.length
+  const esperan = Object.keys(entradas).filter((simbolo) => sinPreguntar(entradas[simbolo]))
   const sinVer = trozosDe(camino)
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .find((trozo) => trozo.length > 0)
-  const quedaAlgoSinPreguntar = Object.values(entradas).some(sinPreguntar)
-  const presentacion = huecos > 0 && sinVer && !quedaAlgoSinPreguntar ? sinVer : null
-  if (repaso.length === 0 && !presentacion) return null
-  return { repaso, presentacion, nuevos: presentacion?.slice(0, huecos) ?? [] }
+  const presentacion = esperan.length === 0 && sinVer ? sinVer : null
+  const porPreguntar = presentacion ?? esperan
+  const guardados = Math.min(NUEVOS_CON_SITIO_GUARDADO, porPreguntar.length)
+  const repaso = queTocan(entradas, hoy).slice(0, ELEMENTOS_POR_TANDA - guardados)
+  const nuevos = porPreguntar.slice(0, ELEMENTOS_POR_TANDA - repaso.length)
+  if (repaso.length === 0 && nuevos.length === 0) return null
+  return { repaso, presentacion, nuevos }
 }
 
 export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
@@ -133,14 +136,12 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
     },
 
     anuncio(): Anuncio | null {
-      const entradas = dominio.entradas()
-      const composicion = componer(entradas, dominio.camino(), hoy())
+      const composicion = componer(dominio.entradas(), dominio.camino(), hoy())
       if (!composicion) return null
       const cuantos = composicion.repaso.length + composicion.nuevos.length
-      const yaPreguntados = composicion.repaso.filter((simbolo) => !sinPreguntar(entradas[simbolo])).length
       return {
-        repaso: yaPreguntados,
-        nuevos: cuantos - yaPreguntados,
+        repaso: composicion.repaso.length,
+        nuevos: composicion.nuevos.length,
         minutos: Math.max(1, Math.round((cuantos * MINUTOS_DE_UNA_TANDA_LLENA) / ELEMENTOS_POR_TANDA)),
       }
     },
