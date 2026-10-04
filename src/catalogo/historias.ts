@@ -1,10 +1,10 @@
 import { esDeTransicion, type Elemento } from './catalogo'
 
 const DE_SIMBOLO: Record<string, string> = {
-  Na: 'Como Nacli, el Pokémon de sal: la sal es NaCl, y Na es el sodio.',
-  K: 'Como Koffing: empieza por K y lleva gases explosivos. El potasio explota al tocar el agua.',
+  Na: 'Del latín *natrium*, por el natrón, una sal de sodio.',
+  K: 'Del latín *kalium*, la misma raíz árabe que «álcali».',
   Fe: 'Del latín *ferrum*: ferretería, ferrocarril, férreo.',
-  Cu: 'Como Cufant: empieza por Cu y tiene el cuerpo de cobre.',
+  Cu: 'Del latín *cuprum*, «metal de Chipre».',
   Ag: 'Del latín *argentum*: Argentina, «el país de la plata».',
   Au: 'Del latín *aurum*: áureo, aureola.',
   Hg: 'Del griego *hydrargyros*, «plata líquida»: agua + plata.',
@@ -17,39 +17,39 @@ const DE_SIMBOLO: Record<string, string> = {
 }
 
 const DE_ORDEN: Record<number, string> = {
-  1: '«**H**ay **Li**món, **Na**ranja y **K**iwi: **R**o**b**a **C**e**s**tas de **Fr**uta»',
-  2: '«**Be**bé **M**a**g**o **Ca**za **S**e**r**pientes **Ba**ilando **Ra**p»',
-  13: '«**B**usca **Al** **Ga**to **In****T**e**l**igente»',
-  14: '«**C**asi **Si**empre la **Ge**nte **S**a**n**a del **P**ue**b**lo»',
+  1: '«**H**ay **Li**món, **Na**ranja y **K**iwi: el **R**o**b**ot **C**o**s**echa **Fr**esas»',
+  2: '«**Be**bé **M**a**g**o **Ca**brea **S**e**r**pientes **Ba**ilando con la **Ra**dio»',
+  13: '«**B**usca **Al** **Ga**mberro: **In**undó el **T**a**l**ler»',
+  14: '«**C**opio **Si**empre al **Ge**nio: **S**i**n** **P**ro**b**lemas»',
   15: '«**N**o **P**idas **As**ado: **S**a**b**e a **Bi**zcocho»',
-  16: '«**O**so **S**abio: **Se** **Te** **Po**ne delante»',
-  17: '«**F**ui a **Cl**ase y **Br**omeé: **I**dea **At**revida»',
-  18: '«**He** **Ne**gado **Ar**mar **K**a**r**aokes: **Xe**nia **R**o**n**ca»',
+  16: '«**O**so **S**invergüenza: **Se** **Te** **Po**ne chulo»',
+  17: '«**F**ui a **Cl**ase en **Br**agas: **I**dea **At**roz»',
+  18: '«**He** **Ne**gado **Ar**mar al **Kr**aken: **Xe**rneas **R**o**n**ca»',
 }
 
 const DE_TROZO: { elementos: string[]; historia: string }[] = [
   {
     elementos: ['Cu', 'Ag', 'Au'],
     historia:
-      'Grupo 11: se porta como el 1. Los tres tienen +1. La plata se queda ahí; el cobre añade +2 y el oro +3.',
+      'El podio: las tres medallas tienen +1. La plata, solo eso. El cobre añade +2 y el oro, que para eso gana, +3.',
   },
   {
     elementos: ['Zn', 'Cd', 'Hg'],
     historia:
-      'Grupo 12: se porta como el 2. Los tres tienen +2. El mercurio, el único metal líquido a temperatura ambiente, se escurre además a +1.',
+      'Grupo 12, como el 2: los tres tienen +2. El mercurio es líquido y no para quieto: se escurre además a +1.',
   },
   {
     elementos: ['Fe', 'Co', 'Ni'],
-    historia: 'Tres vecinos seguidos con dos números seguidos: +2 y +3.',
+    historia: 'Tres vecinos de pupitre que se copian: los tres ponen dos números seguidos, +2 y +3.',
   },
   {
     elementos: ['Cr', 'Mn'],
     historia:
-      'Se portan como metales, igual que sus vecinos Fe, Co y Ni: +2 y +3. Se portan como no metales al llegar a su número de grupo: el Cr, grupo 6, a +6; el Mn, grupo 7, a +7, pasando por +4 y +6.',
+      'Tienen dos caras. De metales copian a Fe, Co y Ni: +2 y +3. De no metales suben a su número de grupo: el Cr, grupo 6, a +6; el Mn, grupo 7, a +7, pasando por +4 y +6.',
   },
   {
     elementos: ['Pt'],
-    historia: 'Igual que Sn y Pb: los tres metales de +2 y +4.',
+    historia: 'El platino copia de lejos: +2 y +4, como el Sn y el Pb.',
   },
 ]
 
