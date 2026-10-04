@@ -43,6 +43,7 @@
 
   {#if deTransicion}
     <p>Familia: <b>{familiaDe(deTransicion)}</b>.</p>
+    <p>Aquí las reglas generales no valen: sus números se memorizan.</p>
   {/if}
 
   {#each reglas as regla (regla.grupo)}
