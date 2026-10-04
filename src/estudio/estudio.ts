@@ -56,7 +56,6 @@ interface Composicion {
 }
 
 const ELEMENTOS_POR_TANDA = 8
-const NUEVOS_CON_SITIO_GUARDADO = 2
 const MINUTOS_DE_UNA_TANDA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
 const MILISEGUNDOS_DE_UN_DIA = 86_400_000
@@ -85,11 +84,9 @@ function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .find((trozo) => trozo.length > 0)
   const presentacion = esperan.length === 0 && sinVer ? sinVer : null
-  const porPreguntar = presentacion ?? esperan
-  const guardados = Math.min(NUEVOS_CON_SITIO_GUARDADO, porPreguntar.length)
+  const nuevos = (presentacion ?? esperan).slice(0, ELEMENTOS_POR_TANDA)
   const tocan = queTocan(entradas, hoy)
-  const repaso = tocan.slice(0, ELEMENTOS_POR_TANDA - guardados)
-  const nuevos = porPreguntar.slice(0, ELEMENTOS_POR_TANDA - repaso.length)
+  const repaso = tocan.slice(0, ELEMENTOS_POR_TANDA - nuevos.length)
   if (repaso.length === 0 && nuevos.length === 0) return null
   return { repaso, presentacion, nuevos, quedan: tocan.length - repaso.length }
 }

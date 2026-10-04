@@ -26,13 +26,13 @@ describe('Fin de Tanda', () => {
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
     let tanda = abrir(estudio)!
-    while (tanda.pregunta!.elemento.simbolo !== 'Xe') tanda = acertarCadena(estudio, tanda)
+    while (tanda.pregunta!.elemento.simbolo !== 'Li') tanda = acertarCadena(estudio, tanda)
     tanda = acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
 
     const texto = pintarFinDeTanda(estudio, tanda)
 
-    expect(texto).toContain('7 elementos sabidos Mañana: Xe, H, Li · En 3 días: Ne, Ar, Kr, Rn, He')
-    expect(texto).toContain('Xe Xenón')
+    expect(texto).toMatch(/7 elementos sabidos Mañana: (\w+, ){6}\w+ · En 3 días: He 1 2 3 /)
+    expect(texto).toContain('Li Litio')
   })
 
   it('cuando su día ya ha llegado, los Elementos de la Tanda salen juntos bajo «Hoy»', () => {
@@ -40,7 +40,7 @@ describe('Fin de Tanda', () => {
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
     let tanda = abrir(estudio)!
-    while (tanda.pregunta!.elemento.simbolo !== 'Xe') tanda = acertarCadena(estudio, tanda)
+    while (tanda.pregunta!.elemento.simbolo !== 'Li') tanda = acertarCadena(estudio, tanda)
     tanda = acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
     reloj.dia = '2026-10-09'
 

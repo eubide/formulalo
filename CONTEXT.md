@@ -93,7 +93,7 @@ Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla 
 _Evitar_: tutorial, introducción, lección
 
 **Tanda**:
-Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos y otros que toca repasar hoy. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Mientras quede alguno, dos de los 8 son para ellos, y más si lo que toca repasar no llena los otros seis. Entran primero los presentados que esperan, y cuando no queda ninguno se presenta el trozo siguiente del Camino. El resto es para lo que toca repasar, los Flojos delante de los Sabidos. Los doce metales de transición llegan en cinco trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; y Pt.
+Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos y otros que toca repasar hoy. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero. Lo que toca repasar ocupa los sitios que sobran, los Flojos delante de los Sabidos. Los doce metales de transición llegan en cinco trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; y Pt.
 _Evitar_: ronda, sesión, lote, repaso
 
 **Corrección**:
