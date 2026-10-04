@@ -44,7 +44,7 @@
 <main class="pantalla">
   <header>
     <h1>Formúlalo</h1>
-    <p>La tabla periódica es el mapa: de la posición de cada elemento salen su configuración y sus números de oxidación.</p>
+    <p>La tabla periódica es el mapa.</p>
   </header>
 
   <section class="hoy">

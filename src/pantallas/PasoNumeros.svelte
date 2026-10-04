@@ -19,7 +19,7 @@
   }
 </script>
 
-<p>¿Qué números de oxidación tiene? Toca todos los suyos.</p>
+<p>¿Qué números de oxidación tiene?</p>
 
 <div class="opciones">
   {#each opciones as numero (numero)}
@@ -45,7 +45,7 @@
 
 {#if conAyuda}
   <div class="ayuda">
-    <small>Sus cajas, para deducirlos</small>
+    <small>Sus cajas</small>
     <Cajas {elemento} />
   </div>
 {/if}
