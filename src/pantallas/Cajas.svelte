@@ -6,9 +6,10 @@
   interface Props {
     elemento: Elemento
     resuelta?: boolean
+    comunA?: string[]
   }
 
-  let { elemento, resuelta = false }: Props = $props()
+  let { elemento, resuelta = false, comunA = [] }: Props = $props()
 
   const ANCHO = 34
   const ENTRE_CAJAS = 4
@@ -32,6 +33,8 @@
     return [...String(numero)].map((cifra) => VOLADOS[Number(cifra)]).join('')
   }
 
+  const comun = $derived(comunA.length > 0)
+
   const dibujo = $derived.by(() => {
     const { gasNoble, partes } = cajasDe(elemento)
     const filas = resuelta ? filasDe(elemento) : []
@@ -42,13 +45,13 @@
     const fichas: { x: number; texto: string }[] = []
     const cajas: { x: number; ancho: number; rotulo: string; mitades: { x: number; centro: number; punta: string; estado: string }[]; bordes: number[] }[] = []
     let x = 54
-    if (gasNoble) {
+    if (gasNoble && !comun) {
       fichas.push({ x, texto: `[${gasNoble}]` })
       x += FICHA + 8
     }
-    for (const parte of partes) {
+    for (const parte of comun ? partes.filter((parte) => !parte.recogida) : partes) {
       const nombre = `${parte.capa}${parte.letra}`
-      const rotulo = `${nombre}${volado(parte.electrones)}`
+      const rotulo = `${comun ? parte.letra : nombre}${volado(parte.electrones)}`
       if (parte.recogida) {
         fichas.push({ x, texto: rotulo })
         x += FICHA + 8
@@ -89,10 +92,12 @@
   width={dibujo.ancho}
   height={dibujo.alto}
   role="img"
-  aria-label="Cajas de {elemento.nombre}"
+  aria-label="Cajas de {comun ? comunA.join(', ') : elemento.nombre}"
 >
-  <rect class="simbolo" x="1" y={ARRIBA - 4} width="44" height={ALTO + 8} rx="6" />
-  <text class="letras" x="23" y={ARRIBA + 21}>{elemento.simbolo}</text>
+  {#if !comun}
+    <rect class="simbolo" x="1" y={ARRIBA - 4} width="44" height={ALTO + 8} rx="6" />
+    <text class="letras" x="23" y={ARRIBA + 21}>{elemento.simbolo}</text>
+  {/if}
 
   {#each dibujo.fichas as ficha (ficha.x)}
     <rect class="ficha" x={ficha.x} y={ARRIBA} width={FICHA} height={ALTO} rx="5" />

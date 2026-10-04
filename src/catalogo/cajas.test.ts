@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cajasDe, filasDe, ocupacionDe, ultimoElectronDe, type Sitio } from './cajas'
+import { agrupadosPorCajas, cajasDe, filasDe, ocupacionDe, ultimoElectronDe, type Sitio } from './cajas'
 import { elementoDe, elementos, esDeTransicion } from './catalogo'
 
 function escritas(simbolo: string): string {
@@ -114,6 +114,29 @@ describe('Filas de las Cajas resueltas', () => {
 
   it('el 0 lleva su fila sin marcas', () => {
     expect(marcasDe('Xe', 0)).toEqual([])
+  })
+})
+
+describe('Elementos agrupados por sus Cajas resueltas', () => {
+  function agrupados(...simbolos: string[]): string[] {
+    return agrupadosPorCajas(simbolos.map(elementoDe)).map((iguales) => iguales.map((elemento) => elemento.simbolo).join(', '))
+  }
+
+  function delGrupo(grupo: number): string[] {
+    return elementos()
+      .filter((elemento) => elemento.grupo === grupo)
+      .map((elemento) => elemento.simbolo)
+  }
+
+  it('van juntos los que tienen los mismos Números de oxidación y las mismas Cajas con los mismos electrones', () => {
+    expect(agrupados(...delGrupo(1))).toEqual(['H', 'Li, Na, K, Rb, Cs, Fr'])
+    expect(agrupados(...delGrupo(14))).toEqual(['C', 'Si', 'Ge, Sn, Pb'])
+    expect(agrupados(...delGrupo(18))).toEqual(['He', 'Ne, Ar, Kr, Rn', 'Xe'])
+  })
+
+  it('en un trozo de metales de transición cuentan la Caja s y la Caja d', () => {
+    expect(agrupados('Zn', 'Cd', 'Hg')).toEqual(['Zn, Cd', 'Hg'])
+    expect(agrupados('Fe', 'Co', 'Ni')).toEqual(['Fe', 'Co', 'Ni'])
   })
 })
 

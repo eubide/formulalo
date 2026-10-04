@@ -86,6 +86,18 @@ export function filasDe(elemento: Elemento): Fila[] {
   }))
 }
 
+export function agrupadosPorCajas(elementos: Elemento[]): Elemento[][] {
+  const grupos = new Map<string, Elemento[]>()
+  for (const elemento of elementos) {
+    const cajas = cajasDe(elemento)
+      .partes.filter((parte) => !parte.recogida)
+      .map(({ letra, electrones }) => `${letra}${electrones}`)
+    const clave = `${cajas} ${elemento.numeros}`
+    grupos.set(clave, [...(grupos.get(clave) ?? []), elemento])
+  }
+  return [...grupos.values()]
+}
+
 export function ultimoElectronDe(elemento: Elemento): UltimoElectron {
   const ultima = cajasDe(elemento).partes.findLast((parte) => parte.electrones > 0)!
   const sitio = ocupacionDe(ultima).at(-1)!

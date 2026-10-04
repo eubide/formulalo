@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { agrupadosPorCajas } from '../catalogo/cajas'
   import { elementoDe, esDeTransicion } from '../catalogo/catalogo'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
@@ -29,6 +30,7 @@
   const conHistoriaDeSimbolo = $derived(presentados.filter((elemento) => historiaDeSimbolo(elemento) !== null))
   const hayDeducibles = $derived(presentados.some((elemento) => !esDeTransicion(elemento)))
   const deTransicion = $derived(presentados.find(esDeTransicion))
+  const dibujos = $derived(agrupadosPorCajas(presentados))
 </script>
 
 <main class="pantalla">
@@ -89,10 +91,16 @@
   {/if}
 
   <ul class="elementos">
-    {#each presentados as elemento (elemento.simbolo)}
+    {#each dibujos as [elemento, ...companeros] (elemento.simbolo)}
       <li>
-        <span>{elemento.nombre}</span>
-        <Cajas {elemento} resuelta />
+        {#if companeros.length === 0}
+          <span>{elemento.nombre}</span>
+          <Cajas {elemento} resuelta />
+        {:else}
+          {@const comunA = [elemento, ...companeros].map((igual) => igual.simbolo)}
+          <b>{comunA.join(', ')}</b>
+          <Cajas {elemento} {comunA} resuelta />
+        {/if}
       </li>
     {/each}
   </ul>
