@@ -116,7 +116,11 @@
         <p class="puente">Capa de valencia: <b>{electronesDeValencia(elemento)}</b> electrones.</p>
       {/if}
       {#key elemento.simbolo}
-        <PasoNumeros {elemento} alResponder={(numeros) => alResponder({ paso: 'numeros', numeros })} />
+        <PasoNumeros
+          {elemento}
+          opciones={pregunta.opciones}
+          alResponder={(numeros) => alResponder({ paso: 'numeros', numeros })}
+        />
       {/key}
     {/if}
   </section>

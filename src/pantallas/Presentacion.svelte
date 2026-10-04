@@ -3,9 +3,9 @@
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
   import { excepcionDe, reglaDe, REGLAS_GENERALES } from '../catalogo/reglas'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
+  import Cajas from './Cajas.svelte'
   import Marcado from './Marcado.svelte'
   import Numeros from './Numeros.svelte'
-  import Tira from './Tira.svelte'
 
   interface Props {
     simbolos: string[]
@@ -41,7 +41,7 @@
     {#each presentados as elemento (elemento.simbolo)}
       <li>
         <span>{elemento.nombre}</span>
-        <Tira {elemento} />
+        <Cajas {elemento} resuelta />
       </li>
     {/each}
   </ul>
@@ -130,8 +130,8 @@
 
   .elementos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
-    gap: 2px 18px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 10px 18px;
     margin-top: 14px;
     padding: 0;
     list-style: none;

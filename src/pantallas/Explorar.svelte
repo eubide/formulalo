@@ -7,12 +7,13 @@
     etiquetaDeClase,
     type Clase,
   } from '../catalogo/catalogo'
+  import { ultimoElectronDe } from '../catalogo/cajas'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
   import { excepcionDe, reglaDe } from '../catalogo/reglas'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
+  import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
   import Marcado from './Marcado.svelte'
-  import Tira from './Tira.svelte'
 
   interface Props {
     alSalir: () => void
@@ -23,6 +24,10 @@
   const CLASES = Object.keys(etiquetaDeClase) as Clase[]
 
   let elegido = $state<string | null>(null)
+
+  function conSigno(numero: number): string {
+    return numero < 0 ? `−${-numero}` : String(numero)
+  }
 
   const elemento = $derived(elegido ? elementoDe(elegido) : null)
   const casillas = $derived<Record<string, Casilla>>(
@@ -57,6 +62,7 @@
   </ul>
 
   {#if elemento}
+    {@const cuanticos = ultimoElectronDe(elemento).cuanticos}
     <section class="datos">
       <h2><b>{elemento.simbolo}</b> {elemento.nombre}</h2>
       <dl>
@@ -75,7 +81,9 @@
           <dd>{electronesDeValencia(elemento)} {electronesDeValencia(elemento) === 1 ? 'electrón' : 'electrones'}</dd>
         {/if}
         <dt>Números de oxidación</dt>
-        <dd><Tira {elemento} /></dd>
+        <dd><Cajas {elemento} resuelta /></dd>
+        <dt>Último electrón</dt>
+        <dd>n = {cuanticos.n} · l = {cuanticos.l} · m = {conSigno(cuanticos.m)} · s = {cuanticos.s > 0 ? '+' : '−'}½</dd>
         {#if regla}
           <dt>Regla del grupo {regla.grupo}</dt>
           <dd>

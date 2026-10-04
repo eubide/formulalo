@@ -1,35 +1,97 @@
 <script lang="ts">
   import type { Elemento } from '../catalogo/catalogo'
-  import Tira from './Tira.svelte'
+  import Cajas from './Cajas.svelte'
+  import { escrito, signo } from './Numeros.svelte'
 
   interface Props {
     elemento: Elemento
+    opciones: number[]
     alResponder: (numeros: number[]) => void
   }
 
-  let { elemento, alResponder }: Props = $props()
+  let { elemento, opciones, alResponder }: Props = $props()
 
-  let marcadas = $state<number[]>([])
+  let elegidos = $state<number[]>([])
+  let conAyuda = $state(false)
 
   function alternar(numero: number) {
-    marcadas = marcadas.includes(numero) ? marcadas.filter((otro) => otro !== numero) : [...marcadas, numero]
+    elegidos = elegidos.includes(numero) ? elegidos.filter((otro) => otro !== numero) : [...elegidos, numero]
   }
 </script>
 
-<p>¿Dónde para? Toca cada hueco que llena, cada electrón hasta el que usa, o su casilla si se queda en 0.</p>
+<p>¿Qué números de oxidación tiene? Toca todos los suyos.</p>
 
-<Tira {elemento} {marcadas} alAlternar={alternar} />
+<div class="opciones">
+  {#each opciones as numero (numero)}
+    <button
+      type="button"
+      class={signo(numero)}
+      aria-pressed={elegidos.includes(numero)}
+      onclick={() => alternar(numero)}
+    >
+      {escrito(numero)}
+    </button>
+  {/each}
+</div>
 
-<button type="button" class="boton" disabled={marcadas.length === 0} onclick={() => alResponder(marcadas)}>
-  Comprobar
-</button>
+<div class="botones">
+  <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos)}>
+    Comprobar
+  </button>
+  {#if !conAyuda}
+    <button type="button" class="boton secundario" onclick={() => (conAyuda = true)}>No lo sé</button>
+  {/if}
+</div>
+
+{#if conAyuda}
+  <div class="ayuda">
+    <small>Sus cajas, para deducirlos</small>
+    <Cajas {elemento} />
+  </div>
+{/if}
 
 <style>
   p {
     margin: 10px 0 8px;
   }
 
-  .boton {
-    margin-top: 8px;
+  .opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .opciones button {
+    min-width: 52px;
+    min-height: 44px;
+    border: 2px solid var(--borde);
+    border-radius: 8px;
+    background: var(--papel);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .opciones button[aria-pressed='true'] {
+    border-color: currentColor;
+    box-shadow: inset 0 0 0 2px currentColor;
+  }
+
+  .botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ayuda {
+    margin-top: 12px;
+    padding: 8px 10px;
+    border: 1px dashed var(--borde);
+    border-radius: 8px;
+    background: var(--papel);
+  }
+
+  .ayuda small {
+    color: var(--tenue);
   }
 </style>
