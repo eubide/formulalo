@@ -9,10 +9,12 @@
   --papel: #ffffff;
   --acento: #3f3d56;
 
-  /* Señales: un color, un significado. El rojo y el azul son solo el signo de un Número de oxidación,
-     así que el fallo es naranja y la Clase no usa ninguno de los cinco. */
+  /* Señales: un color, un significado. El rojo y el azul son el signo de un Número de oxidación,
+     así que el fallo es naranja y la Clase no usa ninguno de los cinco. El rojo es además el de
+     los números cuánticos, que solo salen en Explorar. */
   --negativo: #c62828;
   --positivo: #1565c0;
+  --cuantico: #c62828;
   --ultimo-electron: #ffe066;
   --electron-destacado: #0b2f66;
   --acierto: #2e7d32;
