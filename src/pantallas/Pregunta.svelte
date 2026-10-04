@@ -62,7 +62,7 @@
   }
 </script>
 
-<main>
+<main class="pantalla">
   <header>
     <div class="dado">
       {#if localizado || correccion}
@@ -84,7 +84,9 @@
     <li class="quedan">Quedan {tanda.pendientes.length + 1}</li>
   </ol>
 
-  <Tabla {casillas} alTocar={pregunta.paso === 'posicion' && !correccion ? tocar : undefined} />
+  <div class="a-la-izquierda">
+    <Tabla {casillas} alTocar={pregunta.paso === 'posicion' && !correccion ? tocar : undefined} />
+  </div>
 
   <section class="panel">
     {#if correccion}
@@ -127,12 +129,6 @@
 </main>
 
 <style>
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 12px 12px 40px;
-  }
-
   header {
     display: flex;
     align-items: baseline;

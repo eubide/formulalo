@@ -29,22 +29,15 @@
   const hayDeducibles = $derived(presentados.some((elemento) => !esDeTransicion(elemento)))
 </script>
 
-<main>
+<main class="pantalla">
   <header>
     <h1>Nuevos: {simbolos.join(', ')}</h1>
     <button type="button" class="salir" onclick={alSalir}>Salir</button>
   </header>
 
-  <Tabla {casillas} />
-
-  <ul class="elementos">
-    {#each presentados as elemento (elemento.simbolo)}
-      <li>
-        <span>{elemento.nombre}</span>
-        <Cajas {elemento} resuelta />
-      </li>
-    {/each}
-  </ul>
+  <div class="a-la-izquierda">
+    <Tabla {casillas} />
+  </div>
 
   {#each reglas as regla (regla.grupo)}
     <section class="regla">
@@ -80,6 +73,15 @@
     </section>
   {/if}
 
+  <ul class="elementos">
+    {#each presentados as elemento (elemento.simbolo)}
+      <li>
+        <span>{elemento.nombre}</span>
+        <Cajas {elemento} resuelta />
+      </li>
+    {/each}
+  </ul>
+
   {#if hayDeducibles}
     <section>
       <h2>Reglas generales</h2>
@@ -95,12 +97,6 @@
 </main>
 
 <style>
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 16px 12px 40px;
-  }
-
   header {
     display: flex;
     align-items: baseline;

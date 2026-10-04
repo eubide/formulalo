@@ -41,7 +41,7 @@
   }
 </script>
 
-<main>
+<main class="pantalla">
   <header>
     <h1>Formúlalo</h1>
     <p>La tabla periódica es el mapa: de la posición de cada elemento salen su configuración y sus números de oxidación.</p>
@@ -63,7 +63,9 @@
     <b>{resumen.sabidos}</b> sabidos · <b>{resumen.flojos}</b> flojos · <b>{resumen.sinVer}</b> sin ver, de {resumen.total}
   </p>
 
-  <Tabla {casillas} />
+  <div class="a-la-izquierda">
+    <Tabla {casillas} />
+  </div>
 
   {#if flojosConFallo.length > 0}
     <section class="flojos">
@@ -96,12 +98,6 @@
 </main>
 
 <style>
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 16px 12px 40px;
-  }
-
   h1 {
     margin: 0;
     font-size: 28px;
