@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { abrir, fallar, montar } from '../estudio/ayudantes'
+import { abrir, estudiarElDia, fallar, montar } from '../estudio/ayudantes'
 import type { Estudio } from '../estudio/estudio'
 import { pintar } from './pintar'
 import Portada from './Portada.svelte'
@@ -46,6 +46,26 @@ describe('Portada', () => {
     const { estudio } = montar()
 
     expect(pintarPortada(estudio).endsWith(`${DESDE_EL_GAS_NOBLE} Guardar copia Recuperar copia`)).toBe(true)
+  })
+
+  it('con 56 Elementos por repasar dice cuántos quedan para hoy después de la Tanda', () => {
+    const { estudio, reloj } = montar()
+    estudiarElDia(estudio)
+    reloj.dia = '2026-10-06'
+
+    const texto = pintarPortada(estudio)
+
+    expect(texto).toContain('Tanda de hoy 8 de repaso · unos 4 min · quedan 48 más para hoy')
+  })
+
+  it('no escribe las partes del anuncio que valen cero, y con un minuto dice «1 min»', () => {
+    const { estudio } = montar()
+    estudio.elegirCamino('uso')
+
+    const texto = pintarPortada(estudio)
+
+    expect(texto).toContain('Tanda de hoy 2 nuevos · 1 min')
+    expect(texto).not.toContain('quedan')
   })
 
   it('lista el paso fallado en «Dónde se rompe la cadena» aunque el Elemento esté Sabido', () => {

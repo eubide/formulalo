@@ -33,6 +33,7 @@ export interface Anuncio {
   repaso: number
   nuevos: number
   minutos: number
+  quedan: number
 }
 
 export interface Resumen {
@@ -46,6 +47,7 @@ interface Composicion {
   repaso: string[]
   presentacion: string[] | null
   nuevos: string[]
+  quedan: number
 }
 
 const ELEMENTOS_POR_TANDA = 8
@@ -79,10 +81,11 @@ function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string
   const presentacion = esperan.length === 0 && sinVer ? sinVer : null
   const porPreguntar = presentacion ?? esperan
   const guardados = Math.min(NUEVOS_CON_SITIO_GUARDADO, porPreguntar.length)
-  const repaso = queTocan(entradas, hoy).slice(0, ELEMENTOS_POR_TANDA - guardados)
+  const tocan = queTocan(entradas, hoy)
+  const repaso = tocan.slice(0, ELEMENTOS_POR_TANDA - guardados)
   const nuevos = porPreguntar.slice(0, ELEMENTOS_POR_TANDA - repaso.length)
   if (repaso.length === 0 && nuevos.length === 0) return null
-  return { repaso, presentacion, nuevos }
+  return { repaso, presentacion, nuevos, quedan: tocan.length - repaso.length }
 }
 
 export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
@@ -142,6 +145,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
         repaso: composicion.repaso.length,
         nuevos: composicion.nuevos.length,
         minutos: Math.max(1, Math.round((cuantos * MINUTOS_DE_UNA_TANDA_LLENA) / ELEMENTOS_POR_TANDA)),
+        quedan: composicion.quedan,
       }
     },
 

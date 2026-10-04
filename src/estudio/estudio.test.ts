@@ -101,7 +101,7 @@ describe('Presentación', () => {
   })
 
   it('anuncia lo que trae la Tanda y cuánto dura', () => {
-    expect(montar().estudio.anuncio()).toEqual({ repaso: 0, nuevos: 6, minutos: 3 })
+    expect(montar().estudio.anuncio()).toEqual({ repaso: 0, nuevos: 6, minutos: 3, quedan: 0 })
   })
 })
 
@@ -432,7 +432,7 @@ describe('Tanda', () => {
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4 })
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4, quedan: 0 })
     let tanda = estudio.abrirTanda()!
     expect(tanda.presentacion).toEqual(GRUPO_1)
     tanda = estudio.descartarPresentacion(tanda)
@@ -443,7 +443,7 @@ describe('Tanda', () => {
     expect(Object.keys(estudio.entradas())).toHaveLength(13)
 
     acertarTanda(estudio, tanda)
-    expect(estudio.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3 })
+    expect(estudio.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3, quedan: 0 })
     const siguiente = estudio.abrirTanda()!
     const delGrupo1PorPreguntar = GRUPO_1.filter((simbolo) => !preguntados.includes(simbolo))
     expect(siguiente.presentacion).toBeNull()
@@ -456,7 +456,7 @@ describe('Tanda', () => {
 
     const alVolver = montar(() => 0, almacen).estudio
 
-    expect(alVolver.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3 })
+    expect(alVolver.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3, quedan: 0 })
     const tanda = alVolver.abrirTanda()!
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda)).toHaveLength(5)
@@ -480,7 +480,7 @@ describe('Tanda', () => {
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4 })
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4, quedan: 7 })
     const tanda = estudio.abrirTanda()!
 
     expect(tanda.presentacion).toEqual(GRUPO_2)
@@ -497,7 +497,7 @@ describe('Tanda', () => {
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-08'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 5, nuevos: 3, minutos: 4 })
+    expect(estudio.anuncio()).toEqual({ repaso: 5, nuevos: 3, minutos: 4, quedan: 0 })
     const tanda = estudio.abrirTanda()!
 
     expect(tanda.presentacion).toEqual(GRUPO_2)
@@ -512,7 +512,7 @@ describe('Tanda', () => {
     reloj.dia = '2026-10-06'
     acertarTanda(estudio, abrir(estudio)!)
 
-    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4 })
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4, quedan: 1 })
     const tanda = estudio.abrirTanda()!
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(2)
@@ -530,7 +530,7 @@ describe('Tanda', () => {
     hastaPresentar(estudio, 'Pt')
     reloj.dia = '2026-10-06'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 7, nuevos: 1, minutos: 4 })
+    expect(estudio.anuncio()).toEqual({ repaso: 7, nuevos: 1, minutos: 4, quedan: 48 })
     expect(enLaTanda(estudio.abrirTanda()!)).toContain('Pt')
   })
 
@@ -539,10 +539,25 @@ describe('Tanda', () => {
     estudiarElDia(estudio)
     reloj.dia = '2026-10-06'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 8, nuevos: 0, minutos: 4 })
+    expect(estudio.anuncio()).toEqual({ repaso: 8, nuevos: 0, minutos: 4, quedan: 48 })
     const tanda = estudio.abrirTanda()!
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda)).toHaveLength(8)
+  })
+
+  it('el anuncio cuenta lo que queda por repasar hoy después de la Tanda, sin los nuevos que esperan', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncio()!.quedan).toBe(7)
+
+    acertarTanda(estudio, abrir(estudio)!)
+    expect(estudio.anuncio()!.quedan).toBe(1)
+
+    acertarTanda(estudio, abrir(estudio)!)
+    expect(estudio.anuncio()).toEqual({ repaso: 1, nuevos: 2, minutos: 2, quedan: 0 })
   })
 
   it('los Flojos van delante de los Sabidos', () => {

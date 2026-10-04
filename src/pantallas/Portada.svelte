@@ -3,6 +3,7 @@
   import { elementoDe } from '../catalogo/catalogo'
   import { etiquetaDePaso, type Estudio } from '../estudio/estudio'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
+  import { textoDelAnuncio } from './anuncio'
   import { fechaLarga } from './fecha'
 
   interface Props {
@@ -89,9 +90,7 @@
   <section class="hoy">
     {#if anuncio}
       <button type="button" class="boton" onclick={alEmpezar}>Tanda de hoy</button>
-      <p>
-        {anuncio.repaso} de repaso · {anuncio.nuevos} {anuncio.nuevos === 1 ? 'nuevo' : 'nuevos'} · unos {anuncio.minutos} min
-      </p>
+      <p>{textoDelAnuncio(anuncio)}</p>
     {:else if proximaVuelta}
       <p><b>Hoy no toca nada.</b> Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
     {/if}

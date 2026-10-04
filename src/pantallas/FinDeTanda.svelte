@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Estudio, Tanda } from '../estudio/estudio'
+  import { textoDelAnuncio } from './anuncio'
   import { fechaLarga } from './fecha'
 
   interface Props {
@@ -28,10 +29,7 @@
   {/if}
 
   {#if anuncio}
-    <p>
-      Queda otra tanda: {anuncio.repaso} de repaso · {anuncio.nuevos}
-      {anuncio.nuevos === 1 ? 'nuevo' : 'nuevos'} · unos {anuncio.minutos} min
-    </p>
+    <p>Queda otra tanda: {textoDelAnuncio(anuncio)}</p>
     <button type="button" class="boton" onclick={alSeguir}>Otra tanda</button>
   {:else if proximaVuelta}
     <p>Hoy no queda nada. Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
