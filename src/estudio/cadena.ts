@@ -1,13 +1,14 @@
 import {
-  elementos,
   esDeTransicion,
+  tiraDe,
   ultimoSubnivel,
   type Clase,
   type Elemento,
   type Subnivel,
+  type Tira,
 } from '../catalogo/catalogo'
-import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo, trozosDeTransicion } from '../catalogo/historias'
-import { excepcionDe, REGLA_DE_CONFIGURACION, reglaDe, reglasContiguas, type Regla } from '../catalogo/reglas'
+import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
+import { excepcionDe, REGLA_DE_CONFIGURACION, reglaDe, type Regla } from '../catalogo/reglas'
 
 export type Azar = () => number
 
@@ -33,7 +34,7 @@ export interface Pregunta {
   dadoPor: 'simbolo' | 'nombre'
   paso: Paso
   fallados: Paso[]
-  opciones: number[]
+  tira: Tira
 }
 
 export interface Correccion {
@@ -45,10 +46,6 @@ export interface Correccion {
   excepcion: string | null
   historias: string[]
 }
-
-const NUMERO_MINIMO = -4
-const NUMERO_MAXIMO = 7
-const RANGO = Array.from({ length: NUMERO_MAXIMO - NUMERO_MINIMO + 1 }, (_, i) => NUMERO_MINIMO + i)
 
 export function barajar<T>(lista: T[], azar: Azar): T[] {
   const copia = [...lista]
@@ -63,34 +60,13 @@ export function pasosDe(elemento: Elemento): Paso[] {
   return PASOS.filter((paso) => paso !== 'configuracion' || !esDeTransicion(elemento))
 }
 
-function numerosVecinos(elemento: Elemento): number[] {
-  if (!esDeTransicion(elemento)) return reglasContiguas(elemento).flatMap((regla) => regla.numeros)
-  const otrosTrozos = trozosDeTransicion().filter((trozo) => !trozo.includes(elemento.simbolo))
-  return elementos()
-    .filter((otro) => otrosTrozos.some((trozo) => trozo.includes(otro.simbolo)))
-    .flatMap((otro) => otro.numeros)
-}
-
-function opcionesDe(elemento: Elemento, azar: Azar): number[] {
-  const verdaderos = elemento.numeros
-  const cuantos = azar() < 0.5 ? 2 : 3
-  const falsos = (numeros: number[]) =>
-    barajar([...new Set(numeros)].filter((numero) => RANGO.includes(numero) && !verdaderos.includes(numero)), azar)
-  const candidatos = [
-    ...falsos(verdaderos.map((numero) => -numero)),
-    ...falsos(numerosVecinos(elemento)),
-    ...falsos(RANGO),
-  ]
-  return [...verdaderos, ...[...new Set(candidatos)].slice(0, cuantos)].sort((a, b) => a - b)
-}
-
 export function preguntar(elemento: Elemento, azar: Azar): Pregunta {
   return {
     elemento,
     dadoPor: azar() < 0.5 ? 'simbolo' : 'nombre',
     paso: 'posicion',
     fallados: [],
-    opciones: opcionesDe(elemento, azar),
+    tira: tiraDe(elemento),
   }
 }
 

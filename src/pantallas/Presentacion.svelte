@@ -5,6 +5,7 @@
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
   import Marcado from './Marcado.svelte'
   import Numeros from './Numeros.svelte'
+  import Tira from './Tira.svelte'
 
   interface Props {
     simbolos: string[]
@@ -38,7 +39,10 @@
 
   <ul class="elementos">
     {#each presentados as elemento (elemento.simbolo)}
-      <li><b>{elemento.simbolo}</b> {elemento.nombre} <Numeros numeros={elemento.numeros} /></li>
+      <li>
+        <span>{elemento.nombre}</span>
+        <Tira {elemento} />
+      </li>
     {/each}
   </ul>
 
@@ -125,12 +129,17 @@
   }
 
   .elementos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+    gap: 2px 18px;
     margin-top: 14px;
     padding: 0;
     list-style: none;
+  }
+
+  .elementos span {
+    color: var(--tenue);
+    font-size: 13px;
   }
 
   .regla {
