@@ -49,19 +49,14 @@ const REGLAS: Regla[] = [
     acabaEn: 'p³',
     puente: '5 electrones: le faltan 3. Los positivos, +3 y +5.',
     numeros: [-3, 3, 5],
-    excepciones: { N: 'además +1.', Bi: 'es metal, sin negativo.' },
+    excepciones: { N: 'además +1.' },
   },
   {
     grupo: 14,
     acabaEn: 'p²',
     puente: '4 electrones: le faltan 4. Los positivos, +2 y +4.',
     numeros: [-4, 2, 4],
-    excepciones: {
-      Si: 'sin +2.',
-      Ge: 'sin negativo.',
-      Sn: 'es metal, sin negativo.',
-      Pb: 'es metal, sin negativo.',
-    },
+    excepciones: { Si: 'sin +2.', Ge: 'sin negativo.' },
   },
   {
     grupo: 13,
@@ -81,8 +76,14 @@ export const REGLAS_GENERALES = [
 export const REGLA_DE_CONFIGURACION =
   'El periodo da la capa, la zona de la tabla da la letra (grupos 1 y 2, s; grupos 13 a 18, p, menos el He, 1s²) y el grupo da los electrones: en s, el número del grupo; en p, el grupo menos 12.'
 
+export const SIN_EL_NEGATIVO = 'Es metal: sin el negativo.'
+
 export function reglaDe(elemento: Elemento): Regla | null {
   return esDeTransicion(elemento) ? null : REGLAS.find((regla) => regla.grupo === elemento.grupo)!
+}
+
+export function pierdeElNegativo(elemento: Elemento): boolean {
+  return elemento.clase === 'metal' && (reglaDe(elemento)?.numeros.some((numero) => numero < 0) ?? false)
 }
 
 export function excepcionDe(elemento: Elemento): string | null {

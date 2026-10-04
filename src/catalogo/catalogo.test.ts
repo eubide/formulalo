@@ -11,7 +11,7 @@ import {
 } from './catalogo'
 import { familiaDe, familiaDeGrupo } from './familias'
 import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from './historias'
-import { excepcionDe, reglaDe } from './reglas'
+import { excepcionDe, pierdeElNegativo, reglaDe } from './reglas'
 
 const estudiados = elementos()
 const deTransicion = estudiados.filter(esDeTransicion)
@@ -115,12 +115,17 @@ describe('Reglas', () => {
     expect(deTransicion.map(reglaDe)).toEqual(deTransicion.map(() => null))
   })
 
-  it('un Elemento lleva excepción justo cuando sus Números de oxidación no son los de su Regla', () => {
+  it('un Elemento lleva excepción justo cuando sus Números de oxidación no son los de su Regla, sin el negativo si es metal', () => {
     for (const elemento of deducibles) {
-      const seAparta = JSON.stringify(elemento.numeros) !== JSON.stringify(reglaDe(elemento)!.numeros)
+      const deLaRegla = reglaDe(elemento)!.numeros.filter((numero) => elemento.clase !== 'metal' || numero >= 0)
+      const seAparta = JSON.stringify(elemento.numeros) !== JSON.stringify(deLaRegla)
 
       expect(excepcionDe(elemento) !== null, elemento.simbolo).toBe(seAparta)
     }
+  })
+
+  it('pierden el negativo de su Regla por ser metales Sn, Pb y Bi', () => {
+    expect(estudiados.filter(pierdeElNegativo).map((elemento) => elemento.simbolo)).toEqual(['Sn', 'Pb', 'Bi'])
   })
 })
 

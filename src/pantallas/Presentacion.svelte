@@ -2,7 +2,7 @@
   import { elementoDe, esDeTransicion } from '../catalogo/catalogo'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
-  import { excepcionDe, reglaDe, REGLAS_GENERALES } from '../catalogo/reglas'
+  import { excepcionDe, pierdeElNegativo, reglaDe, REGLAS_GENERALES, SIN_EL_NEGATIVO } from '../catalogo/reglas'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
   import Cajas from './Cajas.svelte'
   import Marcado from './Marcado.svelte'
@@ -50,12 +50,16 @@
     {@const sinFamilia = presentados
       .filter((elemento) => elemento.grupo === regla.grupo && familiaDe(elemento) === null)
       .map((elemento) => elemento.simbolo)}
+    {@const sinElNegativo = presentados.filter((elemento) => elemento.grupo === regla.grupo && pierdeElNegativo(elemento))}
     <section class="regla">
       <h2>Regla del grupo {regla.grupo}</h2>
       <p>Familia: <b>{familiaDeGrupo(regla.grupo)}</b>{#if sinFamilia.length > 0}, salvo el {sinFamilia.join(', ')}{/if}.</p>
       <p>Su configuración acaba en <b>{regla.acabaEn}</b>.</p>
       <p>{regla.puente}</p>
       <p>Números de oxidación: <Numeros numeros={regla.numeros} /></p>
+      {#each sinElNegativo as elemento (elemento.simbolo)}
+        <p><b>{elemento.simbolo}</b>. {SIN_EL_NEGATIVO}</p>
+      {/each}
     </section>
   {/each}
 

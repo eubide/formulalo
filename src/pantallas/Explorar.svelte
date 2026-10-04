@@ -10,7 +10,7 @@
   import { ultimoElectronDe } from '../catalogo/cajas'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
-  import { excepcionDe, reglaDe } from '../catalogo/reglas'
+  import { excepcionDe, pierdeElNegativo, reglaDe, SIN_EL_NEGATIVO } from '../catalogo/reglas'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
   import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
@@ -115,6 +115,7 @@
           <dt>Regla del grupo {regla.grupo}</dt>
           <dd>
             {regla.puente}
+            {#if pierdeElNegativo(elemento)}<br />{SIN_EL_NEGATIVO}{/if}
             {#if excepcion}<br /><b>{elemento.simbolo} se aparta</b>: {excepcion}{/if}
           </dd>
         {/if}

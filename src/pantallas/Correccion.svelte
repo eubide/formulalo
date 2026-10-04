@@ -1,6 +1,7 @@
 <script lang="ts">
   import { etiquetaDeClase, ultimoSubnivel } from '../catalogo/catalogo'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
+  import { SIN_EL_NEGATIVO } from '../catalogo/reglas'
   import type { Correccion, Pregunta } from '../estudio/estudio'
   import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
@@ -48,6 +49,7 @@
       <p>
         Regla del grupo {correccion.regla.grupo}: {correccion.regla.puente}
         <Numeros numeros={correccion.regla.numeros} />
+        {#if correccion.pierdeElNegativo}<br />{SIN_EL_NEGATIVO}{/if}
       </p>
     {/if}
     {#if correccion.excepcion}

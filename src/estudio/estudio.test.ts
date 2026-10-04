@@ -264,6 +264,17 @@ describe('Corrección', () => {
     expect(correccion!.excepcion).toContain('además −1')
   })
 
+  it('a un metal no le cuenta como excepción perder el negativo de la Regla de su Grupo', () => {
+    const { estudio } = montar()
+    let tanda = hastaPreguntar(estudio, 'Sn')
+    while (tanda.pregunta!.paso !== 'numeros') tanda = estudio.responder(tanda, correctaDe(tanda.pregunta!))
+
+    const { correccion } = estudio.responder(tanda, { paso: 'numeros', numeros: [2] })
+
+    expect(correccion).toMatchObject({ excepcion: null, pierdeElNegativo: true })
+    expect(correccion!.regla!.numeros).toEqual([-4, 2, 4])
+  })
+
   it('en un metal de transición trae la Historia de su trozo en vez de una Regla', () => {
     const { estudio } = montar()
     let tanda = hastaPreguntar(estudio, 'Cu')
