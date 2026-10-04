@@ -9,9 +9,10 @@
   interface Props {
     simbolos: string[]
     alDescartar: () => void
+    alSalir: () => void
   }
 
-  let { simbolos, alDescartar }: Props = $props()
+  let { simbolos, alDescartar, alSalir }: Props = $props()
 
   const presentados = $derived(simbolos.map(elementoDe))
   const casillas = $derived<Record<string, Casilla>>(
@@ -28,7 +29,10 @@
 </script>
 
 <main>
-  <h1>Nuevos: {simbolos.join(', ')}</h1>
+  <header>
+    <h1>Nuevos: {simbolos.join(', ')}</h1>
+    <button type="button" class="salir" onclick={alSalir}>Salir</button>
+  </header>
 
   <Tabla {casillas} />
 
@@ -93,8 +97,16 @@
     padding: 16px 12px 40px;
   }
 
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
   h1 {
-    margin: 0 0 12px;
+    margin: 0;
     font-size: 20px;
   }
 
