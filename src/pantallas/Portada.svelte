@@ -80,20 +80,11 @@
 
   <section class="camino">
     <h2>Camino</h2>
-    <div role="radiogroup" aria-label="Camino">
+    <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
       {#each CAMINOS as opcion (opcion)}
-        <button
-          type="button"
-          role="radio"
-          aria-checked={camino === opcion}
-          class="boton"
-          class:secundario={camino !== opcion}
-          onclick={() => elegir(opcion)}
-        >
-          {etiquetaDeCamino[opcion]}
-        </button>
+        <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
       {/each}
-    </div>
+    </select>
   </section>
 </main>
 
@@ -138,9 +129,12 @@
     padding-left: 18px;
   }
 
-  [role='radiogroup'] {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  select {
+    font: inherit;
+    color: var(--tinta);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    background: var(--papel);
+    padding: 10px 12px;
   }
 </style>
