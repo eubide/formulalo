@@ -548,19 +548,50 @@ describe('Tanda', () => {
     expect(estudio.anuncio()).toEqual({ repaso: 3, nuevos: 5, minutos: 4, quedan: 8 })
   })
 
-  it('los Flojos van delante de los Sabidos', () => {
+  it('con 5 Flojos y Sabidos de sobra por repasar, trae 3 Flojos y 5 Sabidos', () => {
     const { estudio, reloj } = montar()
-    let tanda = abrir(estudio)!
-    while (tanda.pregunta!.elemento.simbolo !== 'Rn') tanda = acertarCadena(estudio, tanda)
-    acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
-    acertarTanda(estudio, abrir(estudio)!)
+    estudiarElDia(estudio, ['He', 'Li', 'Be', 'F', 'O'])
     reloj.dia = '2026-10-06'
-    const sabidosQueTocan = elementos().filter(({ simbolo }) => estudio.entradas()[simbolo]?.estado === 'sabido')
 
-    const preguntados = enLaTanda(estudio.abrirTanda()!)
+    expect(estadosDe(estudio, estudio.abrirTanda()!)).toEqual({ flojo: 3, sabido: 5 })
+  })
 
-    expect(sabidosQueTocan).toHaveLength(12)
-    expect(preguntados).toContain('Rn')
+  it('con menos de 3 Flojos entran todos y el resto son Sabidos', () => {
+    const { estudio, reloj } = montar()
+    estudiarElDia(estudio, ['He', 'Li'])
+    reloj.dia = '2026-10-06'
+
+    const tanda = estudio.abrirTanda()!
+
+    expect(enLaTanda(tanda)).toEqual(expect.arrayContaining(['He', 'Li']))
+    expect(estadosDe(estudio, tanda)).toEqual({ flojo: 2, sabido: 6 })
+  })
+
+  it('sin Sabidos bastantes, la Tanda se llena con más Flojos', () => {
+    const { estudio, reloj } = montar()
+    estudiarElDia(estudio, elementos().map(({ simbolo }) => simbolo).filter((simbolo) => !['He', 'Ne'].includes(simbolo)))
+    reloj.dia = '2026-10-06'
+
+    const tanda = estudio.abrirTanda()!
+
+    expect(enLaTanda(tanda)).toEqual(expect.arrayContaining(['He', 'Ne']))
+    expect(estadosDe(estudio, tanda)).toEqual({ flojo: 6, sabido: 2 })
+  })
+
+  it('con más de 3 Flojos por repasar, no entran siempre los mismos', () => {
+    let semilla = 1
+    const { estudio, reloj } = montar(() => (semilla = (semilla * 9301 + 49297) % 233280) / 233280)
+    estudiarElDia(estudio, ['He', 'Li', 'Be', 'F', 'O'])
+    reloj.dia = '2026-10-06'
+
+    const elegidos = Array.from({ length: 10 }, () =>
+      enLaTanda(estudio.abrirTanda()!)
+        .filter((simbolo) => estudio.entradas()[simbolo].estado === 'flojo')
+        .sort()
+        .join(),
+    )
+
+    expect(new Set(elegidos).size).toBeGreaterThan(1)
   })
 
   it('entre los Sabidos va primero el que más lleva esperando', () => {
@@ -616,6 +647,11 @@ describe('Tanda', () => {
     expect(estudio.proximaVuelta()).toBe('2026-10-06')
     expect(estudio.resumen()).toEqual({ sabidos: 56, flojos: 0, sinVer: 0, total: 56 })
   })
+
+  function estadosDe(estudio: Estudio, tanda: Tanda) {
+    const estados = enLaTanda(tanda).map((simbolo) => estudio.entradas()[simbolo].estado)
+    return { flojo: estados.filter((estado) => estado === 'flojo').length, sabido: estados.filter((estado) => estado === 'sabido').length }
+  }
 
   function acertarTandaYDevolverla(estudio: Estudio): Tanda {
     const tanda = abrir(estudio)!
