@@ -8,6 +8,7 @@
     type Clase,
   } from '../catalogo/catalogo'
   import { ultimoElectronDe } from '../catalogo/cajas'
+  import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
   import { excepcionDe, reglaDe } from '../catalogo/reglas'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
@@ -70,6 +71,8 @@
       <dl>
         <dt>Posición</dt>
         <dd>Grupo {elemento.grupo} · Periodo {elemento.periodo}</dd>
+        <dt>Familia</dt>
+        <dd>{familiaDe(elemento) ?? `Ninguna: no es de los ${familiaDeGrupo(elemento.grupo).toLowerCase()}`}</dd>
         <dt>Clase</dt>
         <dd>{etiquetaDeClase[elemento.clase]}</dd>
         <dt>Configuración</dt>

@@ -16,7 +16,11 @@ _Evitar_: acrónimo, sigla, abreviatura
 
 **Grupo**:
 Columna de la tabla periódica, numerada del 1 al 18.
-_Evitar_: columna, familia
+_Evitar_: columna
+
+**Familia**:
+El nombre de un Grupo: alcalinos el 1, alcalinotérreos el 2, térreos o boroideos el 13, carbonoideos el 14, nitrogenoideos el 15, anfígenos o calcógenos el 16, halógenos el 17 y gases nobles el 18. Los doce metales de transición comparten una sola, y el H no tiene: está en el Grupo 1 sin ser alcalino. Se enseña y nunca se pregunta.
+_Evitar_: grupo, serie, bloque
 
 **Periodo**:
 Fila de la tabla periódica, numerada del 1 al 7.
@@ -85,7 +89,7 @@ Lo que comparten los Elementos de un Grupo y permite deducir sus datos: cómo ac
 _Evitar_: patrón, norma, historia
 
 **Presentación**:
-Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada.
+Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada.
 _Evitar_: tutorial, introducción, lección
 
 **Tanda**:
@@ -132,6 +136,7 @@ _Evitar_: caja, nivel, plazo
 - Un **Elemento** que no es de transición lleva las **Cajas** s y p de su última capa; un metal de transición, la s y la d
 - Un **Elemento** se da unas veces solo por su **Símbolo** y otras solo por su nombre; el otro aparece al acertar su **Posición**
 - Cada **Grupo** tiene una **Regla**; lo que la **Regla** no alcanza lleva una **Historia**
+- Cada **Elemento** lleva la **Familia** de su **Grupo**, salvo el H, que no lleva ninguna
 - Una **Tanda** sale del **Dominio**: repasa los **Elementos** cuyo **Intervalo** se ha cumplido y trae un **Grupo** nuevo por el **Camino** elegido
 - Cada **Elemento** está en el **Dominio** sin ver, **Flojo** o **Sabido**
 

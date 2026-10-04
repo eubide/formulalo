@@ -9,6 +9,7 @@ import {
   ultimoSubnivel,
   type Subnivel,
 } from './catalogo'
+import { familiaDe, familiaDeGrupo } from './familias'
 import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from './historias'
 import { excepcionDe, reglaDe } from './reglas'
 
@@ -119,6 +120,39 @@ describe('Reglas', () => {
 
       expect(excepcionDe(elemento) !== null, elemento.simbolo).toBe(seAparta)
     }
+  })
+})
+
+describe('Familias', () => {
+  it('los 56 Elementos tienen Familia, salvo el H', () => {
+    const sinFamilia = estudiados.filter((elemento) => familiaDe(elemento) === null)
+
+    expect(sinFamilia.map((elemento) => elemento.simbolo)).toEqual(['H'])
+  })
+
+  it('cada Grupo que no es de transición lleva el nombre de su Familia', () => {
+    const porGrupo = Object.fromEntries(deducibles.map((elemento) => [elemento.grupo, familiaDeGrupo(elemento.grupo)]))
+
+    expect(porGrupo).toEqual({
+      1: 'Alcalinos',
+      2: 'Alcalinotérreos',
+      13: 'Térreos o boroideos',
+      14: 'Carbonoideos',
+      15: 'Nitrogenoideos',
+      16: 'Anfígenos o calcógenos',
+      17: 'Halógenos',
+      18: 'Gases nobles',
+    })
+  })
+
+  it('un Elemento con Familia lleva la de su Grupo', () => {
+    for (const elemento of estudiados.filter((elemento) => elemento.simbolo !== 'H')) {
+      expect(familiaDe(elemento), elemento.simbolo).toBe(familiaDeGrupo(elemento.grupo))
+    }
+  })
+
+  it('los doce metales de transición son de la misma Familia', () => {
+    expect(deTransicion.map(familiaDe)).toEqual(deTransicion.map(() => 'Metales de transición'))
   })
 })
 

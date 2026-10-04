@@ -1,5 +1,6 @@
 <script lang="ts">
   import { elementoDe, esDeTransicion } from '../catalogo/catalogo'
+  import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
   import { excepcionDe, reglaDe, REGLAS_GENERALES } from '../catalogo/reglas'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
@@ -27,6 +28,7 @@
   const conExcepcion = $derived(presentados.filter((elemento) => excepcionDe(elemento) !== null))
   const conHistoriaDeSimbolo = $derived(presentados.filter((elemento) => historiaDeSimbolo(elemento) !== null))
   const hayDeducibles = $derived(presentados.some((elemento) => !esDeTransicion(elemento)))
+  const deTransicion = $derived(presentados.find(esDeTransicion))
 </script>
 
 <main class="pantalla">
@@ -39,9 +41,17 @@
     <Tabla {casillas} />
   </div>
 
+  {#if deTransicion}
+    <p>Familia: <b>{familiaDe(deTransicion)}</b>.</p>
+  {/if}
+
   {#each reglas as regla (regla.grupo)}
+    {@const sinFamilia = presentados
+      .filter((elemento) => elemento.grupo === regla.grupo && familiaDe(elemento) === null)
+      .map((elemento) => elemento.simbolo)}
     <section class="regla">
       <h2>Regla del grupo {regla.grupo}</h2>
+      <p>Familia: <b>{familiaDeGrupo(regla.grupo)}</b>{#if sinFamilia.length > 0}, salvo el {sinFamilia.join(', ')}{/if}.</p>
       <p>Su configuración acaba en <b>{regla.acabaEn}</b>.</p>
       <p>{regla.puente}</p>
       <p>Números de oxidación: <Numeros numeros={regla.numeros} /></p>

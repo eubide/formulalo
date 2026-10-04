@@ -1,5 +1,6 @@
 <script lang="ts">
   import { etiquetaDeClase, ultimoSubnivel } from '../catalogo/catalogo'
+  import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import type { Correccion, Pregunta } from '../estudio/estudio'
   import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
@@ -16,6 +17,7 @@
 
   const elemento = $derived(pregunta.elemento)
   const ultimo = $derived(ultimoSubnivel(elemento))
+  const familia = $derived(familiaDe(elemento))
 </script>
 
 <section class="correccion">
@@ -23,6 +25,11 @@
 
   {#if correccion.paso === 'posicion'}
     <p>Está en el grupo {elemento.grupo}, periodo {elemento.periodo}.</p>
+    {#if familia}
+      <p>Familia: <b>{familia}</b>.</p>
+    {:else}
+      <p>No es de los {familiaDeGrupo(elemento.grupo).toLowerCase()}.</p>
+    {/if}
   {:else if correccion.paso === 'clase'}
     <p>Es <b>{etiquetaDeClase[elemento.clase].toLowerCase()}</b>.</p>
   {:else if correccion.paso === 'configuracion' && ultimo}
