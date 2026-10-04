@@ -145,13 +145,6 @@
     font-size: 18px;
   }
 
-  .salir {
-    border: 0;
-    background: none;
-    color: var(--tenue);
-    text-decoration: underline;
-  }
-
   .pasos {
     display: flex;
     flex-wrap: wrap;

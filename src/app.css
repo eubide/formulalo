@@ -54,6 +54,13 @@ button {
   color: var(--acento);
 }
 
+.salir {
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: var(--papel);
+  padding: 6px 12px;
+}
+
 .negativo {
   color: var(--negativo);
 }

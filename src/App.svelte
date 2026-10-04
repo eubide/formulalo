@@ -17,7 +17,11 @@
 {#if !tanda}
   <Portada {estudio} alEmpezar={() => (tanda = estudio.abrirTanda())} />
 {:else if tanda.presentacion}
-  <Presentacion simbolos={tanda.presentacion} alDescartar={() => (tanda = estudio.descartarPresentacion(tanda!))} />
+  <Presentacion
+    simbolos={tanda.presentacion}
+    alDescartar={() => (tanda = estudio.descartarPresentacion(tanda!))}
+    alSalir={() => (tanda = null)}
+  />
 {:else if tanda.pregunta}
   <Pregunta
     {tanda}
