@@ -291,16 +291,30 @@ describe('Números de oxidación', () => {
     expect(estudio.responder(tanda, { paso: 'numeros', numeros: [-2, 0, 2, 4, 6] }).correccion).toMatchObject({ sobraron: [-2] })
   })
 
-  it.each([
-    ['un no metal', 'S', { huecos: 2, electrones: 6 }],
-    ['un metal', 'Na', { huecos: 0, electrones: 1 }],
-    ['un metaloide sin Número de oxidación negativo', 'Ge', { huecos: 4, electrones: 4 }],
-    ['un metal de transición', 'Cu', { huecos: 0, electrones: 7 }],
-    ['un gas noble', 'Xe', { huecos: 0, electrones: 8 }],
-  ])('a %s se le ofrece su Tira para marcar las Paradas', (_, simbolo, tira) => {
+  it('los Distractores prefieren el signo contrario y los números del Grupo contiguo', () => {
     const { estudio } = montar()
 
-    expect(hastaLosNumeros(estudio, simbolo).pregunta!.tira).toEqual(tira)
+    expect(hastaLosNumeros(estudio, 'Na').pregunta!.opciones).toEqual([-1, 1, 2])
+  })
+
+  it.each([0, 0.9])('con el azar en %s, cada Elemento ofrece sus verdaderos y dos o tres Distractores, ordenados', (valor) => {
+    const { estudio } = montar(() => valor)
+    const vistos = new Set<string>()
+
+    for (let tanda = abrir(estudio); tanda; tanda = abrir(estudio)) {
+      while (tanda.pregunta) {
+        const { elemento, opciones } = tanda.pregunta
+        const distractores = opciones.filter((numero) => !elemento.numeros.includes(numero))
+        expect(opciones.filter((numero) => elemento.numeros.includes(numero)), elemento.simbolo).toEqual(elemento.numeros)
+        expect(distractores.length, elemento.simbolo).toBe(valor < 0.5 ? 2 : 3)
+        expect(opciones, elemento.simbolo).toEqual([...new Set(opciones)].sort((a, b) => a - b))
+        expect(opciones.every((numero) => numero >= -4 && numero <= 7), elemento.simbolo).toBe(true)
+        vistos.add(elemento.simbolo)
+        tanda = acertarCadena(estudio, tanda)
+      }
+    }
+
+    expect(vistos.size).toBe(56)
   })
 })
 

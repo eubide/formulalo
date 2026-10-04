@@ -6,7 +6,6 @@ import {
   elementoDe,
   elementos,
   esDeTransicion,
-  tiraDe,
   ultimoSubnivel,
   type Subnivel,
 } from './catalogo'
@@ -100,42 +99,6 @@ describe('Configuración', () => {
     expect(electronesDeValencia(elementoDe('Na'))).toBe(1)
     expect(electronesDeValencia(elementoDe('Pb'))).toBe(4)
     expect(electronesDeValencia(elementoDe('He'))).toBe(2)
-  })
-})
-
-describe('Tira', () => {
-  it('un Elemento que no es de transición lleva los Electrones de su Capa de valencia', () => {
-    for (const elemento of deducibles) {
-      expect(tiraDe(elemento).electrones, elemento.simbolo).toBe(electronesDeValencia(elemento))
-    }
-  })
-
-  it('un metal de transición lleva siete Electrones y ningún Hueco', () => {
-    expect(deTransicion.map(tiraDe)).toEqual(deTransicion.map(() => ({ huecos: 0, electrones: 7 })))
-  })
-
-  it('un metal no lleva Huecos', () => {
-    const metales = estudiados.filter((elemento) => elemento.clase === 'metal')
-
-    expect(metales.filter((elemento) => tiraDe(elemento).huecos > 0)).toEqual([])
-  })
-
-  it('un no metal o un metaloide lleva los Huecos que le faltan para llenar su capa', () => {
-    expect(tiraDe(elementoDe('S'))).toEqual({ huecos: 2, electrones: 6 })
-    expect(tiraDe(elementoDe('Ge'))).toEqual({ huecos: 4, electrones: 4 })
-    expect(tiraDe(elementoDe('B'))).toEqual({ huecos: 5, electrones: 3 })
-    expect(tiraDe(elementoDe('H'))).toEqual({ huecos: 1, electrones: 1 })
-    expect(tiraDe(elementoDe('He'))).toEqual({ huecos: 0, electrones: 2 })
-    expect(tiraDe(elementoDe('Xe'))).toEqual({ huecos: 0, electrones: 8 })
-  })
-
-  it('todos los Números de oxidación de los 56 Elementos se pueden marcar en su Tira', () => {
-    for (const elemento of estudiados) {
-      const { huecos, electrones } = tiraDe(elemento)
-      const fuera = elemento.numeros.filter((numero) => numero < -huecos || numero > electrones)
-
-      expect(fuera, elemento.simbolo).toEqual([])
-    }
   })
 })
 

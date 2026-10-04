@@ -50,23 +50,23 @@ _Evitar_: estructura electrónica, distribución
 La capa más externa de un Elemento que tiene electrones. Cuántos lleva es el puente entre la Configuración y los Números de oxidación: se enseña y no se pregunta.
 _Evitar_: última capa, nivel externo
 
-**Tira**:
-El dibujo de los Números de oxidación de un Elemento: su Símbolo en el centro, sus Huecos a la izquierda y sus electrones a la derecha. Se enseña resuelta, y en la Cadena se responde sobre ella.
-_Evitar_: regla, escala, barra
+**Caja**:
+Subnivel dibujado con sus orbitales: la s es 1 caja, la p son 3 y la d son 5, cada una partida en la mitad de la flecha arriba y la de la flecha abajo. Las Cajas de un Elemento son su Configuración abreviada en una línea y en orden de llenado, y de ellas se deducen sus Números de oxidación.
+_Evitar_: tira, diagrama, casilla
 
 **Hueco**:
-Electrón que le falta a un Elemento para llenar su Capa de valencia. Un metal no lleva Huecos en su Tira.
+Mitad vacía de una Caja que el Elemento llena al coger electrones. Un metal no tiene Huecos.
 _Evitar_: vacante, sitio vacío
-
-**Parada**:
-El sitio de la Tira que corresponde a un Número de oxidación: el Hueco hasta el que llena, el electrón hasta el que usa, o la casilla de su Símbolo si es el 0.
-_Evitar_: marca, tope
 
 ### Estudio
 
 **Alumno**:
 Persona que estudia.
 _Evitar_: usuario, estudiante, jugador
+
+**Distractor**:
+Número de oxidación falso que se ofrece junto a los verdaderos de un Elemento. Sale de las confusiones reales: el signo contrario, o los números del Grupo de al lado o de otro trozo de los metales de transición.
+_Evitar_: falso, opción falsa, señuelo
 
 **Cadena**:
 Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente, y el Elemento solo se da por sabido si se aciertan todos.
@@ -109,11 +109,11 @@ Estado de un Elemento cuya última Cadena se acertó entera. No es definitivo: v
 _Evitar_: dominado, aprendido, acertado
 
 **Explorar**:
-Consulta libre: la tabla periódica con los 56 Elementos rotulados, y al tocar uno se ven todos sus datos, su Tira, su Regla y sus Historias. No pregunta nada ni escribe en el Dominio.
+Consulta libre: la tabla periódica con los 56 Elementos rotulados, y al tocar uno se ven todos sus datos, sus Cajas, su Regla y sus Historias. No pregunta nada ni escribe en el Dominio.
 _Evitar_: ficha, consulta, modo libre
 
 **Señales**:
-El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En la Tira resuelta va en gris lo que el Elemento tiene y no usa. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
+El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En las Cajas, un electrón es una mitad azul con la flecha en blanco, el último electrón va en azul más oscuro, y un Hueco es una flecha roja de puntos. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
 _Evitar_: leyenda, paleta, estilos, colores
 
 **Intervalo**:
@@ -127,8 +127,9 @@ _Evitar_: caja, nivel, plazo
 - Los **Números de oxidación** de un **Elemento** salen de la **Hoja de oxidación** si lo trae, y de la **Tabla del libro** si no
 - La **Posición** da la **Clase** y la **Configuración**; la **Clase** y la **Capa de valencia** dan los **Números de oxidación**. Ese es el orden de la **Cadena**
 - La **Cadena** de los doce metales de transición no lleva **Configuración**
-- Los **Números de oxidación** de un **Elemento** se responden marcando sus **Paradas** en su **Tira**
-- Una **Tira** lleva los electrones de la **Capa de valencia** y los **Huecos** que faltan para llenarla; la de un metal de transición lleva siete electrones
+- Los **Números de oxidación** de un **Elemento** se responden eligiéndolos entre los verdaderos y dos o tres **Distractores**
+- Las **Cajas** de un **Elemento** se enseñan cuando el **Alumno** las pide, sin números, y resueltas en la **Presentación**, la **Corrección** y **Explorar**: una fila por **Número de oxidación**, con una marca bajo cada flecha que suelta o cada **Hueco** que llena
+- Un **Elemento** que no es de transición lleva las **Cajas** s y p de su última capa; un metal de transición, la s y la d
 - Un **Elemento** se da unas veces solo por su **Símbolo** y otras solo por su nombre; el otro aparece al acertar su **Posición**
 - Cada **Grupo** tiene una **Regla**; lo que la **Regla** no alcanza lleva una **Historia**
 - Una **Tanda** sale del **Dominio**: repasa los **Elementos** cuyo **Intervalo** se ha cumplido y trae un **Grupo** nuevo por el **Camino** elegido
@@ -148,9 +149,12 @@ _Evitar_: caja, nivel, plazo
 - "La parte característica" de la Configuración en la idea original es el subnivel donde entra el último electrón.
 - Los doce metales de transición no se preguntan por su Configuración: cinco de ellos, Cr, Cu, Ag, Au y Pt, no siguen la regla de llenado, y en ninguno explica sus Números de oxidación. Se enseña la real.
 - El Cr y el Mn se responden con todos sus Números de oxidación juntos; que unos sean de metal y otros de no metal se cuenta al corregir y no se pregunta. Del B hay que dar los dos, +3 y −3.
-- La Tira de un metal de transición lleva siete electrones, el máximo de la escala, para no delatar su número más alto.
-- El B lleva en su Tira sus 5 Huecos, con la Parada en el 3.º: su −3 no sale de lo que le falta para llenar la capa.
-- Un metaloide lleva Huecos en su Tira aunque no los llene, como el Ge y el Po.
+- Los Números de oxidación se saben de memoria o se deducen rápido: por eso se seleccionan, y las Cajas solo salen cuando el Alumno las pide o falla. Acertar después de pedirlas cuenta como acierto.
+- El número de opciones delata cuántos Números de oxidación tiene un Elemento. Se acepta: dar pistas no es malo.
+- En las Cajas de un metal de transición lo primero que se suelta, la s, no queda al final de la línea. Es el coste de dibujar en orden de llenado.
+- En las Cajas resueltas las flechas se sueltan de derecha a izquierda. Qué electrón de un subnivel se va no significa nada; el orden solo deja las marcas ordenadas.
+- Al B le faltan 5 mitades en su Caja p y solo llena 3: su −3 no sale de lo que le falta para llenar la capa.
+- De los números cuánticos solo se enseñan los del último electrón, y solo en Explorar.
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.
 - Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos, Historias escritas por el Alumno y formular compuestos.

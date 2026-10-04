@@ -1,10 +1,10 @@
 <script lang="ts">
   import { etiquetaDeClase, ultimoSubnivel } from '../catalogo/catalogo'
   import type { Correccion, Pregunta } from '../estudio/estudio'
+  import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
   import Marcado from './Marcado.svelte'
   import Numeros from './Numeros.svelte'
-  import Tira from './Tira.svelte'
 
   interface Props {
     pregunta: Pregunta
@@ -30,7 +30,7 @@
     <Configuracion {elemento} />
     <p>Periodo {elemento.periodo}: capa {ultimo.capa}. Grupo {elemento.grupo}: {ultimo.letra}<sup>{ultimo.electrones}</sup>.</p>
   {:else if correccion.paso === 'numeros'}
-    <Tira {elemento} />
+    <Cajas {elemento} resuelta />
     {#if correccion.faltaron.length > 0}
       <p>Te faltó: <Numeros numeros={correccion.faltaron} /></p>
     {/if}
