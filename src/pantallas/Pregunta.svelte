@@ -115,7 +115,8 @@
     {:else}
       <Configuracion {elemento} />
       {#if !esDeTransicion(elemento)}
-        <p class="puente">Capa de valencia: <b>{electronesDeValencia(elemento)}</b> electrones.</p>
+        {@const deValencia = electronesDeValencia(elemento)}
+        <p class="puente">Capa de valencia: <b>{deValencia}</b> {deValencia === 1 ? 'electrón' : 'electrones'}.</p>
       {/if}
       {#key elemento.simbolo}
         <PasoNumeros
