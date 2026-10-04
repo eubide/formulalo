@@ -9,8 +9,8 @@ function delGrupo(grupo: number): string[] {
     .map((elemento) => elemento.simbolo)
 }
 
-function presentacionDe(simbolos: string[]): string {
-  return pintar(Presentacion, { simbolos, alDescartar: () => {}, alSalir: () => {} })
+function presentacionDe(simbolos: string[], desdeExplorar = false): string {
+  return pintar(Presentacion, { simbolos, desdeExplorar, alDescartar: () => {}, alSalir: () => {} })
 }
 
 function seApartan(texto: string): string | undefined {
@@ -34,6 +34,30 @@ describe('Presentación', () => {
 
   it('la de un Grupo de metales sin negativo en su Regla no habla de perderlo', () => {
     expect(presentacionDe(delGrupo(2))).not.toContain('Es metal')
+  })
+})
+
+describe('Presentación de una Tanda', () => {
+  it('anuncia los Elementos nuevos y se descarta con «Empezar a preguntar»', () => {
+    const texto = presentacionDe(delGrupo(16))
+
+    expect(texto).toMatch(/^Nuevos: O, S, Se, Te, Po Salir /)
+    expect(texto).toMatch(/ Empezar a preguntar$/)
+  })
+})
+
+describe('Presentación abierta desde Explorar', () => {
+  it('trae la Regla del Grupo y «Volver», y no «Empezar a preguntar»', () => {
+    const texto = presentacionDe(delGrupo(16), true)
+
+    expect(texto).toMatch(/^Grupo 16: O, S, Se, Te, Po Salir /)
+    expect(texto).toMatch(/Regla del grupo 16/i)
+    expect(texto).toMatch(/ Volver$/)
+    expect(texto).not.toContain('Empezar a preguntar')
+  })
+
+  it('la de un trozo de metales de transición lleva su Familia en el título', () => {
+    expect(presentacionDe(['Cu', 'Ag', 'Au'], true)).toMatch(/^Metales de transición: Cu, Ag, Au Salir /)
   })
 })
 

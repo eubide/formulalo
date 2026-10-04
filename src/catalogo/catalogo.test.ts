@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { trozosDe, type Camino } from './caminos'
+import { trozoPorGrupoDe, trozosDe, type Camino } from './caminos'
 import {
   configuracionDe,
   electronesDeValencia,
@@ -210,5 +210,11 @@ describe('Caminos', () => {
     expect(trozos[0]).toEqual(['H', 'O'])
     expect(trozos[1]).toEqual(['Li', 'Na', 'K', 'Rb', 'Cs', 'Fr'])
     expect(trozos.at(-1)).toEqual(['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn'])
+  })
+
+  it('por Grupo, un Elemento va con su Grupo entero, y un metal de transición con su trozo', () => {
+    expect(trozoPorGrupoDe(elementoDe('O'))).toEqual(['O', 'S', 'Se', 'Te', 'Po'])
+    expect(trozoPorGrupoDe(elementoDe('Na'))).toEqual(['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr'])
+    expect(trozoPorGrupoDe(elementoDe('Ag'))).toEqual(['Cu', 'Ag', 'Au'])
   })
 })

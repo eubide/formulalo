@@ -11,11 +11,12 @@
 
   interface Props {
     simbolos: string[]
+    desdeExplorar?: boolean
     alDescartar: () => void
     alSalir: () => void
   }
 
-  let { simbolos, alDescartar, alSalir }: Props = $props()
+  let { simbolos, desdeExplorar = false, alDescartar, alSalir }: Props = $props()
 
   const presentados = $derived(simbolos.map(elementoDe))
   const casillas = $derived<Record<string, Casilla>>(
@@ -31,11 +32,14 @@
   const hayDeducibles = $derived(presentados.some((elemento) => !esDeTransicion(elemento)))
   const deTransicion = $derived(presentados.find(esDeTransicion))
   const dibujos = $derived(agrupadosPorCajas(presentados))
+  const titulo = $derived(
+    !desdeExplorar ? 'Nuevos' : deTransicion ? familiaDeGrupo(deTransicion.grupo) : `Grupo ${presentados[0].grupo}`,
+  )
 </script>
 
 <main class="pantalla">
   <header>
-    <h1>Nuevos: {simbolos.join(', ')}</h1>
+    <h1>{titulo}: {simbolos.join(', ')}</h1>
     <button type="button" class="salir" onclick={alSalir}>Salir</button>
   </header>
 
@@ -116,7 +120,7 @@
     </section>
   {/if}
 
-  <button type="button" class="boton" onclick={alDescartar}>Empezar a preguntar</button>
+  <button type="button" class="boton" onclick={alDescartar}>{desdeExplorar ? 'Volver' : 'Empezar a preguntar'}</button>
 </main>
 
 <style>

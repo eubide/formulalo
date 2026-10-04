@@ -1,4 +1,4 @@
-import { elementos } from './catalogo'
+import { elementos, type Elemento } from './catalogo'
 import { trozosDeTransicion } from './historias'
 
 export type Camino = 'gas-noble' | 'uso'
@@ -26,4 +26,8 @@ export function trozosDe(camino: Camino): string[][] {
     ...trozosDeTransicion(),
     grupo(18),
   ]
+}
+
+export function trozoPorGrupoDe(elemento: Elemento): string[] {
+  return trozosDeTransicion().find((trozo) => trozo.includes(elemento.simbolo)) ?? grupo(elemento.grupo)
 }

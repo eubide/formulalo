@@ -1,6 +1,7 @@
 <script lang="ts">
   import { electronesDeValencia, elementoDe, elementos, esDeTransicion, etiquetaDeClase } from '../catalogo/catalogo'
   import { ultimoElectronDe } from '../catalogo/cajas'
+  import { trozoPorGrupoDe } from '../catalogo/caminos'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
   import { excepcionDe, pierdeElNegativo, reglaDe, SIN_EL_NEGATIVO } from '../catalogo/reglas'
@@ -10,6 +11,7 @@
   import Configuracion from './Configuracion.svelte'
   import Marcado from './Marcado.svelte'
   import Numeros from './Numeros.svelte'
+  import Presentacion from './Presentacion.svelte'
 
   interface Props {
     alSalir: () => void
@@ -18,6 +20,7 @@
   let { alSalir }: Props = $props()
 
   let elegido = $state<string | null>(null)
+  let viendoSuGrupo = $state(false)
 
   function conSigno(numero: number): string {
     return numero < 0 ? `−${-numero}` : numero > 0 ? `+${numero}` : '0'
@@ -41,7 +44,16 @@
   )
 </script>
 
-<main class="pantalla">
+{#if elemento && viendoSuGrupo}
+  <Presentacion
+    simbolos={trozoPorGrupoDe(elemento)}
+    desdeExplorar
+    alDescartar={() => (viendoSuGrupo = false)}
+    {alSalir}
+  />
+{/if}
+
+<main class="pantalla" hidden={viendoSuGrupo}>
   <header>
     <h1>Explorar</h1>
     <button type="button" class="salir" onclick={alSalir}>Salir</button>
@@ -69,6 +81,7 @@
             {#if familia}<b>{familia}</b>{:else}No es de los {familiaDeGrupo(elemento.grupo).toLowerCase()}{/if}
             · <b>{etiquetaDeClase[elemento.clase]}</b>
           </p>
+          <button type="button" class="boton secundario" onclick={() => (viendoSuGrupo = true)}>Ver su Grupo</button>
         </div>
       </div>
 
@@ -120,6 +133,11 @@
 </main>
 
 <style>
+  /* El display: grid de .pantalla en pantallas anchas gana al hidden del navegador. */
+  main[hidden] {
+    display: none;
+  }
+
   header {
     display: flex;
     align-items: baseline;
@@ -193,6 +211,10 @@
   .identidad p {
     margin: 2px 0;
     font-size: 18px;
+  }
+
+  .identidad .boton {
+    margin-top: 6px;
   }
 
   dl {
