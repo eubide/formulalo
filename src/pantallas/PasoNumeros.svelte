@@ -39,7 +39,7 @@
     Comprobar
   </button>
   {#if !conAyuda}
-    <button type="button" class="boton secundario" onclick={() => (conAyuda = true)}>No lo sé</button>
+    <button type="button" class="boton secundario" onclick={() => (conAyuda = true)}>Ver sus cajas</button>
   {/if}
 </div>
 
