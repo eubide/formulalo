@@ -15,6 +15,7 @@
   import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
   import Marcado from './Marcado.svelte'
+  import Numeros from './Numeros.svelte'
 
   interface Props {
     alSalir: () => void
@@ -27,7 +28,7 @@
   let elegido = $state<string | null>(null)
 
   function conSigno(numero: number): string {
-    return numero < 0 ? `−${-numero}` : String(numero)
+    return numero < 0 ? `−${-numero}` : numero > 0 ? `+${numero}` : '0'
   }
 
   const elemento = $derived(elegido ? elementoDe(elegido) : null)
@@ -66,29 +67,50 @@
 
   {#if elemento}
     {@const cuanticos = ultimoElectronDe(elemento).cuanticos}
-    <section class="datos">
-      <h2><b>{elemento.simbolo}</b> {elemento.nombre}</h2>
-      <dl>
-        <dt>Posición</dt>
-        <dd>Grupo {elemento.grupo} · Periodo {elemento.periodo}</dd>
-        <dt>Familia</dt>
-        <dd>{familiaDe(elemento) ?? `Ninguna: no es de los ${familiaDeGrupo(elemento.grupo).toLowerCase()}`}</dd>
-        <dt>Clase</dt>
-        <dd>{etiquetaDeClase[elemento.clase]}</dd>
-        <dt>Configuración</dt>
-        <dd>
-          {#key elemento.simbolo}
-            <Configuracion {elemento} />
-          {/key}
-        </dd>
+    {@const familia = familiaDe(elemento)}
+    {@const deValencia = electronesDeValencia(elemento)}
+    <section class="ficha">
+      <div class="cabeza">
+        <h2 class="tesela {elemento.clase}">
+          <small>{elemento.z}</small>
+          <b>{elemento.simbolo}</b>
+          <span>{elemento.nombre}</span>
+        </h2>
+        <div class="identidad">
+          <p><b>Grupo {elemento.grupo}</b> · <b>Periodo {elemento.periodo}</b></p>
+          <p>
+            {#if familia}<b>{familia}</b>{:else}No es de los {familiaDeGrupo(elemento.grupo).toLowerCase()}{/if}
+            · <b>{etiquetaDeClase[elemento.clase]}</b>
+          </p>
+        </div>
+      </div>
+
+      <dl class="en-fila">
+        <div>
+          <dt>Configuración</dt>
+          <dd><Configuracion {elemento} siempreAbreviada /></dd>
+        </div>
         {#if !esDeTransicion(elemento)}
-          <dt>Capa de valencia</dt>
-          <dd>{electronesDeValencia(elemento)} {electronesDeValencia(elemento) === 1 ? 'electrón' : 'electrones'}</dd>
+          <div>
+            <dt>Capa de valencia</dt>
+            <dd><b>{deValencia}</b> {deValencia === 1 ? 'electrón' : 'electrones'}</dd>
+          </div>
         {/if}
+        <div>
+          <dt>Último electrón</dt>
+          <dd class="cuanticos">
+            <span><i>n</i><b>{cuanticos.n}</b></span>
+            <span><i>l</i><b>{cuanticos.l}</b></span>
+            <span><i>m</i><b>{conSigno(cuanticos.m)}</b></span>
+            <span><i>s</i><b>{cuanticos.s > 0 ? '+' : '−'}½</b></span>
+          </dd>
+        </div>
+      </dl>
+
+      <dl>
         <dt>Números de oxidación</dt>
+        <dd class="numeros"><Numeros numeros={elemento.numeros} /></dd>
         <dd><Cajas {elemento} resuelta /></dd>
-        <dt>Último electrón</dt>
-        <dd>n = {cuanticos.n} · l = {cuanticos.l} · m = {conSigno(cuanticos.m)} · s = {cuanticos.s > 0 ? '+' : '−'}½</dd>
         {#if regla}
           <dt>Regla del grupo {regla.grupo}</dt>
           <dd>
@@ -154,35 +176,104 @@
     background: var(--clase-no-metal);
   }
 
-  .datos {
+  .ficha {
     margin-top: 16px;
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    background: var(--papel);
+    padding: 14px;
   }
 
-  h2 {
-    margin: 0 0 8px;
-    font-size: 18px;
+  .cabeza {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .tesela {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 92px;
+    height: 92px;
+    margin: 0;
+    border: 2px solid var(--tinta);
+    border-radius: 8px;
     font-weight: 400;
-    color: var(--tenue);
   }
 
-  h2 b {
-    margin-right: 6px;
-    font-size: 30px;
-    color: var(--tinta);
+  .tesela small {
+    position: absolute;
+    top: 5px;
+    left: 7px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .tesela b {
+    font-size: 38px;
+    line-height: 1;
+  }
+
+  .tesela span {
+    font-size: 12px;
+  }
+
+  .identidad p {
+    margin: 2px 0;
+    font-size: 18px;
   }
 
   dl {
     margin: 0;
   }
 
+  .en-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 28px;
+    margin-top: 6px;
+  }
+
   dt {
-    margin-top: 10px;
+    margin-top: 12px;
     font-size: 12px;
     color: var(--tenue);
   }
 
   dd {
-    margin: 2px 0 0;
+    margin: 3px 0 0;
+  }
+
+  .numeros {
+    font-size: 20px;
+  }
+
+  .cuanticos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .cuanticos span {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    padding: 2px 9px;
+    font-size: 17px;
+  }
+
+  .cuanticos i {
+    font-family: Georgia, serif;
+  }
+
+  .cuanticos b {
+    color: var(--cuantico);
   }
 
   .aviso {

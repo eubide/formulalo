@@ -3,11 +3,14 @@
 
   interface Props {
     elemento: Elemento
+    siempreAbreviada?: boolean
   }
 
-  let { elemento }: Props = $props()
+  let { elemento, siempreAbreviada = false }: Props = $props()
 
-  let abreviada = $state(false)
+  let elegidaAbreviada = $state(false)
+
+  const abreviada = $derived(siempreAbreviada || elegidaAbreviada)
 
   const configuracion = $derived(configuracionDe(elemento))
   const subniveles = $derived(abreviada ? configuracion.trasElGasNoble : configuracion.subniveles)
@@ -20,8 +23,8 @@
   {#each subniveles as { capa, letra, electrones }, i (i)}
     <span class:ultimo={i + desplazamiento === resaltado}>{capa}{letra}<sup>{electrones}</sup></span>
   {/each}
-  {#if configuracion.gasNoble}
-    <button type="button" class="conmutador" onclick={() => (abreviada = !abreviada)}>
+  {#if configuracion.gasNoble && !siempreAbreviada}
+    <button type="button" class="conmutador" onclick={() => (elegidaAbreviada = !elegidaAbreviada)}>
       {abreviada ? 'Entera' : 'Abreviada'}
     </button>
   {/if}
