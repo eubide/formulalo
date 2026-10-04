@@ -27,6 +27,14 @@ describe('Corrección de Clase', () => {
 })
 
 describe('Corrección de Números de oxidación', () => {
+  it('enseña las opciones ofrecidas en su orden, cada una con su marca', () => {
+    const texto = corregida('S', [-2, 1, 2, 4, 6, 7], { paso: 'numeros', numeros: [4, 1, -2, 2] })
+
+    expect(texto).toContain(' −2 ✓ +1 ✗ sobra +2 ✓ +4 ✓ +6 faltaba +7 Regla del grupo 16')
+    expect(texto).not.toContain('Te faltó')
+    expect(texto).not.toContain('No está en tu lista')
+  })
+
   it.each(['Sn', 'Pb', 'Bi'])('del %s dice que pierde el negativo por ser metal, y no que se aparta de la regla', (simbolo) => {
     const texto = corregida(simbolo, [-4, 2, 3, 4, 5], { paso: 'numeros', numeros: [2] })
 

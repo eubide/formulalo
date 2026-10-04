@@ -39,12 +39,20 @@
     <p>Periodo {elemento.periodo}: capa {ultimo.capa}. Grupo {elemento.grupo}: {ultimo.letra}<sup>{ultimo.electrones}</sup>.</p>
   {:else if correccion.paso === 'numeros'}
     <Cajas {elemento} resuelta />
-    {#if correccion.faltaron.length > 0}
-      <p>Te faltó: <Numeros numeros={correccion.faltaron} /></p>
-    {/if}
-    {#if correccion.sobraron.length > 0}
-      <p>No está en tu lista: <Numeros numeros={correccion.sobraron} /></p>
-    {/if}
+    <ul class="opciones">
+      {#each pregunta.opciones as numero (numero)}
+        <li>
+          <Numeros numeros={[numero]} />
+          {#if correccion.sobraron.includes(numero)}
+            <span class="fallo">✗ sobra</span>
+          {:else if correccion.faltaron.includes(numero)}
+            <span class="fallo">faltaba</span>
+          {:else if elemento.numeros.includes(numero)}
+            <span class="acierto">✓</span>
+          {/if}
+        </li>
+      {/each}
+    </ul>
     {#if correccion.regla}
       <p>
         Regla del grupo {correccion.regla.grupo}: {correccion.regla.puente}
@@ -83,6 +91,23 @@
 
   p {
     margin: 4px 0;
+  }
+
+  .opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin: 8px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fallo {
+    color: var(--fallo);
+  }
+
+  .acierto {
+    color: var(--acierto);
   }
 
   .historia {
