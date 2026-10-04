@@ -13,9 +13,7 @@ import {
   montar,
   sigueLaMismaCadena,
 } from './ayudantes'
-import { almacenEnMemoria, crearEstudio, type Tanda } from './estudio'
-
-type Estudio = ReturnType<typeof crearEstudio>
+import { almacenEnMemoria, type Estudio, type Tanda } from './estudio'
 
 const GRUPO_18 = ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn']
 const GRUPO_1 = ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr']
@@ -350,6 +348,26 @@ describe('Fallo en la Cadena', () => {
       expect(enLaTanda(despues)).not.toContain(simbolo)
     },
   )
+
+  it('un Elemento Flojo que al día siguiente falla solo la Clase queda Sabido con Intervalo de 1 día', () => {
+    const { estudio, reloj } = montar()
+    const primera = abrir(estudio)!
+    const { simbolo } = primera.pregunta!.elemento
+    fallar(estudio, primera, ['posicion'])
+    reloj.dia = '2026-10-06'
+    let tanda = abrir(estudio)!
+    while (tanda.pregunta!.elemento.simbolo !== simbolo) tanda = acertarCadena(estudio, tanda)
+
+    fallar(estudio, tanda, ['clase'])
+
+    expect(estudio.entradas()[simbolo]).toEqual({
+      estado: 'sabido',
+      intervalo: 1,
+      vuelve: '2026-10-07',
+      fallos: 1,
+      pasosFallados: ['clase'],
+    })
+  })
 
   it.each([
     ['la Clase', 'sabido', 'clase'],
