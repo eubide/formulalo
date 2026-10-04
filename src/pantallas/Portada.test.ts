@@ -22,7 +22,7 @@ describe('Portada', () => {
 
   it('con un Elemento visto ya no da la bienvenida', () => {
     const { estudio } = montar()
-    estudio.descartarPresentacion(estudio.abrirTanda()!)
+    estudio.descartarPresentacion(estudio.abrirTanda())
 
     const texto = pintarPortada(estudio)
 
@@ -50,7 +50,7 @@ describe('Portada', () => {
 
   it('al final ofrece guardar y recuperar una copia, sin pedir ni avisar nada hasta que se elige un archivo', () => {
     const { estudio } = montar()
-    const tanda = abrir(estudio)!
+    const tanda = abrir(estudio)
     fallar(estudio, tanda, ['clase'])
 
     expect(pintarPortada(estudio)).toMatch(/Dónde se rompe la cadena .*: Clase Guardar copia Recuperar copia$/)
@@ -76,9 +76,18 @@ describe('Portada', () => {
     expect(texto).not.toContain('quedan')
   })
 
+  it('sin nada que toque dice cuándo vuelve lo siguiente y ofrece una Tanda de práctica', () => {
+    const { estudio } = montar()
+    estudiarElDia(estudio)
+
+    expect(pintarPortada(estudio)).toContain(
+      'Hoy no toca nada. Lo siguiente vuelve el martes, 6 de octubre. Tanda de práctica 8 de práctica · unos 4 min Explorar',
+    )
+  })
+
   it('lista el paso fallado en «Dónde se rompe la cadena» aunque el Elemento esté Sabido', () => {
     const { estudio } = montar()
-    const tanda = abrir(estudio)!
+    const tanda = abrir(estudio)
     const { simbolo, nombre } = tanda.pregunta!.elemento
     fallar(estudio, tanda, ['clase'])
 

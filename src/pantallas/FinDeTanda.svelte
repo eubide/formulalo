@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Estudio, Tanda } from '../estudio/estudio'
   import Tabla from '../tabla/Tabla.svelte'
-  import { textoDelAnuncio } from './anuncio'
+  import { textoDelAnuncio, tocaAlgo } from './anuncio'
   import { casillasDelDominio } from './casillas'
   import { fechaLarga } from './fecha'
 
@@ -59,11 +59,13 @@
   </div>
 
   <section>
-    {#if anuncio}
+    {#if tocaAlgo(anuncio)}
       <p>Queda otra tanda: {textoDelAnuncio(anuncio)}</p>
       <button type="button" class="boton" onclick={alSeguir}>Otra tanda</button>
     {:else if proximaVuelta}
       <p>Hoy no queda nada. Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
+      <button type="button" class="boton" onclick={alSeguir}>Tanda de práctica</button>
+      <p>{textoDelAnuncio(anuncio)}</p>
     {/if}
     <button type="button" class="boton secundario" onclick={alVolver}>Portada</button>
   </section>

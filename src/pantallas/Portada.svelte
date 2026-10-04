@@ -3,7 +3,7 @@
   import { elementoDe } from '../catalogo/catalogo'
   import { etiquetaDePaso, type Estudio } from '../estudio/estudio'
   import Tabla from '../tabla/Tabla.svelte'
-  import { textoDelAnuncio } from './anuncio'
+  import { textoDelAnuncio, tocaAlgo } from './anuncio'
   import { casillasDelDominio } from './casillas'
   import { fechaLarga } from './fecha'
 
@@ -82,12 +82,13 @@
   </header>
 
   <section class="hoy">
-    {#if anuncio}
+    {#if tocaAlgo(anuncio)}
       <button type="button" class="boton" onclick={alEmpezar}>Tanda de hoy</button>
-      <p>{textoDelAnuncio(anuncio)}</p>
     {:else if proximaVuelta}
       <p><b>Hoy no toca nada.</b> Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
+      <button type="button" class="boton" onclick={alEmpezar}>Tanda de práctica</button>
     {/if}
+    <p>{textoDelAnuncio(anuncio)}</p>
     <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar</button>
   </section>
 

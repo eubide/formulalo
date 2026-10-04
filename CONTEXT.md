@@ -93,8 +93,12 @@ Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla 
 _Evitar_: tutorial, introducción, lección
 
 **Tanda**:
-Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos y otros que toca repasar hoy. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero. Lo que toca repasar ocupa los sitios que sobran: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos. Los doce metales de transición llegan en cinco trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; y Pt.
+Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar hoy y, si sobra sitio, otros de Práctica. Se puede pedir siempre. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero. Lo que toca repasar ocupa los sitios que sobran: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos. La Práctica llena lo que quede. Los doce metales de transición llegan en cinco trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; y Pt.
 _Evitar_: ronda, sesión, lote, repaso
+
+**Práctica**:
+Los Elementos que entran en una Tanda antes de que les toque volver, cuando lo nuevo y lo que toca hoy no la llenan: los Flojos fallados hoy, dentro del tope de 3, y los Sabidos, del Intervalo más corto al más largo. Acertar un Sabido de Práctica no cambia su Intervalo ni el día en que vuelve.
+_Evitar_: repaso adelantado, extra, entrenamiento
 
 **Corrección**:
 Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
@@ -109,7 +113,7 @@ Estado de un Elemento en cuya última Cadena se falló la Posición o los Númer
 _Evitar_: débil, pendiente, fallado
 
 **Sabido**:
-Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo.
+Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo, también en la Práctica. Un Flojo acertado queda Sabido para mañana, toque o no.
 _Evitar_: dominado, aprendido, acertado
 
 **Explorar**:
@@ -121,7 +125,7 @@ El código de color, uno por significado. En los Números de oxidación, rojo es
 _Evitar_: leyenda, paleta, estilos, colores
 
 **Intervalo**:
-Los días que tarda en volver un Elemento Sabido: 1, 3, 7, 14 y 30. Solo crece cuando la Cadena se acierta entera: con un fallo solo de Clase o de Configuración se queda como estaba, o en 1 día si el Elemento no tenía ninguno. Un fallo en la Posición o en los Números de oxidación devuelve el Elemento al día siguiente.
+Los días que tarda en volver un Elemento Sabido: 1, 3, 7, 14 y 30. Solo crece cuando al Elemento le toca y la Cadena se acierta entera: en la Práctica, o con un fallo solo de Clase o de Configuración, se queda como estaba, o en 1 día si el Elemento no tenía ninguno. Un fallo en la Posición o en los Números de oxidación devuelve el Elemento al día siguiente.
 _Evitar_: caja, nivel, plazo
 
 ## Relaciones
@@ -137,7 +141,7 @@ _Evitar_: caja, nivel, plazo
 - Un **Elemento** se da unas veces solo por su **Símbolo** y otras solo por su nombre; el otro aparece al acertar su **Posición**
 - Cada **Grupo** tiene una **Regla**; lo que la **Regla** no alcanza lleva una **Historia**
 - Cada **Elemento** lleva la **Familia** de su **Grupo**, salvo el H, que no lleva ninguna
-- Una **Tanda** sale del **Dominio**: repasa los **Elementos** cuyo **Intervalo** se ha cumplido y trae un **Grupo** nuevo por el **Camino** elegido
+- Una **Tanda** sale del **Dominio**: trae un **Grupo** nuevo por el **Camino** elegido, repasa los **Elementos** cuyo **Intervalo** se ha cumplido y se llena con **Práctica**
 - Cada **Elemento** está en el **Dominio** sin ver, **Flojo** o **Sabido**
 
 ## Ambigüedades resueltas
