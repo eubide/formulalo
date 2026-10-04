@@ -1,0 +1,63 @@
+:root {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #1f2933;
+  background: #f7f7f5;
+
+  --tinta: #1f2933;
+  --tenue: #6b7280;
+  --borde: #d5d8dc;
+  --papel: #ffffff;
+  --acento: #3f3d56;
+
+  /* Señales: un color, un significado. El rojo y el azul son solo el signo de un Número de oxidación,
+     así que el fallo es naranja y la Clase no usa ninguno de los cinco. */
+  --negativo: #c62828;
+  --positivo: #1565c0;
+  --ultimo-electron: #ffe066;
+  --acierto: #2e7d32;
+  --acierto-fondo: #dff0e0;
+  --fallo: #d9600a;
+  --fallo-fondo: #fde8d4;
+
+  --clase-metal: #cdbdea;
+  --clase-metaloide: #dcc7a6;
+  --clase-no-metal: #a6dcd4;
+  --fuera: #e7e7e4;
+}
+
+body {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.boton {
+  border: 1px solid var(--acento);
+  background: var(--acento);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 600;
+}
+
+.boton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.boton.secundario {
+  background: transparent;
+  color: var(--acento);
+}
+
+.negativo {
+  color: var(--negativo);
+}
+
+.positivo {
+  color: var(--positivo);
+}
