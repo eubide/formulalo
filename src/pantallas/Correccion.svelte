@@ -4,6 +4,7 @@
   import Configuracion from './Configuracion.svelte'
   import Marcado from './Marcado.svelte'
   import Numeros from './Numeros.svelte'
+  import Tira from './Tira.svelte'
 
   interface Props {
     pregunta: Pregunta
@@ -29,7 +30,7 @@
     <Configuracion {elemento} />
     <p>Periodo {elemento.periodo}: capa {ultimo.capa}. Grupo {elemento.grupo}: {ultimo.letra}<sup>{ultimo.electrones}</sup>.</p>
   {:else if correccion.paso === 'numeros'}
-    <p>Sus números de oxidación: <Numeros numeros={elemento.numeros} /></p>
+    <Tira {elemento} />
     {#if correccion.faltaron.length > 0}
       <p>Te faltó: <Numeros numeros={correccion.faltaron} /></p>
     {/if}

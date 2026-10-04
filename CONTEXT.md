@@ -50,6 +50,18 @@ _Evitar_: estructura electrónica, distribución
 La capa más externa de un Elemento que tiene electrones. Cuántos lleva es el puente entre la Configuración y los Números de oxidación: se enseña y no se pregunta.
 _Evitar_: última capa, nivel externo
 
+**Tira**:
+El dibujo de los Números de oxidación de un Elemento: su Símbolo en el centro, sus Huecos a la izquierda y sus electrones a la derecha. Se enseña resuelta, y en la Cadena se responde sobre ella.
+_Evitar_: regla, escala, barra
+
+**Hueco**:
+Electrón que le falta a un Elemento para llenar su Capa de valencia. Un metal no lleva Huecos en su Tira.
+_Evitar_: vacante, sitio vacío
+
+**Parada**:
+El sitio de la Tira que corresponde a un Número de oxidación: el Hueco hasta el que llena, el electrón hasta el que usa, o la casilla de su Símbolo si es el 0.
+_Evitar_: marca, tope
+
 ### Estudio
 
 **Alumno**:
@@ -59,10 +71,6 @@ _Evitar_: usuario, estudiante, jugador
 **Cadena**:
 Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente, y el Elemento solo se da por sabido si se aciertan todos.
 _Evitar_: secuencia, ficha, pregunta
-
-**Distractor**:
-Número de oxidación falso que se ofrece junto a los verdaderos de un Elemento. Sale de las confusiones reales: el signo contrario o los números del Grupo de al lado.
-_Evitar_: falso, opción falsa, señuelo
 
 **Camino**:
 El orden en que llegan los Grupos al aprender. Hay dos y se elige: desde el gas noble (18, 1, 2, 17, 16, 15, 14, 13 y los metales de transición), que es el que viene puesto, o por uso al formular (el H y el O, y después 1, 2, 17, 16, 15, 14, 13, los metales de transición y el 18).
@@ -101,7 +109,7 @@ Estado de un Elemento cuya última Cadena se acertó entera. No es definitivo: v
 _Evitar_: dominado, aprendido, acertado
 
 **Señales**:
-El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
+El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En la Tira resuelta va en gris lo que el Elemento tiene y no usa. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
 _Evitar_: leyenda, paleta, estilos, colores
 
 **Intervalo**:
@@ -115,7 +123,8 @@ _Evitar_: caja, nivel, plazo
 - Los **Números de oxidación** de un **Elemento** salen de la **Hoja de oxidación** si lo trae, y de la **Tabla del libro** si no
 - La **Posición** da la **Clase** y la **Configuración**; la **Clase** y la **Capa de valencia** dan los **Números de oxidación**. Ese es el orden de la **Cadena**
 - La **Cadena** de los doce metales de transición no lleva **Configuración**
-- Los **Números de oxidación** de un **Elemento** se responden eligiéndolos entre los verdaderos y dos o tres **Distractores**
+- Los **Números de oxidación** de un **Elemento** se responden marcando sus **Paradas** en su **Tira**
+- Una **Tira** lleva los electrones de la **Capa de valencia** y los **Huecos** que faltan para llenarla; la de un metal de transición lleva siete electrones
 - Un **Elemento** se da unas veces solo por su **Símbolo** y otras solo por su nombre; el otro aparece al acertar su **Posición**
 - Cada **Grupo** tiene una **Regla**; lo que la **Regla** no alcanza lleva una **Historia**
 - Una **Tanda** sale del **Dominio**: repasa los **Elementos** cuyo **Intervalo** se ha cumplido y trae un **Grupo** nuevo por el **Camino** elegido
@@ -135,7 +144,9 @@ _Evitar_: caja, nivel, plazo
 - "La parte característica" de la Configuración en la idea original es el subnivel donde entra el último electrón.
 - Los doce metales de transición no se preguntan por su Configuración: cinco de ellos, Cr, Cu, Ag, Au y Pt, no siguen la regla de llenado, y en ninguno explica sus Números de oxidación. Se enseña la real.
 - El Cr y el Mn se responden con todos sus Números de oxidación juntos; que unos sean de metal y otros de no metal se cuenta al corregir y no se pregunta. Del B hay que dar los dos, +3 y −3.
-- El número de opciones delata cuántos Números de oxidación tiene un Elemento. Se acepta: dar pistas no es malo.
+- La Tira de un metal de transición lleva siete electrones, el máximo de la escala, para no delatar su número más alto.
+- El B lleva en su Tira sus 5 Huecos, con la Parada en el 3.º: su −3 no sale de lo que le falta para llenar la capa.
+- Un metaloide lleva Huecos en su Tira aunque no los llene, como el Ge y el Po.
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.
 - Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos, Historias escritas por el Alumno y formular compuestos.

@@ -88,9 +88,3 @@ export function reglaDe(elemento: Elemento): Regla | null {
 export function excepcionDe(elemento: Elemento): string | null {
   return reglaDe(elemento)?.excepciones[elemento.simbolo] ?? null
 }
-
-export function reglasContiguas(elemento: Elemento): Regla[] {
-  const porGrupo = [...REGLAS].sort((a, b) => a.grupo - b.grupo)
-  const indice = porGrupo.findIndex((regla) => regla.grupo === elemento.grupo)
-  return indice < 0 ? [] : [porGrupo[indice - 1], porGrupo[indice + 1]].filter(Boolean)
-}

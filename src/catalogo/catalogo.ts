@@ -22,6 +22,11 @@ export interface Elemento {
   fuente: 'hoja' | 'libro'
 }
 
+export interface Tira {
+  huecos: number
+  electrones: number
+}
+
 export interface Configuracion {
   subniveles: Subnivel[]
   gasNoble: string | null
@@ -68,4 +73,13 @@ export function electronesDeValencia(elemento: Elemento): number {
   return configuracionDe(elemento)
     .subniveles.filter((subnivel) => subnivel.capa === elemento.periodo)
     .reduce((suma, subnivel) => suma + subnivel.electrones, 0)
+}
+
+const ELECTRONES_DE_UN_METAL_DE_TRANSICION = 7
+
+export function tiraDe(elemento: Elemento): Tira {
+  if (esDeTransicion(elemento)) return { huecos: 0, electrones: ELECTRONES_DE_UN_METAL_DE_TRANSICION }
+  const electrones = electronesDeValencia(elemento)
+  const capaLlena = elemento.periodo === 1 ? 2 : 8
+  return { huecos: elemento.clase === 'metal' ? 0 : capaLlena - electrones, electrones }
 }
