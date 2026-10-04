@@ -52,6 +52,11 @@ const ELEMENTOS_POR_TANDA = 8
 const MINUTOS_DE_UNA_TANDA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
 
+// Un Flojo sin fallos solo puede venir de una Presentación: todavía no se le ha preguntado nada.
+function sinPreguntar(entrada: Entrada): boolean {
+  return entrada.estado === 'flojo' && entrada.fallos === 0
+}
+
 function queTocan(entradas: Record<string, Entrada>, hoy: string): string[] {
   const tocan = elementos()
     .map((elemento) => elemento.simbolo)
@@ -71,8 +76,7 @@ function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string
   const sinVer = trozosDe(camino)
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .find((trozo) => trozo.length > 0)
-  // Un Flojo sin fallos solo puede venir de una Presentación: todavía no se le ha preguntado nada.
-  const quedaAlgoSinPreguntar = Object.values(entradas).some((entrada) => entrada.estado === 'flojo' && entrada.fallos === 0)
+  const quedaAlgoSinPreguntar = Object.values(entradas).some(sinPreguntar)
   const presentacion = huecos > 0 && sinVer && !quedaAlgoSinPreguntar ? sinVer : null
   if (repaso.length === 0 && !presentacion) return null
   return { repaso, presentacion, nuevos: presentacion?.slice(0, huecos) ?? [] }
@@ -129,12 +133,14 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
     },
 
     anuncio(): Anuncio | null {
-      const composicion = componer(dominio.entradas(), dominio.camino(), hoy())
+      const entradas = dominio.entradas()
+      const composicion = componer(entradas, dominio.camino(), hoy())
       if (!composicion) return null
       const cuantos = composicion.repaso.length + composicion.nuevos.length
+      const yaPreguntados = composicion.repaso.filter((simbolo) => !sinPreguntar(entradas[simbolo])).length
       return {
-        repaso: composicion.repaso.length,
-        nuevos: composicion.nuevos.length,
+        repaso: yaPreguntados,
+        nuevos: cuantos - yaPreguntados,
         minutos: Math.max(1, Math.round((cuantos * MINUTOS_DE_UNA_TANDA_LLENA) / ELEMENTOS_POR_TANDA)),
       }
     },
