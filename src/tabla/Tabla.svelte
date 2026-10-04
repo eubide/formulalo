@@ -118,11 +118,21 @@
     font-size: clamp(9px, calc(var(--lado) * 0.4), 18px);
   }
 
+  /* Un nombre que no cabe tras el ::before salta a una segunda línea, que queda fuera de la altura. */
   .casilla small {
-    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    height: 1lh;
     overflow: hidden;
-    font-size: clamp(5px, calc(var(--lado) * 0.17), 9px);
+    font-size: 9px;
     white-space: nowrap;
+  }
+
+  .casilla small::before {
+    content: '';
+    height: 100%;
   }
 
   .fuera {
