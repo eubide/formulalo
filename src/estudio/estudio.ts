@@ -32,6 +32,7 @@ export interface Tanda {
 export interface Anuncio {
   repaso: number
   nuevos: number
+  practica: number
   minutos: number
   quedan: number
 }
@@ -50,13 +51,14 @@ export interface Resumen {
 
 interface Composicion {
   repaso: string[]
+  practica: string[]
   presentacion: string[] | null
   nuevos: string[]
   quedan: number
 }
 
 const ELEMENTOS_POR_TANDA = 8
-const NUEVOS_CON_SITIO_GUARDADO = 2
+const FLOJOS_POR_TANDA = 3
 const MINUTOS_DE_UNA_TANDA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
 const MILISEGUNDOS_DE_UN_DIA = 86_400_000
@@ -66,32 +68,49 @@ function sinPreguntar(entrada: Entrada): boolean {
   return entrada.estado === 'flojo' && entrada.fallos === 0
 }
 
-function queTocan(entradas: Record<string, Entrada>, hoy: string): string[] {
-  const tocan = elementos()
-    .map((elemento) => elemento.simbolo)
-    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]) && entradas[simbolo].vuelve <= hoy)
-  const flojos = tocan
-    .filter((simbolo) => entradas[simbolo].estado === 'flojo')
-    .sort((a, b) => entradas[b].fallos - entradas[a].fallos)
-  const sabidos = tocan
-    .filter((simbolo) => entradas[simbolo].estado === 'sabido')
-    .sort((a, b) => entradas[a].vuelve.localeCompare(entradas[b].vuelve))
-  return [...flojos, ...sabidos]
-}
-
-function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string): Composicion | null {
+function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string, azar: Azar): Composicion {
   const esperan = Object.keys(entradas).filter((simbolo) => sinPreguntar(entradas[simbolo]))
   const sinVer = trozosDe(camino)
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .find((trozo) => trozo.length > 0)
   const presentacion = esperan.length === 0 && sinVer ? sinVer : null
-  const porPreguntar = presentacion ?? esperan
-  const guardados = Math.min(NUEVOS_CON_SITIO_GUARDADO, porPreguntar.length)
-  const tocan = queTocan(entradas, hoy)
-  const repaso = tocan.slice(0, ELEMENTOS_POR_TANDA - guardados)
-  const nuevos = porPreguntar.slice(0, ELEMENTOS_POR_TANDA - repaso.length)
-  if (repaso.length === 0 && nuevos.length === 0) return null
-  return { repaso, presentacion, nuevos, quedan: tocan.length - repaso.length }
+  const nuevos = (presentacion ?? esperan).slice(0, ELEMENTOS_POR_TANDA)
+  const sitios = ELEMENTOS_POR_TANDA - nuevos.length
+
+  const preguntados = elementos()
+    .map((elemento) => elemento.simbolo)
+    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]))
+  const toca = (simbolo: string) => entradas[simbolo].vuelve <= hoy
+  const esFlojo = (simbolo: string) => entradas[simbolo].estado === 'flojo'
+  const flojos = barajar(preguntados.filter(esFlojo), azar)
+  const sabidos = preguntados.filter((simbolo) => !esFlojo(simbolo))
+  const queTocan = preguntados.filter(toca)
+  const flojosDeHoy = flojos.filter((simbolo) => !toca(simbolo))
+  const deIntervaloMasCorto = barajar(
+    sabidos.filter((simbolo) => !toca(simbolo)),
+    azar,
+  ).sort((a, b) => entradas[a].intervalo - entradas[b].intervalo)
+
+  const elegidos: string[] = []
+  const coger = (candidatos: string[], tope = sitios) => {
+    const libres = Math.min(tope, sitios - elegidos.length)
+    elegidos.push(...candidatos.filter((simbolo) => !elegidos.includes(simbolo)).slice(0, Math.max(0, libres)))
+  }
+  coger(flojos.filter(toca), FLOJOS_POR_TANDA)
+  coger(sabidos.filter(toca).sort((a, b) => entradas[a].vuelve.localeCompare(entradas[b].vuelve)))
+  coger(flojosDeHoy, FLOJOS_POR_TANDA - elegidos.filter(esFlojo).length)
+  coger(deIntervaloMasCorto)
+  coger(flojos.filter(toca))
+  coger(flojosDeHoy)
+
+  const repaso = elegidos.filter(toca)
+  return {
+    repaso,
+    practica: elegidos.filter((simbolo) => !toca(simbolo)),
+    presentacion,
+    nuevos,
+    quedan: queTocan.length - repaso.length,
+  }
 }
 
 export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
@@ -143,15 +162,15 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
       return { sabidos, flojos: estados.length - sabidos, sinVer: total - estados.length, total }
     },
 
-    anuncio(): Anuncio | null {
-      const composicion = componer(dominio.entradas(), dominio.camino(), hoy())
-      if (!composicion) return null
-      const cuantos = composicion.repaso.length + composicion.nuevos.length
+    anuncio(): Anuncio {
+      const { repaso, nuevos, practica, quedan } = componer(dominio.entradas(), dominio.camino(), hoy(), azar)
+      const cuantos = repaso.length + nuevos.length + practica.length
       return {
-        repaso: composicion.repaso.length,
-        nuevos: composicion.nuevos.length,
+        repaso: repaso.length,
+        nuevos: nuevos.length,
+        practica: practica.length,
         minutos: Math.max(1, Math.round((cuantos * MINUTOS_DE_UNA_TANDA_LLENA) / ELEMENTOS_POR_TANDA)),
-        quedan: composicion.quedan,
+        quedan,
       }
     },
 
@@ -170,14 +189,13 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
       }))
     },
 
-    abrirTanda(): Tanda | null {
-      const composicion = componer(dominio.entradas(), dominio.camino(), hoy())
-      if (!composicion) return null
+    abrirTanda(): Tanda {
+      const { presentacion, repaso, nuevos, practica } = componer(dominio.entradas(), dominio.camino(), hoy(), azar)
       const tanda: Tanda = {
-        presentacion: composicion.presentacion,
+        presentacion,
         pregunta: null,
         correccion: null,
-        pendientes: barajar([...composicion.repaso, ...composicion.nuevos], azar),
+        pendientes: barajar([...repaso, ...nuevos, ...practica], azar),
         rotulados: [],
         sabidos: [],
         vuelven: [],

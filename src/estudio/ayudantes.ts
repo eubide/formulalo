@@ -51,9 +51,9 @@ export function fallar(estudio: Estudio, tanda: Tanda, pasos: Paso[]): Tanda {
   return actual
 }
 
-export function abrir(estudio: Estudio): Tanda | null {
+export function abrir(estudio: Estudio): Tanda {
   const tanda = estudio.abrirTanda()
-  return tanda?.presentacion ? estudio.descartarPresentacion(tanda) : tanda
+  return tanda.presentacion ? estudio.descartarPresentacion(tanda) : tanda
 }
 
 export function acertarTanda(estudio: Estudio, tanda: Tanda): Tanda {
@@ -62,6 +62,13 @@ export function acertarTanda(estudio: Estudio, tanda: Tanda): Tanda {
   return actual
 }
 
-export function estudiarElDia(estudio: Estudio) {
-  for (let tanda = abrir(estudio); tanda; tanda = abrir(estudio)) acertarTanda(estudio, tanda)
+export function estudiarElDia(estudio: Estudio, fallados: string[] = []) {
+  while (estudio.anuncio().repaso + estudio.anuncio().nuevos > 0) {
+    let tanda = abrir(estudio)
+    while (tanda.pregunta) {
+      const { simbolo } = tanda.pregunta.elemento
+      const falla = fallados.includes(simbolo) && !tanda.vuelven.includes(simbolo)
+      tanda = fallar(estudio, tanda, falla ? ['numeros'] : [])
+    }
+  }
 }

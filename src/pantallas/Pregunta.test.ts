@@ -7,7 +7,7 @@ vi.stubGlobal('matchMedia', () => ({ matches: false }))
 
 function enElUltimoPaso(): Tanda {
   const estudio = crearEstudio(almacenEnMemoria(), () => '2026-10-05', () => 0)
-  const tanda = estudio.descartarPresentacion(estudio.abrirTanda()!)
+  const tanda = estudio.descartarPresentacion(estudio.abrirTanda())
   return { ...tanda, pregunta: { ...tanda.pregunta!, paso: 'numeros' } }
 }
 

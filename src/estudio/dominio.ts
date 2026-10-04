@@ -144,7 +144,8 @@ export function crearDominio(almacen: Almacen, hoy: () => string) {
 
     anotar(simbolo: string, pasosFallados: Paso[]): Estado {
       const registro = leer()
-      const { intervalo = 0, fallos = 0 } = registro.elementos[simbolo] ?? {}
+      const anterior = registro.elementos[simbolo]
+      const { intervalo = 0, fallos = 0 } = anterior ?? {}
       if (pasosFallados.some((paso) => PASOS_QUE_HAY_QUE_SABER.includes(paso))) {
         registro.elementos[simbolo] = {
           estado: 'flojo',
@@ -153,6 +154,8 @@ export function crearDominio(almacen: Almacen, hoy: () => string) {
           fallos: fallos + 1,
           pasosFallados,
         }
+      } else if (anterior?.estado === 'sabido' && anterior.vuelve > hoy()) {
+        registro.elementos[simbolo] = { ...anterior, pasosFallados }
       } else {
         const crecido = INTERVALOS.find((dias) => dias > intervalo) ?? INTERVALOS.at(-1)!
         const siguiente = pasosFallados.length > 0 ? intervalo || INTERVALOS[0] : crecido
