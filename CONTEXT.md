@@ -117,7 +117,7 @@ Consulta libre: la tabla periódica con los 56 Elementos rotulados, y al tocar u
 _Evitar_: ficha, consulta, modo libre
 
 **Señales**:
-El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En las Cajas, un electrón es una mitad azul con la flecha en blanco, el último electrón va en azul más oscuro, y un Hueco es una flecha roja de puntos. En Explorar, los números cuánticos del último electrón llevan la letra en negro y el número en rojo. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
+El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En las Cajas, un electrón es una mitad azul con la flecha en blanco, el último electrón va en azul más oscuro, y un Hueco es una flecha roja del mismo tamaño sobre la mitad en blanco. En Explorar, los números cuánticos del último electrón llevan la letra en negro y el número en rojo. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
 _Evitar_: leyenda, paleta, estilos, colores
 
 **Intervalo**:

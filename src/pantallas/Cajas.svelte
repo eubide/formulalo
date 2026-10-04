@@ -185,12 +185,7 @@
   }
 
   .flecha.hueco {
-    font-size: 19px;
-    font-weight: 800;
-    fill: none;
-    stroke: var(--negativo);
-    stroke-width: 1.3;
-    stroke-dasharray: 2 1.6;
+    fill: var(--negativo);
   }
 
   .mitad {
