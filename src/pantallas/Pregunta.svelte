@@ -10,6 +10,7 @@
   import { etiquetaDePaso, pasosDe, type Respuesta, type Tanda } from '../estudio/estudio'
   import Clases from '../tabla/Clases.svelte'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
+  import Acierto from './Acierto.svelte'
   import Configuracion from './Configuracion.svelte'
   import Correccion from './Correccion.svelte'
   import PasoConfiguracion from './PasoConfiguracion.svelte'
@@ -17,12 +18,14 @@
 
   interface Props {
     tanda: Tanda
+    sabido: boolean
     alResponder: (respuesta: Respuesta) => void
     alCerrarCorreccion: () => void
+    alCerrarAcierto: () => void
     alSalir: () => void
   }
 
-  let { tanda, alResponder, alCerrarCorreccion, alSalir }: Props = $props()
+  let { tanda, sabido, alResponder, alCerrarCorreccion, alCerrarAcierto, alSalir }: Props = $props()
 
   const CLASES = Object.keys(etiquetaDeClase) as Clase[]
   const tactil = matchMedia('(pointer: coarse)').matches
@@ -57,6 +60,7 @@
 
   function estadoDe(paso: (typeof pasos)[number]): string {
     if (pregunta.fallados.includes(paso)) return 'fallado'
+    if (sabido) return 'acertado'
     if (paso === pregunta.paso) return 'actual'
     return pasos.indexOf(paso) < pasos.indexOf(pregunta.paso) ? 'acertado' : 'pendiente'
   }
@@ -103,7 +107,9 @@
   </div>
 
   <section class="panel">
-    {#if correccion}
+    {#if sabido}
+      <Acierto {elemento} alSeguir={alCerrarAcierto} />
+    {:else if correccion}
       <Correccion {pregunta} {correccion} alSeguir={alCerrarCorreccion} />
     {:else if pregunta.paso === 'posicion'}
       <p>¿Dónde está?</p>
