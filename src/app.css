@@ -55,6 +55,34 @@ button {
   color: var(--acento);
 }
 
+.pantalla {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 12px 40px;
+}
+
+@media (min-width: 900px) {
+  .pantalla {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    column-gap: 28px;
+    align-items: start;
+    max-width: 1280px;
+    padding: 16px 20px 40px;
+  }
+
+  .pantalla > .a-la-izquierda {
+    grid-column: 1;
+    grid-row: 1 / span 20;
+    position: sticky;
+    top: 16px;
+  }
+
+  .pantalla > :not(.a-la-izquierda) {
+    grid-column: 2;
+  }
+}
+
 .salir {
   border: 1px solid var(--borde);
   border-radius: 8px;

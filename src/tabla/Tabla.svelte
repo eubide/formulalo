@@ -30,41 +30,47 @@
   }
 </script>
 
-<div class="tabla" role="grid" aria-label="Tabla periódica">
-  <span></span>
-  {#each GRUPOS as grupo (grupo)}
-    <span class="cabecera" style:grid-column={grupo + 1}>{grupo}</span>
-  {/each}
-  {#each PERIODOS as periodo (periodo)}
-    <span class="cabecera" style:grid-row={periodo + 1} style:grid-column="1">{periodo}</span>
+<div class="marco">
+  <div class="tabla" role="grid" aria-label="Tabla periódica">
+    <span></span>
     {#each GRUPOS as grupo (grupo)}
-      {@const elemento = estudiados.get(`${grupo}/${periodo}`)}
-      {#if elemento}
-        {@const casilla = casillas[elemento.simbolo] ?? {}}
-        <button
-          type="button"
-          class="casilla {casilla.senal ?? ''} {casilla.clase ?? ''}"
-          style:grid-row={periodo + 1}
-          style:grid-column={grupo + 1}
-          disabled={!alTocar}
-          aria-label={casilla.rotulada ? elemento.nombre : `Grupo ${grupo}, periodo ${periodo}`}
-          onclick={() => alTocar?.(elemento.simbolo)}
-        >
-          {#if casilla.rotulada}
-            <b>{elemento.simbolo}</b>
-            <small>{elemento.nombre}</small>
-          {/if}
-        </button>
-      {:else if existe(grupo, periodo)}
-        <span class="casilla fuera" style:grid-row={periodo + 1} style:grid-column={grupo + 1}></span>
-      {/if}
+      <span class="cabecera" style:grid-column={grupo + 1}>{grupo}</span>
     {/each}
-  {/each}
+    {#each PERIODOS as periodo (periodo)}
+      <span class="cabecera" style:grid-row={periodo + 1} style:grid-column="1">{periodo}</span>
+      {#each GRUPOS as grupo (grupo)}
+        {@const elemento = estudiados.get(`${grupo}/${periodo}`)}
+        {#if elemento}
+          {@const casilla = casillas[elemento.simbolo] ?? {}}
+          <button
+            type="button"
+            class="casilla {casilla.senal ?? ''} {casilla.clase ?? ''}"
+            style:grid-row={periodo + 1}
+            style:grid-column={grupo + 1}
+            disabled={!alTocar}
+            aria-label={casilla.rotulada ? elemento.nombre : `Grupo ${grupo}, periodo ${periodo}`}
+            onclick={() => alTocar?.(elemento.simbolo)}
+          >
+            {#if casilla.rotulada}
+              <b>{elemento.simbolo}</b>
+              <small>{elemento.nombre}</small>
+            {/if}
+          </button>
+        {:else if existe(grupo, periodo)}
+          <span class="casilla fuera" style:grid-row={periodo + 1} style:grid-column={grupo + 1}></span>
+        {/if}
+      {/each}
+    {/each}
+  </div>
 </div>
 
 <style>
+  .marco {
+    container-type: inline-size;
+  }
+
   .tabla {
-    --lado: calc((min(100vw, 960px) - 24px) / 18.6);
+    --lado: calc(100cqw / 18.6);
     display: grid;
     grid-template-columns: calc(var(--lado) * 0.6) repeat(18, var(--lado));
     grid-auto-rows: var(--lado);
@@ -158,7 +164,7 @@
     border-color: var(--tenue);
   }
 
-  @media (max-width: 520px) {
+  @container (max-width: 520px) {
     .casilla small {
       display: none;
     }

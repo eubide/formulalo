@@ -47,19 +47,21 @@
   )
 </script>
 
-<main>
+<main class="pantalla">
   <header>
     <h1>Explorar</h1>
     <button type="button" class="salir" onclick={alSalir}>Salir</button>
   </header>
 
-  <Tabla {casillas} alTocar={(simbolo) => (elegido = simbolo)} />
+  <div class="a-la-izquierda">
+    <Tabla {casillas} alTocar={(simbolo) => (elegido = simbolo)} />
 
-  <ul class="leyenda">
-    {#each CLASES as clase (clase)}
-      <li><i class={clase}></i>{etiquetaDeClase[clase]}</li>
-    {/each}
-  </ul>
+    <ul class="leyenda">
+      {#each CLASES as clase (clase)}
+        <li><i class={clase}></i>{etiquetaDeClase[clase]}</li>
+      {/each}
+    </ul>
+  </div>
 
   {#if elemento}
     {@const cuanticos = ultimoElectronDe(elemento).cuanticos}
@@ -105,12 +107,6 @@
 </main>
 
 <style>
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 16px 12px 40px;
-  }
-
   header {
     display: flex;
     align-items: baseline;
