@@ -1,5 +1,6 @@
 <script lang="ts">
   import { crearEstudio, diaLocal, type Respuesta, type Tanda } from './estudio/estudio'
+  import Explorar from './pantallas/Explorar.svelte'
   import FinDeTanda from './pantallas/FinDeTanda.svelte'
   import Portada from './pantallas/Portada.svelte'
   import Pregunta from './pantallas/Pregunta.svelte'
@@ -8,14 +9,17 @@
   const estudio = crearEstudio(localStorage, () => diaLocal(new Date()), Math.random)
 
   let tanda = $state.raw<Tanda | null>(null)
+  let explorando = $state(false)
 
   function responder(respuesta: Respuesta) {
     tanda = estudio.responder(tanda!, respuesta)
   }
 </script>
 
-{#if !tanda}
-  <Portada {estudio} alEmpezar={() => (tanda = estudio.abrirTanda())} />
+{#if explorando}
+  <Explorar alSalir={() => (explorando = false)} />
+{:else if !tanda}
+  <Portada {estudio} alEmpezar={() => (tanda = estudio.abrirTanda())} alExplorar={() => (explorando = true)} />
 {:else if tanda.presentacion}
   <Presentacion
     simbolos={tanda.presentacion}

@@ -8,9 +8,10 @@
   interface Props {
     estudio: Estudio
     alEmpezar: () => void
+    alExplorar: () => void
   }
 
-  let { estudio, alEmpezar }: Props = $props()
+  let { estudio, alEmpezar, alExplorar }: Props = $props()
 
   const CAMINOS = Object.keys(etiquetaDeCamino) as Camino[]
 
@@ -55,6 +56,7 @@
     {:else if proximaVuelta}
       <p><b>Hoy no toca nada.</b> Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
     {/if}
+    <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar</button>
   </section>
 
   <p class="resumen">
@@ -125,6 +127,10 @@
 
   .hoy p {
     margin: 0;
+  }
+
+  .explorar {
+    margin-left: auto;
   }
 
   .resumen {
