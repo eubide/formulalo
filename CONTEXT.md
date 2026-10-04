@@ -77,7 +77,7 @@ Lo que comparten los Elementos de un Grupo y permite deducir sus datos: cómo ac
 _Evitar_: patrón, norma, historia
 
 **Presentación**:
-Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta.
+Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada.
 _Evitar_: tutorial, introducción, lección
 
 **Tanda**:

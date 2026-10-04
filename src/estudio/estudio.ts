@@ -71,7 +71,9 @@ function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string
   const sinVer = trozosDe(camino)
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .find((trozo) => trozo.length > 0)
-  const presentacion = huecos > 0 && sinVer ? sinVer : null
+  // Un Flojo sin fallos solo puede venir de una Presentación: todavía no se le ha preguntado nada.
+  const quedaAlgoSinPreguntar = Object.values(entradas).some((entrada) => entrada.estado === 'flojo' && entrada.fallos === 0)
+  const presentacion = huecos > 0 && sinVer && !quedaAlgoSinPreguntar ? sinVer : null
   if (repaso.length === 0 && !presentacion) return null
   return { repaso, presentacion, nuevos: presentacion?.slice(0, huecos) ?? [] }
 }

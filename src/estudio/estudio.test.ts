@@ -419,8 +419,32 @@ describe('Tanda', () => {
     acertarTanda(estudio, tanda)
     const siguiente = estudio.abrirTanda()!
     const delGrupo1PorPreguntar = GRUPO_1.filter((simbolo) => !preguntados.includes(simbolo))
-    expect(siguiente.presentacion).toEqual(['Be', 'Mg', 'Ca', 'Sr', 'Ba', 'Ra'])
-    expect(enLaTanda(estudio.descartarPresentacion(siguiente))).toEqual(expect.arrayContaining(delGrupo1PorPreguntar))
+    expect(siguiente.presentacion).toBeNull()
+    expect(enLaTanda(siguiente).sort()).toEqual(delGrupo1PorPreguntar.sort())
+  })
+
+  it('no presenta un trozo nuevo mientras quede algún Elemento presentado sin preguntar', () => {
+    const { estudio, almacen } = montar()
+    acertarCadena(estudio, abrir(estudio)!)
+
+    const alVolver = montar(() => 0, almacen).estudio
+
+    expect(alVolver.anuncio()).toEqual({ repaso: 5, nuevos: 0, minutos: 3 })
+    const tanda = alVolver.abrirTanda()!
+    expect(tanda.presentacion).toBeNull()
+    expect(enLaTanda(tanda)).toHaveLength(5)
+
+    acertarTanda(alVolver, tanda)
+    expect(alVolver.abrirTanda()!.presentacion).toEqual(GRUPO_1)
+  })
+
+  it('un Elemento Flojo por haberlo fallado no frena el trozo siguiente', () => {
+    const { estudio } = montar()
+    const tanda = abrir(estudio)!
+
+    acertarTanda(estudio, fallarLaClase(estudio, tanda))
+
+    expect(estudio.abrirTanda()!.presentacion).toEqual(GRUPO_1)
   })
 
   it('si lo que toca hoy llena la Tanda, no presenta nada nuevo', () => {
