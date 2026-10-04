@@ -24,8 +24,8 @@
     <button type="button" role="radio" aria-checked={capa === opcion} onclick={() => (capa = opcion)}>{opcion}</button>
   {/each}
 </div>
-<div class="fila" role="radiogroup" aria-label="Subnivel">
-  <span>Subnivel</span>
+<div class="fila" role="radiogroup" aria-label="Letra">
+  <span>Letra</span>
   {#each LETRAS as opcion (opcion)}
     <button type="button" role="radio" aria-checked={letra === opcion} onclick={() => (letra = opcion)}>{opcion}</button>
   {/each}
