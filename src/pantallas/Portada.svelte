@@ -46,6 +46,30 @@
   function alCambiarLaVisibilidad() {
     if (document.visibilityState === 'visible') aLaVista = mirar()
   }
+
+  let selector: HTMLInputElement
+  let leido = $state<string | null>(null)
+
+  function guardarCopia() {
+    const enlace = document.createElement('a')
+    enlace.href = URL.createObjectURL(new Blob([estudio.copia()], { type: 'application/json' }))
+    enlace.download = 'formulalo.json'
+    enlace.click()
+    URL.revokeObjectURL(enlace.href)
+  }
+
+  async function leerArchivo() {
+    const archivo = selector.files![0]
+    // Sin vaciarlo, elegir otra vez el mismo archivo no dispara change.
+    selector.value = ''
+    leido = await archivo.text()
+  }
+
+  function recuperar() {
+    estudio.recuperar(leido!)
+    leido = null
+    aLaVista = mirar()
+  }
 </script>
 
 <svelte:document onvisibilitychange={alCambiarLaVisibilidad} />
@@ -101,6 +125,20 @@
       {/each}
     </select>
     <p>{descripcionDeCamino[camino]}</p>
+    <div class="copia">
+      <button type="button" class="boton secundario" onclick={guardarCopia}>Guardar copia</button>
+      <button type="button" class="boton secundario" onclick={() => selector.click()}>Recuperar copia</button>
+      <input bind:this={selector} type="file" accept=".json,application/json" hidden onchange={leerArchivo} />
+    </div>
+    {#if leido !== null && estudio.esCopia(leido)}
+      <p class="aviso">La copia sustituye todo lo estudiado en este navegador.</p>
+      <div class="copia">
+        <button type="button" class="boton" onclick={recuperar}>Sustituir</button>
+        <button type="button" class="boton secundario" onclick={() => (leido = null)}>Cancelar</button>
+      </div>
+    {:else if leido !== null}
+      <p class="aviso" role="alert">Ese archivo no es una copia de Formúlalo. No se ha cambiado nada.</p>
+    {/if}
   </section>
 </main>
 
@@ -162,5 +200,17 @@
   .camino p {
     margin: 8px 0 0;
     color: var(--tenue);
+  }
+
+  .copia {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .camino .aviso {
+    margin-top: 16px;
+    color: var(--tinta);
   }
 </style>

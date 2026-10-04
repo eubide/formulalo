@@ -101,7 +101,7 @@ Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Reg
 _Evitar_: feedback, aviso
 
 **Dominio**:
-Lo que la aplicación recuerda de cada Elemento de un día para otro: si está sin ver, Flojo o Sabido, en qué pasos de la Cadena se falló y cuándo le toca volver. Vive solo en el navegador del Alumno.
+Lo que la aplicación recuerda de cada Elemento de un día para otro: si está sin ver, Flojo o Sabido, en qué pasos de la Cadena se falló y cuándo le toca volver. Vive en el navegador del Alumno, que puede guardarlo entero en un archivo, con el Camino elegido, y recuperarlo después: la copia recuperada sustituye al Dominio que hubiera.
 _Evitar_: progreso, nivel, memoria, cajas
 
 **Flojo**:

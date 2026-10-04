@@ -647,3 +647,66 @@ describe('Dominio', () => {
     expect(estudio.camino()).toBe('uso')
   })
 })
+
+describe('Copia del Dominio', () => {
+  const ENTRADA = { estado: 'sabido', intervalo: 3, vuelve: '2026-10-09', fallos: 0, pasosFallados: [] }
+
+  function conAlgoEstudiado(): Estudio {
+    const { estudio } = montar()
+    estudio.elegirCamino('uso')
+    acertarTanda(estudio, fallarLaClase(estudio, abrir(estudio)!))
+    return estudio
+  }
+
+  it('es el registro del Dominio: versión, Camino y Elementos', () => {
+    const estudio = conAlgoEstudiado()
+
+    expect(JSON.parse(estudio.copia())).toEqual({ version: 1, camino: 'uso', elementos: estudio.entradas() })
+  })
+
+  it('recuperarla en otro navegador deja el Dominio igual que cuando se guardó, Camino incluido', () => {
+    const estudio = conAlgoEstudiado()
+    const copia = estudio.copia()
+    const { estudio: otro } = montar()
+
+    expect(otro.esCopia(copia)).toBe(true)
+    expect(otro.recuperar(copia)).toBe(true)
+
+    expect(otro.entradas()).toEqual(estudio.entradas())
+    expect(otro.camino()).toBe('uso')
+    expect(otro.copia()).toBe(copia)
+  })
+
+  it('recuperarla sustituye el Dominio que había, sin mezclarlo', () => {
+    const copia = conAlgoEstudiado().copia()
+    const { estudio } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+
+    estudio.recuperar(copia)
+
+    expect(Object.keys(estudio.entradas()).sort()).toEqual(['H', 'O'])
+  })
+
+  it.each([
+    ['no es JSON', '{no es json'],
+    ['está vacío', ''],
+    ['no es un registro', '[]'],
+    ['es de otra versión', JSON.stringify({ version: 2, camino: 'uso', elementos: {} })],
+    ['no trae Camino', JSON.stringify({ version: 1, elementos: {} })],
+    ['trae un Camino que no existe', JSON.stringify({ version: 1, camino: 'alfabetico', elementos: {} })],
+    ['no trae Elementos', JSON.stringify({ version: 1, camino: 'uso' })],
+    ['trae un Elemento que no se estudia', JSON.stringify({ version: 1, camino: 'uso', elementos: { He: ENTRADA, Pd: ENTRADA } })],
+    [
+      'trae una entrada mal formada',
+      JSON.stringify({ version: 1, camino: 'uso', elementos: { He: ENTRADA, Ne: { ...ENTRADA, vuelve: 'mañana' } } }),
+    ],
+  ])('un archivo que %s se rechaza entero y el Dominio queda como estaba', (_, archivo) => {
+    const estudio = conAlgoEstudiado()
+    const antes = estudio.copia()
+
+    expect(estudio.esCopia(archivo)).toBe(false)
+    expect(estudio.recuperar(archivo)).toBe(false)
+
+    expect(estudio.copia()).toBe(antes)
+  })
+})

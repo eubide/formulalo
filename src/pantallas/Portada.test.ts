@@ -41,4 +41,10 @@ describe('Portada', () => {
     expect(portada()).toContain(`Camino Desde el gas noble Por uso al formular ${POR_USO}`)
     expect(portada()).not.toContain(DESDE_EL_GAS_NOBLE)
   })
+
+  it('junto al Camino ofrece guardar y recuperar una copia, sin pedir ni avisar nada hasta que se elige un archivo', () => {
+    const { portada } = montar()
+
+    expect(portada().endsWith(`${DESDE_EL_GAS_NOBLE} Guardar copia Recuperar copia`)).toBe(true)
+  })
 })

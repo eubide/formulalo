@@ -185,5 +185,17 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
     cerrarCorreccion(tanda: Tanda): Tanda {
       return tanda.correccion ? avanzar({ ...tanda, correccion: null }) : tanda
     },
+
+    copia(): string {
+      return dominio.copia()
+    },
+
+    esCopia(copia: string): boolean {
+      return dominio.esCopia(copia)
+    },
+
+    recuperar(copia: string): boolean {
+      return dominio.recuperar(copia)
+    },
   }
 }

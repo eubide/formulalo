@@ -69,6 +69,22 @@ function registroValido(datos: unknown): Registro {
   }
 }
 
+function registroDeCopia(copia: string): Registro | null {
+  let datos: unknown
+  try {
+    datos = JSON.parse(copia)
+  } catch {
+    return null
+  }
+  const entera =
+    esObjeto(datos) &&
+    datos.version === VERSION &&
+    esCamino(datos.camino) &&
+    esObjeto(datos.elementos) &&
+    Object.entries(datos.elementos).every(([simbolo, entrada]) => estudiados.has(simbolo) && esEntrada(entrada))
+  return entera ? registroValido(datos) : null
+}
+
 function diasDespues(dia: string, dias: number): string {
   const fecha = new Date(`${dia}T00:00:00Z`)
   fecha.setUTCDate(fecha.getUTCDate() + dias)
@@ -147,6 +163,20 @@ export function crearDominio(almacen: Almacen, hoy: () => string) {
         }
       }
       guardar(registro)
+    },
+
+    copia(): string {
+      return JSON.stringify(leer())
+    },
+
+    esCopia(copia: string): boolean {
+      return registroDeCopia(copia) !== null
+    },
+
+    recuperar(copia: string): boolean {
+      const registro = registroDeCopia(copia)
+      if (registro) guardar(registro)
+      return registro !== null
     },
   }
 }
