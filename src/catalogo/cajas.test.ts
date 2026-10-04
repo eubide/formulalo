@@ -112,10 +112,6 @@ describe('Filas de las Cajas resueltas', () => {
     expect(marcasDe('H', -1)).toEqual(['1s/0↓'])
   })
 
-  it('el B solo llena 3 de sus 5 mitades vacías', () => {
-    expect(marcasDe('B', -3)).toEqual(['2p/1↑', '2p/2↑', '2p/0↓'])
-  })
-
   it('el 0 lleva su fila sin marcas', () => {
     expect(marcasDe('Xe', 0)).toEqual([])
   })

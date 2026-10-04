@@ -27,9 +27,9 @@ describe('Los 56 Elementos', () => {
     expect(new Set(estudiados.map((elemento) => elemento.simbolo)).size).toBe(56)
   })
 
-  it('43 traen sus Números de oxidación de la Hoja de oxidación y 13 de la Tabla del libro', () => {
-    expect(estudiados.filter((elemento) => elemento.fuente === 'hoja')).toHaveLength(43)
-    expect(estudiados.filter((elemento) => elemento.fuente === 'libro')).toHaveLength(13)
+  it('42 traen sus Números de oxidación de la Hoja de oxidación y 14 de la Tabla del libro', () => {
+    expect(estudiados.filter((elemento) => elemento.fuente === 'hoja')).toHaveLength(42)
+    expect(estudiados.filter((elemento) => elemento.fuente === 'libro')).toHaveLength(14)
   })
 
   it('doce son metales de transición', () => {
@@ -50,8 +50,9 @@ describe('Los 56 Elementos', () => {
     expect(noMetales.filter((elemento) => !elemento.numeros.some((numero) => numero <= 0))).toEqual([])
   })
 
-  it('el B lleva +3 y −3', () => {
-    expect(elementoDe('B').numeros).toEqual([-3, 3])
+  it('el B lleva solo el +3 de la Tabla del libro', () => {
+    expect(elementoDe('B').numeros).toEqual([3])
+    expect(elementoDe('B').fuente).toBe('libro')
   })
 })
 
