@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { etiquetaDeCamino, type Camino } from '../catalogo/caminos'
+  import { descripcionDeCamino, etiquetaDeCamino, type Camino } from '../catalogo/caminos'
   import { elementoDe } from '../catalogo/catalogo'
   import { etiquetaDePaso, type Estudio } from '../estudio/estudio'
-  import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
+  import Tabla from '../tabla/Tabla.svelte'
+  import { textoDelAnuncio } from './anuncio'
+  import { casillasDelDominio } from './casillas'
   import { fechaLarga } from './fecha'
 
   interface Props {
@@ -15,48 +17,88 @@
 
   const CAMINOS = Object.keys(etiquetaDeCamino) as Camino[]
 
-  let camino = $derived(estudio.camino())
+  function mirar() {
+    return {
+      camino: estudio.camino(),
+      entradas: estudio.entradas(),
+      resumen: estudio.resumen(),
+      proximaVuelta: estudio.proximaVuelta(),
+      anuncio: estudio.anuncio(),
+    }
+  }
 
-  const entradas = $derived(estudio.entradas())
-  const resumen = $derived(estudio.resumen())
-  const proximaVuelta = $derived(estudio.proximaVuelta())
-  const anuncio = $derived.by(() => {
-    void camino
-    return estudio.anuncio()
-  })
+  let aLaVista = $state.raw(mirar())
+  const { camino, entradas, resumen, proximaVuelta, anuncio } = $derived(aLaVista)
 
-  const casillas = $derived<Record<string, Casilla>>(
-    Object.fromEntries(
-      Object.entries(entradas).map(([simbolo, entrada]) => [
-        simbolo,
-        entrada.estado === 'sabido' ? { rotulada: true, clase: elementoDe(simbolo).clase } : { rotulada: true, senal: 'floja' },
-      ]),
-    ),
-  )
+  const casillas = $derived(casillasDelDominio(entradas))
   const flojosConFallo = $derived(Object.entries(entradas).filter(([, entrada]) => entrada.pasosFallados.length > 0))
 
   function elegir(elegido: Camino) {
     estudio.elegirCamino(elegido)
-    camino = elegido
+    aLaVista = mirar()
+  }
+
+  function alCambiarLaVisibilidad() {
+    if (document.visibilityState === 'visible') aLaVista = mirar()
+  }
+
+  let selector: HTMLInputElement
+  let leido = $state<string | null>(null)
+
+  function guardarCopia() {
+    const enlace = document.createElement('a')
+    enlace.href = URL.createObjectURL(new Blob([estudio.copia()], { type: 'application/json' }))
+    enlace.download = 'formulalo.json'
+    enlace.click()
+    URL.revokeObjectURL(enlace.href)
+  }
+
+  async function leerArchivo() {
+    const archivo = selector.files![0]
+    // Sin vaciarlo, elegir otra vez el mismo archivo no dispara change.
+    selector.value = ''
+    leido = await archivo.text()
+  }
+
+  function recuperar() {
+    estudio.recuperar(leido!)
+    leido = null
+    aLaVista = mirar()
   }
 </script>
+
+<svelte:document onvisibilitychange={alCambiarLaVisibilidad} />
 
 <main class="pantalla">
   <header>
     <h1>Formúlalo</h1>
     <p>No lo memorices: dedúcelo.</p>
+    {#if resumen.sinVer === resumen.total}
+      <p class="bienvenida">
+        Aprende dónde está cada elemento en la tabla y deduce de ahí su configuración y sus números de oxidación. Cada tanda dura
+        unos minutos: primero te presenta un grupo y después te pregunta.
+      </p>
+    {/if}
   </header>
 
   <section class="hoy">
     {#if anuncio}
       <button type="button" class="boton" onclick={alEmpezar}>Tanda de hoy</button>
-      <p>
-        {anuncio.repaso} de repaso · {anuncio.nuevos} {anuncio.nuevos === 1 ? 'nuevo' : 'nuevos'} · unos {anuncio.minutos} min
-      </p>
+      <p>{textoDelAnuncio(anuncio)}</p>
     {:else if proximaVuelta}
       <p><b>Hoy no toca nada.</b> Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
     {/if}
     <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar</button>
+  </section>
+
+  <section class="camino">
+    <h2>Camino</h2>
+    <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
+      {#each CAMINOS as opcion (opcion)}
+        <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
+      {/each}
+    </select>
+    <p>{descripcionDeCamino[camino]}</p>
   </section>
 
   <p class="resumen">
@@ -78,13 +120,21 @@
     </section>
   {/if}
 
-  <section class="camino">
-    <h2>Camino</h2>
-    <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
-      {#each CAMINOS as opcion (opcion)}
-        <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
-      {/each}
-    </select>
+  <section>
+    <div class="copia">
+      <button type="button" class="boton secundario" onclick={guardarCopia}>Guardar copia</button>
+      <button type="button" class="boton secundario" onclick={() => selector.click()}>Recuperar copia</button>
+      <input bind:this={selector} type="file" accept=".json,application/json" hidden onchange={leerArchivo} />
+    </div>
+    {#if leido !== null && estudio.esCopia(leido)}
+      <p class="aviso">La copia sustituye todo lo estudiado en este navegador.</p>
+      <div class="copia">
+        <button type="button" class="boton" onclick={recuperar}>Sustituir</button>
+        <button type="button" class="boton secundario" onclick={() => (leido = null)}>Cancelar</button>
+      </div>
+    {:else if leido !== null}
+      <p class="aviso" role="alert">Ese archivo no es una copia de Formúlalo. No se ha cambiado nada.</p>
+    {/if}
   </section>
 </main>
 
@@ -97,6 +147,11 @@
   header p {
     margin: 4px 0 0;
     color: var(--tenue);
+  }
+
+  header .bienvenida {
+    margin-top: 12px;
+    color: var(--tinta);
   }
 
   h2 {
@@ -136,5 +191,21 @@
     border-radius: 8px;
     background: var(--papel);
     padding: 10px 12px;
+  }
+
+  .camino p {
+    margin: 8px 0 0;
+    color: var(--tenue);
+  }
+
+  .copia {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .aviso {
+    margin: 16px 0 0;
   }
 </style>

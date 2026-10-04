@@ -73,7 +73,7 @@ Número de oxidación falso que se ofrece junto a los verdaderos de un Elemento.
 _Evitar_: falso, opción falsa, señuelo
 
 **Cadena**:
-Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente, y el Elemento solo se da por sabido si se aciertan todos.
+Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente. Lo que hay que saberse para formular es la Posición y los Números de oxidación; la Clase y la Configuración sirven para deducirlos.
 _Evitar_: secuencia, ficha, pregunta
 
 **Camino**:
@@ -89,27 +89,27 @@ Lo que comparten los Elementos de un Grupo y permite deducir sus datos: cómo ac
 _Evitar_: patrón, norma, historia
 
 **Presentación**:
-Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada.
+Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio.
 _Evitar_: tutorial, introducción, lección
 
 **Tanda**:
-Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: primero los que toca repasar hoy y después un Grupo nuevo si cabe. Los doce metales de transición llegan en cinco trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; y Pt.
+Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos y otros que toca repasar hoy. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Mientras quede alguno, dos de los 8 son para ellos, y más si lo que toca repasar no llena los otros seis. Entran primero los presentados que esperan, y cuando no queda ninguno se presenta el trozo siguiente del Camino. El resto es para lo que toca repasar, los Flojos delante de los Sabidos. Los doce metales de transición llegan en cinco trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; y Pt.
 _Evitar_: ronda, sesión, lote, repaso
 
 **Corrección**:
-Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia. La Cadena continúa después, y el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
+Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
 _Evitar_: feedback, aviso
 
 **Dominio**:
-Lo que la aplicación recuerda de cada Elemento de un día para otro: si está sin ver, Flojo o Sabido, en qué pasos de la Cadena se falló y cuándo le toca volver. Vive solo en el navegador del Alumno.
+Lo que la aplicación recuerda de cada Elemento de un día para otro: si está sin ver, Flojo o Sabido, en qué pasos de la Cadena se falló y cuándo le toca volver. Vive en el navegador del Alumno, que puede guardarlo entero en un archivo, con el Camino elegido, y recuperarlo después: la copia recuperada sustituye al Dominio que hubiera.
 _Evitar_: progreso, nivel, memoria, cajas
 
 **Flojo**:
-Estado de un Elemento cuya última Cadena tuvo algún fallo, o que solo se ha presentado.
+Estado de un Elemento en cuya última Cadena se falló la Posición o los Números de oxidación, o que solo se ha presentado.
 _Evitar_: débil, pendiente, fallado
 
 **Sabido**:
-Estado de un Elemento cuya última Cadena se acertó entera. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo lo devuelve a Flojo.
+Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo.
 _Evitar_: dominado, aprendido, acertado
 
 **Explorar**:
@@ -117,11 +117,11 @@ Consulta libre: la tabla periódica con los 56 Elementos rotulados, y al tocar u
 _Evitar_: ficha, consulta, modo libre
 
 **Señales**:
-El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En las Cajas, un electrón es una mitad azul con la flecha en blanco, el último electrón va en azul más oscuro, y un Hueco es una flecha roja de puntos. En Explorar, los números cuánticos del último electrón llevan la letra en negro y el número en rojo. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
+El código de color, uno por significado. En los Números de oxidación, rojo es negativo y azul positivo. En la Configuración, el subnivel del último electrón va subrayado en amarillo. En las Cajas, un electrón es una mitad azul con la flecha en blanco, el último electrón va en azul más oscuro, y un Hueco es una flecha roja del mismo tamaño sobre la mitad en blanco. En Explorar, los números cuánticos del último electrón llevan la letra en negro y el número en rojo. Al responder, verde con ✓ es acierto y naranja con ✗ es fallo.
 _Evitar_: leyenda, paleta, estilos, colores
 
 **Intervalo**:
-Los días que tarda en volver un Elemento sabido: 1, 3, 7, 14 y 30 según se va acertando. Un fallo lo devuelve al día siguiente.
+Los días que tarda en volver un Elemento Sabido: 1, 3, 7, 14 y 30. Solo crece cuando la Cadena se acierta entera: con un fallo solo de Clase o de Configuración se queda como estaba, o en 1 día si el Elemento no tenía ninguno. Un fallo en la Posición o en los Números de oxidación devuelve el Elemento al día siguiente.
 _Evitar_: caja, nivel, plazo
 
 ## Relaciones

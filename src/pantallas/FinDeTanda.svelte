@@ -1,5 +1,8 @@
 <script lang="ts">
   import type { Estudio, Tanda } from '../estudio/estudio'
+  import Tabla from '../tabla/Tabla.svelte'
+  import { textoDelAnuncio } from './anuncio'
+  import { casillasDelDominio } from './casillas'
   import { fechaLarga } from './fecha'
 
   interface Props {
@@ -13,49 +16,51 @@
 
   const anuncio = $derived(estudio.anuncio())
   const proximaVuelta = $derived(estudio.proximaVuelta())
+  const casillas = $derived.by(() => {
+    const mapa = casillasDelDominio(estudio.entradas())
+    for (const simbolo of tanda.rotulados) mapa[simbolo] = { ...mapa[simbolo], senal: 'iluminada' }
+    return mapa
+  })
+  const vueltas = $derived(
+    estudio
+      .vueltas(tanda)
+      .map(({ dias, simbolos }) => `${dias === 1 ? 'Mañana' : `En ${dias} días`}: ${simbolos.join(', ')}`)
+      .join(' · '),
+  )
 </script>
 
-<main>
+<main class="pantalla">
   <h1>Tanda terminada</h1>
 
-  <p class="enteros">
+  <p class="sabidos">
     <span aria-hidden="true">✓</span>
-    {tanda.enteros.length}
-    {tanda.enteros.length === 1 ? 'elemento acertado entero' : 'elementos acertados enteros'}
+    {tanda.sabidos.length}
+    {tanda.sabidos.length === 1 ? 'elemento sabido' : 'elementos sabidos'}
   </p>
-  {#if tanda.vuelven.length > 0}
-    <p class="vuelven"><span aria-hidden="true">✗</span> Vuelven mañana: {tanda.vuelven.join(', ')}</p>
-  {/if}
+  <p>{vueltas}</p>
 
-  {#if anuncio}
-    <p>
-      Queda otra tanda: {anuncio.repaso} de repaso · {anuncio.nuevos}
-      {anuncio.nuevos === 1 ? 'nuevo' : 'nuevos'} · unos {anuncio.minutos} min
-    </p>
-    <button type="button" class="boton" onclick={alSeguir}>Otra tanda</button>
-  {:else if proximaVuelta}
-    <p>Hoy no queda nada. Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
-  {/if}
-  <button type="button" class="boton secundario" onclick={alVolver}>Portada</button>
+  <div class="a-la-izquierda">
+    <Tabla {casillas} />
+  </div>
+
+  <section>
+    {#if anuncio}
+      <p>Queda otra tanda: {textoDelAnuncio(anuncio)}</p>
+      <button type="button" class="boton" onclick={alSeguir}>Otra tanda</button>
+    {:else if proximaVuelta}
+      <p>Hoy no queda nada. Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
+    {/if}
+    <button type="button" class="boton secundario" onclick={alVolver}>Portada</button>
+  </section>
 </main>
 
 <style>
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 16px 12px 40px;
-  }
-
   h1 {
     margin: 0 0 12px;
     font-size: 24px;
   }
 
-  .enteros span {
+  .sabidos span {
     color: var(--acierto);
-  }
-
-  .vuelven span {
-    color: var(--fallo);
   }
 </style>

@@ -7,7 +7,15 @@ import {
   type Subnivel,
 } from '../catalogo/catalogo'
 import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo, trozosDeTransicion } from '../catalogo/historias'
-import { excepcionDe, REGLA_DE_CONFIGURACION, reglaDe, reglasContiguas, type Regla } from '../catalogo/reglas'
+import {
+  excepcionDe,
+  pierdeElNegativo,
+  REGLA_DE_CLASE,
+  REGLA_DE_CONFIGURACION,
+  reglaDe,
+  reglasContiguas,
+  type Regla,
+} from '../catalogo/reglas'
 
 export type Azar = () => number
 
@@ -42,6 +50,7 @@ export interface Correccion {
   faltaron: number[]
   sobraron: number[]
   regla: Regla | null
+  pierdeElNegativo: boolean
   excepcion: string | null
   historias: string[]
 }
@@ -121,13 +130,22 @@ export function acierta({ elemento }: Pregunta, respuesta: Respuesta): boolean {
 }
 
 export function correccionDe({ elemento }: Pregunta, respuesta: Respuesta): Correccion {
-  const vacia = { paso: respuesta.paso, respuesta, faltaron: [], sobraron: [], regla: null, excepcion: null, historias: [] }
+  const vacia = {
+    paso: respuesta.paso,
+    respuesta,
+    faltaron: [],
+    sobraron: [],
+    regla: null,
+    pierdeElNegativo: false,
+    excepcion: null,
+    historias: [],
+  }
   const presentes = (historias: (string | null)[]) => historias.filter((historia) => historia !== null)
   switch (respuesta.paso) {
     case 'posicion':
       return { ...vacia, historias: presentes([historiaDeOrden(elemento), historiaDeSimbolo(elemento)]) }
     case 'clase':
-      return vacia
+      return { ...vacia, historias: [REGLA_DE_CLASE] }
     case 'configuracion':
       return { ...vacia, historias: [REGLA_DE_CONFIGURACION] }
     case 'numeros':
@@ -136,6 +154,7 @@ export function correccionDe({ elemento }: Pregunta, respuesta: Respuesta): Corr
         faltaron: elemento.numeros.filter((numero) => !respuesta.numeros.includes(numero)),
         sobraron: respuesta.numeros.filter((numero) => !elemento.numeros.includes(numero)).sort((a, b) => a - b),
         regla: reglaDe(elemento),
+        pierdeElNegativo: pierdeElNegativo(elemento),
         excepcion: excepcionDe(elemento),
         historias: presentes([historiaDeTrozo(elemento)]),
       }

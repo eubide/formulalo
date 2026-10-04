@@ -1,68 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import { elementoDe, elementos, ultimoSubnivel, type Clase } from '../catalogo/catalogo'
+import { elementoDe, elementos, type Clase } from '../catalogo/catalogo'
 import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
-import { REGLA_DE_CONFIGURACION } from '../catalogo/reglas'
-import { almacenEnMemoria, crearEstudio, type Almacen, type Pregunta, type Respuesta, type Tanda } from './estudio'
+import { REGLA_DE_CLASE, REGLA_DE_CONFIGURACION } from '../catalogo/reglas'
+import {
+  abrir,
+  acertarCadena,
+  acertarTanda,
+  correctaDe,
+  DIA_1,
+  estudiarElDia,
+  fallar,
+  montar,
+  sigueLaMismaCadena,
+} from './ayudantes'
+import { almacenEnMemoria, type Estudio, type Tanda } from './estudio'
 
-type Estudio = ReturnType<typeof crearEstudio>
-
-const DIA_1 = '2026-10-05'
 const GRUPO_18 = ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn']
 const GRUPO_1 = ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr']
-
-function montar(azar = () => 0, almacen: Almacen = almacenEnMemoria()) {
-  const reloj = { dia: DIA_1 }
-  return { estudio: crearEstudio(almacen, () => reloj.dia, azar), reloj, almacen }
-}
-
-function correctaDe({ elemento, paso }: Pregunta): Respuesta {
-  if (paso === 'posicion') return { paso, simbolo: elemento.simbolo }
-  if (paso === 'clase') return { paso, clase: elemento.clase }
-  if (paso === 'configuracion') return { paso, subnivel: ultimoSubnivel(elemento)! }
-  return { paso, numeros: elemento.numeros }
-}
+const GRUPO_2 = ['Be', 'Mg', 'Ca', 'Sr', 'Ba', 'Ra']
 
 function otraClase(clase: Clase): Clase {
   return clase === 'metal' ? 'no-metal' : 'metal'
-}
-
-function sigueLaMismaCadena(tanda: Tanda, simbolo: string): boolean {
-  return tanda.pregunta?.elemento.simbolo === simbolo && tanda.pregunta.paso !== 'posicion'
-}
-
-function acertarCadena(estudio: Estudio, tanda: Tanda): Tanda {
-  const simbolo = tanda.pregunta!.elemento.simbolo
-  let actual = tanda
-  do {
-    actual = estudio.responder(actual, correctaDe(actual.pregunta!))
-  } while (sigueLaMismaCadena(actual, simbolo))
-  return actual
-}
-
-function fallarLaClase(estudio: Estudio, tanda: Tanda): Tanda {
-  const { elemento } = tanda.pregunta!
-  let actual = estudio.responder(tanda, correctaDe(tanda.pregunta!))
-  actual = estudio.responder(actual, { paso: 'clase', clase: otraClase(elemento.clase) })
-  actual = estudio.cerrarCorreccion(actual)
-  while (sigueLaMismaCadena(actual, elemento.simbolo)) {
-    actual = estudio.responder(actual, correctaDe(actual.pregunta!))
-  }
-  return actual
-}
-
-function abrir(estudio: Estudio): Tanda | null {
-  const tanda = estudio.abrirTanda()
-  return tanda?.presentacion ? estudio.descartarPresentacion(tanda) : tanda
-}
-
-function acertarTanda(estudio: Estudio, tanda: Tanda): Tanda {
-  let actual = tanda
-  while (actual.pregunta) actual = acertarCadena(estudio, actual)
-  return actual
-}
-
-function estudiarElDia(estudio: Estudio) {
-  for (let tanda = abrir(estudio); tanda; tanda = abrir(estudio)) acertarTanda(estudio, tanda)
 }
 
 function hastaPresentar(estudio: Estudio, simbolo: string): Tanda {
@@ -141,7 +99,7 @@ describe('Presentación', () => {
   })
 
   it('anuncia lo que trae la Tanda y cuánto dura', () => {
-    expect(montar().estudio.anuncio()).toEqual({ repaso: 0, nuevos: 6, minutos: 3 })
+    expect(montar().estudio.anuncio()).toEqual({ repaso: 0, nuevos: 6, minutos: 3, quedan: 0 })
   })
 })
 
@@ -177,7 +135,7 @@ describe('Cadena', () => {
       fallos: 0,
       pasosFallados: [],
     })
-    expect(despues.enteros).toEqual([simbolo])
+    expect(despues.sabidos).toEqual([simbolo])
     expect(despues.rotulados).toEqual([simbolo])
   })
 
@@ -231,6 +189,17 @@ describe('Corrección', () => {
     expect(correccion).toMatchObject({ paso: 'posicion', historias: [historiaDeOrden(sodio), historiaDeSimbolo(sodio)] })
   })
 
+  it('la de Clase trae la regla para deducirla de la Posición', () => {
+    const { estudio } = montar()
+    let tanda = abrir(estudio)!
+    const { elemento } = tanda.pregunta!
+    tanda = estudio.responder(tanda, correctaDe(tanda.pregunta!))
+
+    const { correccion } = estudio.responder(tanda, { paso: 'clase', clase: otraClase(elemento.clase) })
+
+    expect(correccion).toMatchObject({ paso: 'clase', historias: [REGLA_DE_CLASE] })
+  })
+
   it('la de Configuración trae la regla para deducirla de la Posición', () => {
     const { estudio } = montar()
     let tanda = abrir(estudio)!
@@ -262,6 +231,17 @@ describe('Corrección', () => {
 
     expect(correccion).toMatchObject({ faltaron: [-1], sobraron: [] })
     expect(correccion!.excepcion).toContain('además −1')
+  })
+
+  it('a un metal no le cuenta como excepción perder el negativo de la Regla de su Grupo', () => {
+    const { estudio } = montar()
+    let tanda = hastaPreguntar(estudio, 'Sn')
+    while (tanda.pregunta!.paso !== 'numeros') tanda = estudio.responder(tanda, correctaDe(tanda.pregunta!))
+
+    const { correccion } = estudio.responder(tanda, { paso: 'numeros', numeros: [2] })
+
+    expect(correccion).toMatchObject({ excepcion: null, pierdeElNegativo: true })
+    expect(correccion!.regla!.numeros).toEqual([-4, 2, 4])
   })
 
   it('en un metal de transición trae la Historia de su trozo en vez de una Regla', () => {
@@ -323,28 +303,88 @@ describe('Números de oxidación', () => {
 })
 
 describe('Fallo en la Cadena', () => {
-  it('deja el Elemento Flojo para mañana, con el paso fallado y un fallo más', () => {
+  it.each([
+    ['la Posición', 'posicion'],
+    ['los Números de oxidación', 'numeros'],
+  ] as const)('fallar %s deja el Elemento Flojo para mañana, con el paso fallado y un fallo más', (_, paso) => {
     const { estudio } = montar()
     const tanda = abrir(estudio)!
     const { simbolo } = tanda.pregunta!.elemento
 
-    const despues = fallarLaClase(estudio, tanda)
+    const despues = fallar(estudio, tanda, [paso])
 
     expect(estudio.entradas()[simbolo]).toEqual({
       estado: 'flojo',
       intervalo: 0,
       vuelve: '2026-10-06',
       fallos: 1,
-      pasosFallados: ['clase'],
+      pasosFallados: [paso],
     })
     expect(despues.vuelven).toEqual([simbolo])
+    expect(enLaTanda(despues)).toContain(simbolo)
+  })
+
+  it.each([
+    ['la Clase', 'clase'],
+    ['la Configuración', 'configuracion'],
+  ] as const)(
+    'fallar solo %s deja el Elemento Sabido con Intervalo de 1 día, con el paso fallado, y no vuelve en la Tanda',
+    (_, paso) => {
+      const { estudio } = montar()
+      const tanda = abrir(estudio)!
+      const { simbolo } = tanda.pregunta!.elemento
+
+      const despues = fallar(estudio, tanda, [paso])
+
+      expect(estudio.entradas()[simbolo]).toEqual({
+        estado: 'sabido',
+        intervalo: 1,
+        vuelve: '2026-10-06',
+        fallos: 0,
+        pasosFallados: [paso],
+      })
+      expect(despues.sabidos).toEqual([simbolo])
+      expect(despues.vuelven).toEqual([])
+      expect(enLaTanda(despues)).not.toContain(simbolo)
+    },
+  )
+
+  it('un Elemento Flojo que al día siguiente falla solo la Clase queda Sabido con Intervalo de 1 día', () => {
+    const { estudio, reloj } = montar()
+    const primera = abrir(estudio)!
+    const { simbolo } = primera.pregunta!.elemento
+    fallar(estudio, primera, ['posicion'])
+    reloj.dia = '2026-10-06'
+    let tanda = abrir(estudio)!
+    while (tanda.pregunta!.elemento.simbolo !== simbolo) tanda = acertarCadena(estudio, tanda)
+
+    fallar(estudio, tanda, ['clase'])
+
+    expect(estudio.entradas()[simbolo]).toEqual({
+      estado: 'sabido',
+      intervalo: 1,
+      vuelve: '2026-10-07',
+      fallos: 1,
+      pasosFallados: ['clase'],
+    })
+  })
+
+  it.each([
+    ['la Clase', 'sabido', 'clase'],
+    ['los Números de oxidación', 'flojo', 'numeros'],
+  ] as const)('en un metal de transición, sin paso de Configuración, fallar %s lo deja %s', (_, estado, paso) => {
+    const { estudio } = montar()
+
+    fallar(estudio, hastaPreguntar(estudio, 'Cu'), [paso])
+
+    expect(estudio.entradas().Cu).toMatchObject({ estado, pasosFallados: [paso] })
   })
 
   it('el Elemento vuelve una vez en la misma Tanda, tres Elementos después', () => {
     const { estudio } = montar()
     let tanda = abrir(estudio)!
     const { simbolo } = tanda.pregunta!.elemento
-    tanda = fallarLaClase(estudio, tanda)
+    tanda = fallar(estudio, tanda, ['posicion'])
 
     const siguientes: string[] = []
     while (tanda.pregunta!.elemento.simbolo !== simbolo) {
@@ -359,23 +399,23 @@ describe('Fallo en la Cadena', () => {
     const { estudio } = montar()
     let tanda = abrir(estudio)!
     const { simbolo } = tanda.pregunta!.elemento
-    tanda = fallarLaClase(estudio, tanda)
+    tanda = fallar(estudio, tanda, ['posicion'])
 
     tanda = acertarTanda(estudio, tanda)
 
     expect(estudio.entradas()[simbolo]).toMatchObject({ estado: 'flojo', fallos: 1, vuelve: '2026-10-06' })
     expect(tanda.vuelven).toEqual([simbolo])
-    expect(tanda.enteros).toHaveLength(5)
+    expect(tanda.sabidos).toHaveLength(5)
   })
 
   it('fallarlo otra vez al volver no lo trae una tercera vez ni suma otro fallo', () => {
     const { estudio } = montar()
     let tanda = abrir(estudio)!
     const { simbolo } = tanda.pregunta!.elemento
-    tanda = fallarLaClase(estudio, tanda)
+    tanda = fallar(estudio, tanda, ['posicion'])
     while (tanda.pregunta!.elemento.simbolo !== simbolo) tanda = acertarCadena(estudio, tanda)
 
-    tanda = fallarLaClase(estudio, tanda)
+    tanda = fallar(estudio, tanda, ['posicion'])
 
     expect(enLaTanda(tanda)).not.toContain(simbolo)
     expect(estudio.entradas()[simbolo].fallos).toBe(1)
@@ -388,7 +428,7 @@ describe('Fallo en la Cadena', () => {
     for (let i = 0; i < 4; i++) tanda = acertarCadena(estudio, tanda)
     const { simbolo } = tanda.pregunta!.elemento
 
-    tanda = fallarLaClase(estudio, tanda)
+    tanda = fallar(estudio, tanda, ['posicion'])
 
     expect(tanda.pendientes).toEqual([simbolo])
   })
@@ -410,7 +450,7 @@ describe('Tanda', () => {
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4 })
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4, quedan: 0 })
     let tanda = estudio.abrirTanda()!
     expect(tanda.presentacion).toEqual(GRUPO_1)
     tanda = estudio.descartarPresentacion(tanda)
@@ -421,7 +461,7 @@ describe('Tanda', () => {
     expect(Object.keys(estudio.entradas())).toHaveLength(13)
 
     acertarTanda(estudio, tanda)
-    expect(estudio.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3 })
+    expect(estudio.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3, quedan: 0 })
     const siguiente = estudio.abrirTanda()!
     const delGrupo1PorPreguntar = GRUPO_1.filter((simbolo) => !preguntados.includes(simbolo))
     expect(siguiente.presentacion).toBeNull()
@@ -434,7 +474,7 @@ describe('Tanda', () => {
 
     const alVolver = montar(() => 0, almacen).estudio
 
-    expect(alVolver.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3 })
+    expect(alVolver.anuncio()).toEqual({ repaso: 0, nuevos: 5, minutos: 3, quedan: 0 })
     const tanda = alVolver.abrirTanda()!
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda)).toHaveLength(5)
@@ -447,28 +487,102 @@ describe('Tanda', () => {
     const { estudio } = montar()
     const tanda = abrir(estudio)!
 
-    acertarTanda(estudio, fallarLaClase(estudio, tanda))
+    acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
 
     expect(estudio.abrirTanda()!.presentacion).toEqual(GRUPO_1)
   })
 
-  it('si lo que toca hoy llena la Tanda, no presenta nada nuevo', () => {
+  it('con 8 o más Elementos por repasar y alguno nuevo, trae 6 de repaso y 2 nuevos', () => {
     const { estudio, reloj } = montar()
     acertarTanda(estudio, abrir(estudio)!)
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
 
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4, quedan: 7 })
     const tanda = estudio.abrirTanda()!
 
+    expect(tanda.presentacion).toEqual(GRUPO_2)
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(2)
+    expect(enLaTanda(tanda).filter((simbolo) => [...GRUPO_18, ...GRUPO_1].includes(simbolo))).toHaveLength(6)
+  })
+
+  it('con menos de 6 por repasar entran tantos nuevos como sitio queda', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-07'
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-08'
+
+    expect(estudio.anuncio()).toEqual({ repaso: 5, nuevos: 3, minutos: 4, quedan: 0 })
+    const tanda = estudio.abrirTanda()!
+
+    expect(tanda.presentacion).toEqual(GRUPO_2)
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(3)
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_1.includes(simbolo))).toHaveLength(5)
+  })
+
+  it('los presentados que esperan entran antes que un trozo nuevo, y no se presenta otro mientras quede alguno', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+    acertarTanda(estudio, abrir(estudio)!)
+
+    expect(estudio.anuncio()).toEqual({ repaso: 6, nuevos: 2, minutos: 4, quedan: 1 })
+    const tanda = estudio.abrirTanda()!
+    expect(tanda.presentacion).toBeNull()
+    expect(enLaTanda(tanda).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(2)
+    expect(enLaTanda(tanda)).toHaveLength(8)
+
+    acertarTanda(estudio, tanda)
+    const ultima = estudio.abrirTanda()!
+    expect(ultima.presentacion).toBeNull()
+    expect(enLaTanda(ultima).filter((simbolo) => GRUPO_2.includes(simbolo))).toHaveLength(2)
+    expect(enLaTanda(ultima)).toHaveLength(3)
+  })
+
+  it('con un solo nuevo, el repaso ocupa los otros siete', () => {
+    const { estudio, reloj } = montar()
+    hastaPresentar(estudio, 'Pt')
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncio()).toEqual({ repaso: 7, nuevos: 1, minutos: 4, quedan: 48 })
+    expect(enLaTanda(estudio.abrirTanda()!)).toContain('Pt')
+  })
+
+  it('sin nada nuevo, la Tanda es toda de repaso', () => {
+    const { estudio, reloj } = montar()
+    estudiarElDia(estudio)
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncio()).toEqual({ repaso: 8, nuevos: 0, minutos: 4, quedan: 48 })
+    const tanda = estudio.abrirTanda()!
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda)).toHaveLength(8)
+  })
+
+  it('el anuncio cuenta lo que queda por repasar hoy después de la Tanda, sin los nuevos que esperan', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncio()!.quedan).toBe(7)
+
+    acertarTanda(estudio, abrir(estudio)!)
+    expect(estudio.anuncio()!.quedan).toBe(1)
+
+    acertarTanda(estudio, abrir(estudio)!)
+    expect(estudio.anuncio()).toEqual({ repaso: 1, nuevos: 2, minutos: 2, quedan: 0 })
   })
 
   it('los Flojos van delante de los Sabidos', () => {
     const { estudio, reloj } = montar()
     let tanda = abrir(estudio)!
     while (tanda.pregunta!.elemento.simbolo !== 'Rn') tanda = acertarCadena(estudio, tanda)
-    acertarTanda(estudio, fallarLaClase(estudio, tanda))
+    acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
     acertarTanda(estudio, abrir(estudio)!)
     reloj.dia = '2026-10-06'
     const sabidosQueTocan = elementos().filter(({ simbolo }) => estudio.entradas()[simbolo]?.estado === 'sabido')
@@ -490,21 +604,36 @@ describe('Tanda', () => {
 
     const preguntados = enLaTanda(estudio.abrirTanda()!)
 
-    expect(sinRepasar).toHaveLength(5)
-    expect(preguntados).toEqual(expect.arrayContaining(sinRepasar))
+    expect(sinRepasar).toHaveLength(7)
+    expect(preguntados.filter((simbolo) => sinRepasar.includes(simbolo))).toHaveLength(6)
   })
 
-  it('al terminar no queda pregunta, y dice cuáles se acertaron enteros y cuáles vuelven', () => {
+  it('al terminar no queda pregunta, y dice cuáles quedan Sabidos y cuáles vuelven', () => {
     const { estudio } = montar()
     let tanda = abrir(estudio)!
     const fallado = tanda.pregunta!.elemento.simbolo
 
-    tanda = acertarTanda(estudio, fallarLaClase(estudio, tanda))
+    tanda = acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
 
     expect(tanda.pregunta).toBeNull()
     expect(tanda.pendientes).toEqual([])
     expect(tanda.vuelven).toEqual([fallado])
-    expect([...tanda.enteros].sort()).toEqual(GRUPO_18.filter((simbolo) => simbolo !== fallado).sort())
+    expect([...tanda.sabidos].sort()).toEqual(GRUPO_18.filter((simbolo) => simbolo !== fallado).sort())
+  })
+
+  it('dice en cuántos días vuelve cada Elemento de la Tanda, del día más cercano al más lejano', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+    let tanda = abrir(estudio)!
+    while (tanda.pregunta!.elemento.simbolo !== 'Xe') tanda = acertarCadena(estudio, tanda)
+
+    tanda = acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
+
+    expect(estudio.vueltas(tanda).map(({ dias, simbolos }) => [dias, [...simbolos].sort()])).toEqual([
+      [1, ['H', 'Li', 'Xe']],
+      [3, ['Ar', 'He', 'Kr', 'Ne', 'Rn']],
+    ])
   })
 
   it('sin nada que toque ni nada por ver no hay Tanda, y dice el día en que vuelve a tocar', () => {
@@ -559,7 +688,22 @@ describe('Intervalos', () => {
     expect(estudio.proximaVuelta()).toBe('2026-10-09')
   })
 
-  it('un fallo devuelve el Elemento al día siguiente y su Intervalo empieza de nuevo', () => {
+  it('fallar solo la Clase o la Configuración deja el Intervalo que tenía', () => {
+    const { estudio, reloj } = montar()
+    estudiarElDia(estudio)
+    reloj.dia = '2026-10-06'
+    estudiarElDia(estudio)
+    reloj.dia = '2026-10-09'
+    const tanda = abrir(estudio)!
+    const { simbolo } = tanda.pregunta!.elemento
+    expect(estudio.entradas()[simbolo].intervalo).toBe(3)
+
+    fallar(estudio, tanda, ['clase', 'configuracion'])
+
+    expect(estudio.entradas()[simbolo]).toMatchObject({ estado: 'sabido', intervalo: 3, vuelve: '2026-10-12' })
+  })
+
+  it('un fallo en la Posición devuelve el Elemento al día siguiente y su Intervalo empieza de nuevo', () => {
     const { estudio, reloj } = montar()
     estudiarElDia(estudio)
     reloj.dia = '2026-10-06'
@@ -569,7 +713,7 @@ describe('Intervalos', () => {
     const { simbolo } = tanda.pregunta!.elemento
     expect(estudio.entradas()[simbolo].intervalo).toBe(3)
 
-    tanda = fallarLaClase(estudio, tanda)
+    tanda = fallar(estudio, tanda, ['posicion'])
 
     expect(estudio.entradas()[simbolo]).toMatchObject({ estado: 'flojo', intervalo: 0, vuelve: '2026-10-10' })
 
@@ -623,5 +767,68 @@ describe('Dominio', () => {
 
     expect(estudio.entradas()).toEqual({ He: buena })
     expect(estudio.camino()).toBe('uso')
+  })
+})
+
+describe('Copia del Dominio', () => {
+  const ENTRADA = { estado: 'sabido', intervalo: 3, vuelve: '2026-10-09', fallos: 0, pasosFallados: [] }
+
+  function conAlgoEstudiado(): Estudio {
+    const { estudio } = montar()
+    estudio.elegirCamino('uso')
+    acertarTanda(estudio, fallar(estudio, abrir(estudio)!, ['clase']))
+    return estudio
+  }
+
+  it('es el registro del Dominio: versión, Camino y Elementos', () => {
+    const estudio = conAlgoEstudiado()
+
+    expect(JSON.parse(estudio.copia())).toEqual({ version: 1, camino: 'uso', elementos: estudio.entradas() })
+  })
+
+  it('recuperarla en otro navegador deja el Dominio igual que cuando se guardó, Camino incluido', () => {
+    const estudio = conAlgoEstudiado()
+    const copia = estudio.copia()
+    const { estudio: otro } = montar()
+
+    expect(otro.esCopia(copia)).toBe(true)
+    expect(otro.recuperar(copia)).toBe(true)
+
+    expect(otro.entradas()).toEqual(estudio.entradas())
+    expect(otro.camino()).toBe('uso')
+    expect(otro.copia()).toBe(copia)
+  })
+
+  it('recuperarla sustituye el Dominio que había, sin mezclarlo', () => {
+    const copia = conAlgoEstudiado().copia()
+    const { estudio } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+
+    estudio.recuperar(copia)
+
+    expect(Object.keys(estudio.entradas()).sort()).toEqual(['H', 'O'])
+  })
+
+  it.each([
+    ['no es JSON', '{no es json'],
+    ['está vacío', ''],
+    ['no es un registro', '[]'],
+    ['es de otra versión', JSON.stringify({ version: 2, camino: 'uso', elementos: {} })],
+    ['no trae Camino', JSON.stringify({ version: 1, elementos: {} })],
+    ['trae un Camino que no existe', JSON.stringify({ version: 1, camino: 'alfabetico', elementos: {} })],
+    ['no trae Elementos', JSON.stringify({ version: 1, camino: 'uso' })],
+    ['trae un Elemento que no se estudia', JSON.stringify({ version: 1, camino: 'uso', elementos: { He: ENTRADA, Pd: ENTRADA } })],
+    [
+      'trae una entrada mal formada',
+      JSON.stringify({ version: 1, camino: 'uso', elementos: { He: ENTRADA, Ne: { ...ENTRADA, vuelve: 'mañana' } } }),
+    ],
+  ])('un archivo que %s se rechaza entero y el Dominio queda como estaba', (_, archivo) => {
+    const estudio = conAlgoEstudiado()
+    const antes = estudio.copia()
+
+    expect(estudio.esCopia(archivo)).toBe(false)
+    expect(estudio.recuperar(archivo)).toBe(false)
+
+    expect(estudio.copia()).toBe(antes)
   })
 })

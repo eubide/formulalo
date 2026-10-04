@@ -1,21 +1,17 @@
 <script lang="ts">
-  import {
-    electronesDeValencia,
-    elementoDe,
-    elementos,
-    esDeTransicion,
-    etiquetaDeClase,
-    type Clase,
-  } from '../catalogo/catalogo'
+  import { electronesDeValencia, elementoDe, elementos, esDeTransicion, etiquetaDeClase } from '../catalogo/catalogo'
   import { ultimoElectronDe } from '../catalogo/cajas'
+  import { trozoPorGrupoDe } from '../catalogo/caminos'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from '../catalogo/historias'
-  import { excepcionDe, reglaDe } from '../catalogo/reglas'
+  import { excepcionDe, pierdeElNegativo, reglaDe, SIN_EL_NEGATIVO } from '../catalogo/reglas'
+  import Clases from '../tabla/Clases.svelte'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
   import Cajas from './Cajas.svelte'
   import Configuracion from './Configuracion.svelte'
   import Marcado from './Marcado.svelte'
   import Numeros from './Numeros.svelte'
+  import Presentacion from './Presentacion.svelte'
 
   interface Props {
     alSalir: () => void
@@ -23,9 +19,8 @@
 
   let { alSalir }: Props = $props()
 
-  const CLASES = Object.keys(etiquetaDeClase) as Clase[]
-
   let elegido = $state<string | null>(null)
+  let viendoSuGrupo = $state(false)
 
   function conSigno(numero: number): string {
     return numero < 0 ? `−${-numero}` : numero > 0 ? `+${numero}` : '0'
@@ -49,7 +44,16 @@
   )
 </script>
 
-<main class="pantalla">
+{#if elemento && viendoSuGrupo}
+  <Presentacion
+    simbolos={trozoPorGrupoDe(elemento)}
+    desdeExplorar
+    alDescartar={() => (viendoSuGrupo = false)}
+    {alSalir}
+  />
+{/if}
+
+<main class="pantalla" hidden={viendoSuGrupo}>
   <header>
     <h1>Explorar</h1>
     <button type="button" class="salir" onclick={alSalir}>Salir</button>
@@ -57,12 +61,7 @@
 
   <div class="a-la-izquierda">
     <Tabla {casillas} alTocar={(simbolo) => (elegido = simbolo)} />
-
-    <ul class="leyenda">
-      {#each CLASES as clase (clase)}
-        <li><i class={clase}></i>{etiquetaDeClase[clase]}</li>
-      {/each}
-    </ul>
+    <Clases />
   </div>
 
   {#if elemento}
@@ -82,6 +81,7 @@
             {#if familia}<b>{familia}</b>{:else}No es de los {familiaDeGrupo(elemento.grupo).toLowerCase()}{/if}
             · <b>{etiquetaDeClase[elemento.clase]}</b>
           </p>
+          <button type="button" class="boton secundario" onclick={() => (viendoSuGrupo = true)}>Ver su Grupo</button>
         </div>
       </div>
 
@@ -115,6 +115,7 @@
           <dt>Regla del grupo {regla.grupo}</dt>
           <dd>
             {regla.puente}
+            {#if pierdeElNegativo(elemento)}<br />{SIN_EL_NEGATIVO}{/if}
             {#if excepcion}<br /><b>{elemento.simbolo} se aparta</b>: {excepcion}{/if}
           </dd>
         {/if}
@@ -132,6 +133,11 @@
 </main>
 
 <style>
+  /* El display: grid de .pantalla en pantallas anchas gana al hidden del navegador. */
+  main[hidden] {
+    display: none;
+  }
+
   header {
     display: flex;
     align-items: baseline;
@@ -142,26 +148,6 @@
   h1 {
     margin: 0;
     font-size: 20px;
-  }
-
-  .leyenda {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 16px;
-    margin: 10px 0 0;
-    padding: 0;
-    list-style: none;
-    font-size: 13px;
-    color: var(--tenue);
-  }
-
-  .leyenda i {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-    border-radius: 3px;
-    vertical-align: -1px;
   }
 
   .metal {
@@ -225,6 +211,10 @@
   .identidad p {
     margin: 2px 0;
     font-size: 18px;
+  }
+
+  .identidad .boton {
+    margin-top: 6px;
   }
 
   dl {

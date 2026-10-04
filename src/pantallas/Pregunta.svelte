@@ -1,7 +1,16 @@
 <script lang="ts">
-  import { electronesDeValencia, elementoDe, esDeTransicion, etiquetaDeClase, type Clase } from '../catalogo/catalogo'
+  import {
+    electronesDeValencia,
+    elementoDe,
+    elementos,
+    esDeTransicion,
+    etiquetaDeClase,
+    type Clase,
+  } from '../catalogo/catalogo'
   import { etiquetaDePaso, pasosDe, type Respuesta, type Tanda } from '../estudio/estudio'
+  import Clases from '../tabla/Clases.svelte'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
+  import Acierto from './Acierto.svelte'
   import Configuracion from './Configuracion.svelte'
   import Correccion from './Correccion.svelte'
   import PasoConfiguracion from './PasoConfiguracion.svelte'
@@ -9,12 +18,14 @@
 
   interface Props {
     tanda: Tanda
+    sabido: boolean
     alResponder: (respuesta: Respuesta) => void
     alCerrarCorreccion: () => void
+    alCerrarAcierto: () => void
     alSalir: () => void
   }
 
-  let { tanda, alResponder, alCerrarCorreccion, alSalir }: Props = $props()
+  let { tanda, sabido, alResponder, alCerrarCorreccion, alCerrarAcierto, alSalir }: Props = $props()
 
   const CLASES = Object.keys(etiquetaDeClase) as Clase[]
   const tactil = matchMedia('(pointer: coarse)').matches
@@ -30,6 +41,9 @@
 
   const casillas = $derived.by(() => {
     const mapa: Record<string, Casilla> = {}
+    if (correccion?.paso === 'clase') {
+      for (const { simbolo, clase } of elementos()) mapa[simbolo] = { clase }
+    }
     for (const simbolo of tanda.rotulados) {
       if (simbolo !== elemento.simbolo) mapa[simbolo] = { rotulada: true, clase: elementoDe(simbolo).clase }
     }
@@ -46,6 +60,7 @@
 
   function estadoDe(paso: (typeof pasos)[number]): string {
     if (pregunta.fallados.includes(paso)) return 'fallado'
+    if (sabido) return 'acertado'
     if (paso === pregunta.paso) return 'actual'
     return pasos.indexOf(paso) < pasos.indexOf(pregunta.paso) ? 'acertado' : 'pendiente'
   }
@@ -86,10 +101,15 @@
 
   <div class="a-la-izquierda">
     <Tabla {casillas} alTocar={pregunta.paso === 'posicion' && !correccion ? tocar : undefined} />
+    {#if correccion?.paso === 'clase'}
+      <Clases />
+    {/if}
   </div>
 
   <section class="panel">
-    {#if correccion}
+    {#if sabido}
+      <Acierto {elemento} alSeguir={alCerrarAcierto} />
+    {:else if correccion}
       <Correccion {pregunta} {correccion} alSeguir={alCerrarCorreccion} />
     {:else if pregunta.paso === 'posicion'}
       <p>¿Dónde está?</p>

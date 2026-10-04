@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { trozosDe, type Camino } from './caminos'
+import { trozoPorGrupoDe, trozosDe, type Camino } from './caminos'
 import {
   configuracionDe,
   electronesDeValencia,
@@ -11,7 +11,7 @@ import {
 } from './catalogo'
 import { familiaDe, familiaDeGrupo } from './familias'
 import { historiaDeOrden, historiaDeSimbolo, historiaDeTrozo } from './historias'
-import { excepcionDe, reglaDe } from './reglas'
+import { excepcionDe, pierdeElNegativo, reglaDe } from './reglas'
 
 const estudiados = elementos()
 const deTransicion = estudiados.filter(esDeTransicion)
@@ -48,6 +48,12 @@ describe('Los 56 Elementos', () => {
     const noMetales = estudiados.filter((elemento) => elemento.clase === 'no-metal')
 
     expect(noMetales.filter((elemento) => !elemento.numeros.some((numero) => numero <= 0))).toEqual([])
+  })
+
+  it('los metaloides son justo B, Si, Ge, As, Sb, Te, Po y At', () => {
+    const metaloides = estudiados.filter((elemento) => elemento.clase === 'metaloide')
+
+    expect(metaloides.map((elemento) => elemento.simbolo)).toEqual(['B', 'Si', 'Ge', 'As', 'Sb', 'Te', 'Po', 'At'])
   })
 
   it('el B lleva solo el +3 de la Tabla del libro', () => {
@@ -115,12 +121,17 @@ describe('Reglas', () => {
     expect(deTransicion.map(reglaDe)).toEqual(deTransicion.map(() => null))
   })
 
-  it('un Elemento lleva excepción justo cuando sus Números de oxidación no son los de su Regla', () => {
+  it('un Elemento lleva excepción justo cuando sus Números de oxidación no son los de su Regla, sin el negativo si es metal', () => {
     for (const elemento of deducibles) {
-      const seAparta = JSON.stringify(elemento.numeros) !== JSON.stringify(reglaDe(elemento)!.numeros)
+      const deLaRegla = reglaDe(elemento)!.numeros.filter((numero) => elemento.clase !== 'metal' || numero >= 0)
+      const seAparta = JSON.stringify(elemento.numeros) !== JSON.stringify(deLaRegla)
 
       expect(excepcionDe(elemento) !== null, elemento.simbolo).toBe(seAparta)
     }
+  })
+
+  it('pierden el negativo de su Regla por ser metales Sn, Pb y Bi', () => {
+    expect(estudiados.filter(pierdeElNegativo).map((elemento) => elemento.simbolo)).toEqual(['Sn', 'Pb', 'Bi'])
   })
 })
 
@@ -199,5 +210,11 @@ describe('Caminos', () => {
     expect(trozos[0]).toEqual(['H', 'O'])
     expect(trozos[1]).toEqual(['Li', 'Na', 'K', 'Rb', 'Cs', 'Fr'])
     expect(trozos.at(-1)).toEqual(['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn'])
+  })
+
+  it('por Grupo, un Elemento va con su Grupo entero, y un metal de transición con su trozo', () => {
+    expect(trozoPorGrupoDe(elementoDe('O'))).toEqual(['O', 'S', 'Se', 'Te', 'Po'])
+    expect(trozoPorGrupoDe(elementoDe('Na'))).toEqual(['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr'])
+    expect(trozoPorGrupoDe(elementoDe('Ag'))).toEqual(['Cu', 'Ag', 'Au'])
   })
 })

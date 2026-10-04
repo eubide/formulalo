@@ -25,7 +25,7 @@ export interface Tanda {
   correccion: Correccion | null
   pendientes: string[]
   rotulados: string[]
-  enteros: string[]
+  sabidos: string[]
   vuelven: string[]
 }
 
@@ -33,6 +33,12 @@ export interface Anuncio {
   repaso: number
   nuevos: number
   minutos: number
+  quedan: number
+}
+
+export interface Vuelta {
+  dias: number
+  simbolos: string[]
 }
 
 export interface Resumen {
@@ -46,11 +52,14 @@ interface Composicion {
   repaso: string[]
   presentacion: string[] | null
   nuevos: string[]
+  quedan: number
 }
 
 const ELEMENTOS_POR_TANDA = 8
+const NUEVOS_CON_SITIO_GUARDADO = 2
 const MINUTOS_DE_UNA_TANDA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
+const MILISEGUNDOS_DE_UN_DIA = 86_400_000
 
 // Un Flojo sin fallos solo puede venir de una Presentación: todavía no se le ha preguntado nada.
 function sinPreguntar(entrada: Entrada): boolean {
@@ -60,7 +69,7 @@ function sinPreguntar(entrada: Entrada): boolean {
 function queTocan(entradas: Record<string, Entrada>, hoy: string): string[] {
   const tocan = elementos()
     .map((elemento) => elemento.simbolo)
-    .filter((simbolo) => entradas[simbolo] && entradas[simbolo].vuelve <= hoy)
+    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]) && entradas[simbolo].vuelve <= hoy)
   const flojos = tocan
     .filter((simbolo) => entradas[simbolo].estado === 'flojo')
     .sort((a, b) => entradas[b].fallos - entradas[a].fallos)
@@ -71,15 +80,18 @@ function queTocan(entradas: Record<string, Entrada>, hoy: string): string[] {
 }
 
 function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string): Composicion | null {
-  const repaso = queTocan(entradas, hoy).slice(0, ELEMENTOS_POR_TANDA)
-  const huecos = ELEMENTOS_POR_TANDA - repaso.length
+  const esperan = Object.keys(entradas).filter((simbolo) => sinPreguntar(entradas[simbolo]))
   const sinVer = trozosDe(camino)
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .find((trozo) => trozo.length > 0)
-  const quedaAlgoSinPreguntar = Object.values(entradas).some(sinPreguntar)
-  const presentacion = huecos > 0 && sinVer && !quedaAlgoSinPreguntar ? sinVer : null
-  if (repaso.length === 0 && !presentacion) return null
-  return { repaso, presentacion, nuevos: presentacion?.slice(0, huecos) ?? [] }
+  const presentacion = esperan.length === 0 && sinVer ? sinVer : null
+  const porPreguntar = presentacion ?? esperan
+  const guardados = Math.min(NUEVOS_CON_SITIO_GUARDADO, porPreguntar.length)
+  const tocan = queTocan(entradas, hoy)
+  const repaso = tocan.slice(0, ELEMENTOS_POR_TANDA - guardados)
+  const nuevos = porPreguntar.slice(0, ELEMENTOS_POR_TANDA - repaso.length)
+  if (repaso.length === 0 && nuevos.length === 0) return null
+  return { repaso, presentacion, nuevos, quedan: tocan.length - repaso.length }
 }
 
 export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
@@ -96,9 +108,8 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
     const rotulados = tanda.rotulados.includes(simbolo) ? tanda.rotulados : [...tanda.rotulados, simbolo]
     if (tanda.vuelven.includes(simbolo)) return preguntarElSiguiente({ ...tanda, rotulados })
 
-    dominio.anotar(simbolo, fallados)
-    if (fallados.length === 0) {
-      return preguntarElSiguiente({ ...tanda, rotulados, enteros: [...tanda.enteros, simbolo] })
+    if (dominio.anotar(simbolo, fallados) === 'sabido') {
+      return preguntarElSiguiente({ ...tanda, rotulados, sabidos: [...tanda.sabidos, simbolo] })
     }
     const pendientes = [...tanda.pendientes]
     pendientes.splice(ELEMENTOS_HASTA_LA_REINSERCION, 0, simbolo)
@@ -133,21 +144,29 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
     },
 
     anuncio(): Anuncio | null {
-      const entradas = dominio.entradas()
-      const composicion = componer(entradas, dominio.camino(), hoy())
+      const composicion = componer(dominio.entradas(), dominio.camino(), hoy())
       if (!composicion) return null
       const cuantos = composicion.repaso.length + composicion.nuevos.length
-      const yaPreguntados = composicion.repaso.filter((simbolo) => !sinPreguntar(entradas[simbolo])).length
       return {
-        repaso: yaPreguntados,
-        nuevos: cuantos - yaPreguntados,
+        repaso: composicion.repaso.length,
+        nuevos: composicion.nuevos.length,
         minutos: Math.max(1, Math.round((cuantos * MINUTOS_DE_UNA_TANDA_LLENA) / ELEMENTOS_POR_TANDA)),
+        quedan: composicion.quedan,
       }
     },
 
     proximaVuelta(): string | null {
       const vueltas = Object.values(dominio.entradas()).map((entrada) => entrada.vuelve)
       return vueltas.length > 0 ? vueltas.reduce((primera, vuelve) => (vuelve < primera ? vuelve : primera)) : null
+    },
+
+    vueltas(tanda: Tanda): Vuelta[] {
+      const entradas = dominio.entradas()
+      const dias = [...new Set(tanda.rotulados.map((simbolo) => entradas[simbolo].vuelve))].sort()
+      return dias.map((dia) => ({
+        dias: (Date.parse(dia) - Date.parse(hoy())) / MILISEGUNDOS_DE_UN_DIA,
+        simbolos: tanda.rotulados.filter((simbolo) => entradas[simbolo].vuelve === dia),
+      }))
     },
 
     abrirTanda(): Tanda | null {
@@ -159,7 +178,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
         correccion: null,
         pendientes: barajar([...composicion.repaso, ...composicion.nuevos], azar),
         rotulados: [],
-        enteros: [],
+        sabidos: [],
         vuelven: [],
       }
       return tanda.presentacion ? tanda : preguntarElSiguiente(tanda)
@@ -184,6 +203,18 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
 
     cerrarCorreccion(tanda: Tanda): Tanda {
       return tanda.correccion ? avanzar({ ...tanda, correccion: null }) : tanda
+    },
+
+    copia(): string {
+      return dominio.copia()
+    },
+
+    esCopia(copia: string): boolean {
+      return dominio.esCopia(copia)
+    },
+
+    recuperar(copia: string): boolean {
+      return dominio.recuperar(copia)
     },
   }
 }
