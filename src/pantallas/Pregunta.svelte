@@ -92,7 +92,7 @@
     {#if correccion}
       <Correccion {pregunta} {correccion} alSeguir={alCerrarCorreccion} />
     {:else if pregunta.paso === 'posicion'}
-      <p>¿Dónde está? Toca su casilla.</p>
+      <p>¿Dónde está?</p>
       {#if tentativa}
         {@const tocado = elementoDe(tentativa)}
         <button type="button" class="boton" onclick={confirmar}>

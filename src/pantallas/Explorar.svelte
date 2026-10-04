@@ -102,7 +102,7 @@
       </dl>
     </section>
   {:else}
-    <p class="aviso">Toca un elemento para ver sus propiedades.</p>
+    <p class="aviso">Toca un elemento.</p>
   {/if}
 </main>
 
