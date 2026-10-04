@@ -65,7 +65,7 @@ Persona que estudia.
 _Evitar_: usuario, estudiante, jugador
 
 **Distractor**:
-Número de oxidación falso que se ofrece junto a los verdaderos de un Elemento. Sale de las confusiones reales: el signo contrario, o los números del Grupo de al lado o de otro trozo de los metales de transición.
+Número de oxidación falso que se ofrece junto a los verdaderos de un Elemento. Sale de las confusiones reales: el signo contrario, o los números del Grupo de al lado o de otro trozo de los metales de transición. Nunca es el 0, que todo Elemento tiene cuando está libre, y a un metal siempre se le ofrece alguno positivo.
 _Evitar_: falso, opción falsa, señuelo
 
 **Cadena**:
