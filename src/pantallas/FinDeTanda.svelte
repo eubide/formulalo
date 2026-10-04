@@ -14,20 +14,35 @@
 
   let { tanda, estudio, alSeguir, alVolver }: Props = $props()
 
-  const anuncio = $derived(estudio.anuncio())
-  const proximaVuelta = $derived(estudio.proximaVuelta())
+  function mirar() {
+    return {
+      anuncio: estudio.anuncio(),
+      proximaVuelta: estudio.proximaVuelta(),
+      entradas: estudio.entradas(),
+      vueltas: estudio.vueltas(tanda),
+    }
+  }
+
+  let aLaVista = $state.raw(mirar())
+  const { anuncio, proximaVuelta, entradas, vueltas } = $derived(aLaVista)
+
   const casillas = $derived.by(() => {
-    const mapa = casillasDelDominio(estudio.entradas())
+    const mapa = casillasDelDominio(entradas)
     for (const simbolo of tanda.rotulados) mapa[simbolo] = { ...mapa[simbolo], senal: 'iluminada' }
     return mapa
   })
-  const vueltas = $derived(
-    estudio
-      .vueltas(tanda)
-      .map(({ dias, simbolos }) => `${dias === 1 ? 'Mañana' : `En ${dias} días`}: ${simbolos.join(', ')}`)
+  const cuandoVuelven = $derived(
+    vueltas
+      .map(({ dias, simbolos }) => `${dias === 0 ? 'Hoy' : dias === 1 ? 'Mañana' : `En ${dias} días`}: ${simbolos.join(', ')}`)
       .join(' · '),
   )
+
+  function alCambiarLaVisibilidad() {
+    if (document.visibilityState === 'visible') aLaVista = mirar()
+  }
 </script>
+
+<svelte:document onvisibilitychange={alCambiarLaVisibilidad} />
 
 <main class="pantalla">
   <h1>Tanda terminada</h1>
@@ -37,7 +52,7 @@
     {tanda.sabidos.length}
     {tanda.sabidos.length === 1 ? 'elemento sabido' : 'elementos sabidos'}
   </p>
-  <p>{vueltas}</p>
+  <p>{cuandoVuelven}</p>
 
   <div class="a-la-izquierda">
     <Tabla {casillas} />

@@ -162,10 +162,11 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
 
     vueltas(tanda: Tanda): Vuelta[] {
       const entradas = dominio.entradas()
-      const dias = [...new Set(tanda.rotulados.map((simbolo) => entradas[simbolo].vuelve))].sort()
+      const vuelve = (simbolo: string) => (entradas[simbolo].vuelve < hoy() ? hoy() : entradas[simbolo].vuelve)
+      const dias = [...new Set(tanda.rotulados.map(vuelve))].sort()
       return dias.map((dia) => ({
         dias: (Date.parse(dia) - Date.parse(hoy())) / MILISEGUNDOS_DE_UN_DIA,
-        simbolos: tanda.rotulados.filter((simbolo) => entradas[simbolo].vuelve === dia),
+        simbolos: tanda.rotulados.filter((simbolo) => vuelve(simbolo) === dia),
       }))
     },
 

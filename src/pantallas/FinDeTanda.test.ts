@@ -35,6 +35,18 @@ describe('Fin de Tanda', () => {
     expect(texto).toContain('Xe Xenón')
   })
 
+  it('cuando su día ya ha llegado, los Elementos de la Tanda salen juntos bajo «Hoy»', () => {
+    const { estudio, reloj } = montar()
+    acertarTanda(estudio, abrir(estudio)!)
+    reloj.dia = '2026-10-06'
+    let tanda = abrir(estudio)!
+    while (tanda.pregunta!.elemento.simbolo !== 'Xe') tanda = acertarCadena(estudio, tanda)
+    tanda = acertarTanda(estudio, fallar(estudio, tanda, ['posicion']))
+    reloj.dia = '2026-10-09'
+
+    expect(pintarFinDeTanda(estudio, tanda)).toMatch(/7 elementos sabidos Hoy: (\w+, ){7}\w+ 1 2 3 /)
+  })
+
   it('cuenta entre los Sabidos el Elemento que solo falló la Clase', () => {
     const { estudio } = montar()
     const tanda = acertarTanda(estudio, fallar(estudio, abrir(estudio)!, ['clase']))
