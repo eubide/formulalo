@@ -7,7 +7,7 @@ Web pública para aprender dónde está cada elemento en la tabla periódica y l
 ### Contenido
 
 **Elemento**:
-Elemento químico que se estudia. Toda pregunta parte de él, dado por su nombre o por su Símbolo; nunca se llega a un Elemento desde uno de sus datos.
+Elemento químico que se estudia. Toda pregunta parte de él o de un Radical. Se da por su nombre o por su Símbolo, y nunca se llega a un Elemento desde uno de sus datos.
 _Evitar_: átomo, sustancia
 
 **Símbolo**:
@@ -47,8 +47,12 @@ La tabla periódica del anexo A3 del libro de texto. Da la Clase de todos los El
 _Evitar_: libro, tabla periódica
 
 **Tabla de radicales**:
-La hoja «Tabla de No. de oxidación y Radicales». Da los Números de oxidación del Sc y el Pd, que no están en las otras dos fuentes, y los del B y el F, que mandan sobre ellas.
+La hoja «Tabla de No. de oxidación y Radicales». Trae los 39 Radicales y da los Números de oxidación del Sc y el Pd, que no están en las otras dos fuentes, y los del B y el F, que mandan sobre ellas.
 _Evitar_: hoja, tabla de valencias
+
+**Radical**:
+Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga.
+_Evitar_: anión, oxoanión
 
 **Configuración**:
 El reparto de los electrones de un Elemento en subniveles, escrito entero (1s² 2s² 2p⁴) o abreviado desde el gas noble anterior ([He] 2s² 2p⁴). De ella se responde solo el subnivel donde entra el último electrón, 2p⁴ en el O, que es el que se ve resaltado.
@@ -105,7 +109,7 @@ Los Elementos que entran en una Tanda antes de que les toque volver, cuando lo n
 _Evitar_: repaso adelantado, extra, entrenamiento
 
 **Dictado**:
-Ejercicio aparte de la Tanda para marcar Números de oxidación de memoria, sin Tabla, Configuración ni Cajas, en un teclado que siempre es el mismo. Lleva 15 preguntas de los Elementos ya preguntados en una Tanda, con dos de cada tres entre los que no salen solo de su Regla. Detrás de una excepción va un Elemento regular de su Grupo. El 0 no se pregunta, así que no salen los gases nobles que solo tienen 0. Acertar no cambia nada. Fallar lo devuelve a Flojo. Lo fallado vuelve una vez en el mismo Dictado.
+Ejercicio aparte de la Tanda para marcar Números de oxidación de memoria, sin Tabla, Configuración ni Cajas, en un teclado que siempre es el mismo. Lleva 15 preguntas de los Elementos ya preguntados en una Tanda: unos 10 Elementos, con dos de cada tres entre los que no salen solo de su Regla, y 5 Radicales de esos Elementos. Detrás de una excepción va un Elemento regular de su Grupo. El 0 no se pregunta, así que no salen los gases nobles que solo tienen 0. Acertar no cambia nada. Fallar un Elemento lo devuelve a Flojo; fallar un Radical no escribe en el Dominio. Lo fallado vuelve una vez en el mismo Dictado.
 _Evitar_: examen, prueba, test
 
 **Corrección**:
@@ -151,6 +155,7 @@ _Evitar_: caja, nivel, plazo
 - Cada **Elemento** lleva la **Familia** de su **Grupo**, salvo el H, que no lleva ninguna
 - Una **Tanda** sale del **Dominio**: trae un **Grupo** nuevo por el **Camino** elegido, repasa los **Elementos** cuyo **Intervalo** se ha cumplido y se llena con **Práctica**
 - Cada **Elemento** está en el **Dominio** sin ver, **Flojo** o **Sabido**
+- Cada **Radical** tiene un **Elemento** central, y el número que lleva es uno de los **Números de oxidación** de ese **Elemento**
 
 ## Ambigüedades resueltas
 
@@ -159,7 +164,7 @@ _Evitar_: caja, nivel, plazo
 - La Hoja de oxidación manda sobre la Tabla del libro: el N lleva −3, +1, +3 y +5 aunque la Tabla del libro no traiga el +1.
 - Los 13 Elementos que la Hoja de oxidación no trae son Ga, In, Tl, Ge, Bi, Po, At y los seis gases nobles.
 - El B lleva −3 y +3, como en la Tabla de radicales. El −3 no sale de llenar su Caja p, que tiene 5 mitades vacías y llena 3: se enseña como excepción a su Regla.
-- El F lleva −1, +1, +3, +5 y +7 porque así lo da la Tabla de radicales, aunque en la química real solo tenga −1.
+- El F lleva −1, +1, +3, +5 y +7, y sus cuatro Radicales, porque así lo da la Tabla de radicales, aunque en la química real solo tenga −1 y FO₂⁻, FO₃⁻ y FO₄⁻ no existan.
 - La Tabla de radicales solo manda en el B y el F. También difiere en otros tres, y se quedan como estaban: el H con −1 y +1, el C con −4, +2 y +4, y el Bi como metal con +3 y +5. El N sigue con −3, +1, +3 y +5: el «1» añadido a mano en esa hoja no se extiende a los demás de su casilla.
 - El Cr y el Mn están dos veces en la Hoja de oxidación, como metal (+2 y +3 los dos) y como no metal (+6 el Cr; +4, +6 y +7 el Mn). Se estudian los dos juegos.
 - La Hoja de oxidación solo reparte en metales y no metales, y pone B, Si, As, Sb y Te entre los no metales. La Clase sigue a la Tabla del libro, que los da como metaloides. La Tabla de radicales pone el B entre los metales y entre los no metales, y el Bi entre los no metales: tampoco manda en la Clase.

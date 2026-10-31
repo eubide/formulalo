@@ -6,10 +6,11 @@
   interface Props {
     elemento?: Elemento
     opciones: number[]
+    enunciado?: string
     alResponder: (numeros: number[]) => void
   }
 
-  let { elemento, opciones, alResponder }: Props = $props()
+  let { elemento, opciones, enunciado = '¿Qué números de oxidación tiene?', alResponder }: Props = $props()
 
   let elegidos = $state<number[]>([])
   let conAyuda = $state(false)
@@ -19,7 +20,7 @@
   }
 </script>
 
-<p>¿Qué números de oxidación tiene?</p>
+<p>{enunciado}</p>
 
 <div class="opciones">
   {#each opciones as numero (numero)}
