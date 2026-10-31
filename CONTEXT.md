@@ -51,8 +51,12 @@ La hoja «Tabla de No. de oxidación y Radicales». Trae los 39 Radicales y da l
 _Evitar_: hoja, tabla de valencias
 
 **Radical**:
-Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: se puede hacer desde el principio y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. Los del F llegan los últimos, porque FO₂⁻, FO₃⁻ y FO₄⁻ no existen en la química real. Presenta antes los que no ha visto. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
+Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: no depende de las Oleadas y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. Los del F llegan los últimos, porque FO₂⁻, FO₃⁻ y FO₄⁻ no existen en la química real. Presenta antes los que no ha visto. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
 _Evitar_: anión, oxoanión
+
+**Compuesto**:
+Combinación de dos Elementos que se formula al cierre de una Oleada: de su nombre, como óxido de hierro(III), se piden sus dos Símbolos, sus números y su fórmula, Fe₂O₃, en la que las cargas se anulan. Hasta 5 por Oleada, de una lista hecha a mano, con dos Sabidos y alguno de ellos de esa Oleada. Fallarlo no escribe en el Dominio. Todavía no lleva Radicales.
+_Evitar_: molécula, fórmula, sustancia
 
 **Configuración**:
 El reparto de los electrones de un Elemento en subniveles, escrito entero (1s² 2s² 2p⁴) o abreviado desde el gas noble anterior ([He] 2s² 2p⁴). De ella se responde solo el subnivel donde entra el último electrón, 2p⁴ en el O, que es el que se ve resaltado.
@@ -85,7 +89,7 @@ Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, 
 _Evitar_: secuencia, ficha, pregunta
 
 **Camino**:
-El orden en que llegan los Grupos al aprender. Hay dos y se elige: desde el gas noble (18, 1, 2, 17, 16, 15, 14, 13 y los metales de transición), que es el que viene puesto, o por uso al formular (el H y el O, y después 1, 2, 17, 16, 15, 14, 13, los metales de transición y el 18). Los dos se distinguen en el Grupo 18 y en el H y el O, así que solo cambian lo que trae la Oleada: los Bloques y los Radicales salen en el mismo orden con cualquiera. Por eso se elige en la tarjeta de la Oleada.
+El orden en que llegan los Grupos al aprender. Hay dos y se elige: desde el gas noble (18, 1, 2, 17, 16, 15, 14, 13 y los metales de transición), o por uso al formular (el H y el O, y después 1, 2, 17, 16, 15, 14, 13, los metales de transición y el 18), que es el que viene puesto. Los dos se distinguen en el Grupo 18 y en el H y el O, así que solo cambian lo que trae la Oleada: los Bloques y los Radicales salen en el mismo orden con cualquiera. Por eso se elige en la tarjeta de la Oleada.
 _Evitar_: ruta, itinerario, orden
 
 **Historia**:
@@ -97,11 +101,11 @@ Lo que comparten los Elementos de un Grupo y permite deducir sus datos: cómo ac
 _Evitar_: patrón, norma, historia
 
 **Presentación**:
-Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. En Radicales, los Radicales nuevos con su cuenta y su número, y sus Elementos centrales iluminados. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio.
+Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. En Radicales, los Radicales nuevos con su cuenta y su número, y sus Elementos centrales iluminados. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio y con las reglas generales, que antes de preguntar no salen.
 _Evitar_: tutorial, introducción, lección
 
 **Oleada**:
-Unos minutos de estudio con Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar y, si sobra sitio, otros de Práctica. Se puede pedir siempre y un día puede tener varias: los días marcan cuándo vuelve lo repasado, no cuánto se puede avanzar. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero, junto con el siguiente si no llegan a 4. El repaso se añade según la Serie de repaso: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos, y la Práctica llena lo que quede. Sin nada nuevo, la Oleada entera son 8 Elementos de repaso. Los catorce metales de transición llegan en seis trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; Pd y Pt; y Sc.
+Unos minutos de estudio con Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar y, si sobra sitio, otros de Práctica. Se puede pedir siempre y un día puede tener varias: los días marcan cuándo vuelve lo repasado, no cuánto se puede avanzar. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero, junto con el siguiente si no llegan a 4. El repaso se añade según la Serie de repaso: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos, y la Práctica llena lo que quede. Sin nada nuevo, la Oleada entera son 8 Elementos de repaso. La primera tras 3 días o más sin terminar ninguna, si algo toca, trae solo lo que toca, hasta 8, sin nuevos ni Práctica. Cada Oleada se cierra con Compuestos. Los catorce metales de transición llegan en seis trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; Pd y Pt; y Sc.
 _Evitar_: tanda, ronda, sesión, lote, repaso
 
 **Serie de repaso**:
@@ -117,7 +121,7 @@ Los Elementos que entran en una Oleada antes de que les toque volver, cuando lo 
 _Evitar_: repaso adelantado, extra, entrenamiento
 
 **Dictado**:
-Ejercicio aparte de la Oleada para marcar Números de oxidación de memoria, sin Configuración ni Cajas, en un teclado que siempre es el mismo. La Tabla va debajo como refuerzo: señala dónde están los Elementos preguntados y, al corregir, cuáles se acertaron y cuáles no. Se puede hacer desde el principio y avanza por su cuenta, sin depender de las Oleadas: trae 2 Bloques, los siguientes del Camino. Antes de preguntar, presenta los Elementos sin ver. Los gases nobles no salen. También repasa: recuerda cada Bloque y cada Radical, con los mismos Intervalos que un Elemento, y reparte lo nuevo y lo que toca con su Serie de repaso. Entre lo ya visto, sale primero lo que lleva más tiempo sin salir. Acertar no cambia a los Elementos. Fallar uno ya preguntado en una Oleada lo devuelve a Flojo; uno solo presentado sigue entre los nuevos. Lo fallado vuelve una vez en el mismo Dictado.
+Ejercicio aparte de la Oleada para marcar Números de oxidación de memoria, sin Configuración ni Cajas, en un teclado que siempre es el mismo. La Tabla va debajo como refuerzo: señala dónde están los Elementos preguntados y, al corregir, cuáles se acertaron y cuáles no. Avanza por su cuenta, sin depender de las Oleadas: trae 2 Bloques, los siguientes del Camino. Antes de preguntar, presenta los Elementos sin ver. Los gases nobles no salen. También repasa: recuerda cada Bloque y cada Radical, con los mismos Intervalos que un Elemento, y reparte lo nuevo y lo que toca con su Serie de repaso. Entre lo ya visto, sale primero lo que lleva más tiempo sin salir. Acertar no cambia a los Elementos. Fallar uno ya preguntado en una Oleada lo devuelve a Flojo; uno solo presentado sigue entre los nuevos. Lo fallado vuelve una vez en el mismo Dictado.
 _Evitar_: examen, prueba, test
 
 **Modo**:
@@ -180,6 +184,7 @@ _Evitar_: caja, nivel, plazo
 - Una **Oleada** sale del **Dominio**: trae un **Grupo** nuevo por el **Camino** elegido, repasa los **Elementos** cuyo **Intervalo** se ha cumplido y se llena con **Práctica**
 - Cada **Elemento** está en el **Dominio** sin ver, **Flojo** o **Sabido**
 - Cada **Radical** tiene un **Elemento** central, y el número que lleva es uno de los **Números de oxidación** de ese **Elemento**
+- Un **Compuesto** lleva dos **Elementos**, cada uno con uno de sus **Números de oxidación**
 
 ## Ambigüedades resueltas
 
@@ -205,6 +210,8 @@ _Evitar_: caja, nivel, plazo
 - De los números cuánticos solo se enseñan los del último electrón, y solo en Explorar.
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.
-- Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos, Historias escritas por el Alumno y formular compuestos.
+- Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos e Historias escritas por el Alumno.
+- Hasta responder la primera Cadena, la Portada solo ofrece la Oleada y recuperar una copia. Dictado y Radicales no dependen de las Oleadas, pero se ofrecen después.
+- Al terminar una Oleada se dice «acertados hoy» y no «sabidos»: lo recién acertado vuelve mañana y decir que ya se sabe promete de más. Sabido sigue siendo el estado del Dominio.
 - Los comentarios del Modo no son marcas ni puntuación: ni se guardan ni se acumulan.
 - No hay examen. El objetivo es saberse los Elementos para formular después, así que nada imita un examen ni corre contra una fecha.

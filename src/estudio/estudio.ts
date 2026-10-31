@@ -14,11 +14,13 @@ import {
 } from './cadena'
 import { crearDictados, sitiosDeSorpresa, type Dictada } from './dictado'
 import { crearDominio, diaLocal, sinPreguntar, type Almacen, type Entrada } from './dominio'
+import { empezarAFormular, trasResponder, trasSeguir, type Formulando, type RespuestaDePieza } from './formular'
 import { parteDeRepaso } from './serie'
 
 export { almacenEnMemoria, diaLocal, type Almacen, type Entrada, type Estado } from './dominio'
 export { aciertaDictada, correccionDeElemento, TECLADO, type AnuncioDeEjercicio, type Dictada, type DictadoEnCurso, type RespuestaDictada, type ResumenDeEjercicio } from './dictado'
 export { etiquetaDePaso, pasosDe } from './cadena'
+export { PIEZAS, type Formulando, type Pieza, type RespuestaDePieza } from './formular'
 export type { Azar, Correccion, Paso, Pregunta, Respuesta } from './cadena'
 
 export type Estudio = ReturnType<typeof crearEstudio>
@@ -35,6 +37,7 @@ export interface Oleada {
   sorpresa: Dictada | null
   respuestaDeSorpresa: number[][] | null
   comentario: string | null
+  formulando: Formulando | null
 }
 
 interface ConSorpresa {
@@ -86,6 +89,8 @@ const MINUTOS_DE_UNA_OLEADA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
 const MILISEGUNDOS_DE_UN_DIA = 86_400_000
 const MILISEGUNDOS_DE_UN_MINUTO = 60_000
+// TODO: 3 días es una suposición, sin datos de alumnos. Revisar si quien vuelve sigue dejando la Oleada a medias.
+const DIAS_DE_AUSENCIA = 3
 
 function trozosEnteros(trozos: string[][], minimo: number): string[] {
   const tomados: string[] = []
@@ -96,24 +101,29 @@ function trozosEnteros(trozos: string[][], minimo: number): string[] {
   return tomados
 }
 
+function preguntadosDe(entradas: Record<string, Entrada>): string[] {
+  return elementos()
+    .map((elemento) => elemento.simbolo)
+    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]))
+}
+
 function componer(
   entradas: Record<string, Entrada>,
   camino: Camino,
   hoy: string,
   azar: Azar,
   oleadasHechas: number,
+  soloRepaso: boolean,
 ): Composicion {
   const esperan = Object.keys(entradas).filter((simbolo) => sinPreguntar(entradas[simbolo]))
   const sinVer = trozosDe(camino)
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .filter((trozo) => trozo.length > 0)
-  const preguntados = elementos()
-    .map((elemento) => elemento.simbolo)
-    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]))
+  const preguntados = preguntadosDe(entradas)
 
   const minimoDeNuevos = preguntados.length > 0 ? NUEVOS_MINIMOS_POR_OLEADA : 1
-  const presentacion = esperan.length === 0 && sinVer.length > 0 ? trozosEnteros(sinVer, minimoDeNuevos) : null
-  const nuevos = presentacion ?? esperan.slice(0, ELEMENTOS_POR_OLEADA)
+  const presentacion = !soloRepaso && esperan.length === 0 && sinVer.length > 0 ? trozosEnteros(sinVer, minimoDeNuevos) : null
+  const nuevos = soloRepaso ? [] : (presentacion ?? esperan.slice(0, ELEMENTOS_POR_OLEADA))
   const parte = parteDeRepaso(oleadasHechas)
   const sitios =
     nuevos.length === 0 ? ELEMENTOS_POR_OLEADA : parte === 0 ? 0 : Math.max(1, Math.round((nuevos.length * parte) / (1 - parte)))
@@ -123,11 +133,13 @@ function componer(
   const flojos = barajar(preguntados.filter(esFlojo), azar)
   const sabidos = preguntados.filter((simbolo) => !esFlojo(simbolo))
   const queTocan = preguntados.filter(toca)
-  const flojosDeHoy = flojos.filter((simbolo) => !toca(simbolo))
-  const deIntervaloMasCorto = barajar(
-    sabidos.filter((simbolo) => !toca(simbolo)),
-    azar,
-  ).sort((a, b) => entradas[a].intervalo - entradas[b].intervalo)
+  const flojosDeHoy = soloRepaso ? [] : flojos.filter((simbolo) => !toca(simbolo))
+  const deIntervaloMasCorto = soloRepaso
+    ? []
+    : barajar(
+        sabidos.filter((simbolo) => !toca(simbolo)),
+        azar,
+      ).sort((a, b) => entradas[a].intervalo - entradas[b].intervalo)
 
   const elegidos: string[] = []
   const coger = (candidatos: string[], tope = sitios) => {
@@ -159,9 +171,24 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
     return dominio.oleadas().filter(({ tipo }) => tipo === 'oleada').length
   }
 
+  function trasUnaAusencia(): boolean {
+    const ultima = dominio.oleadas().findLast(({ tipo }) => tipo === 'oleada')
+    if (!ultima) return false
+    const dias = (Date.parse(hoy()) - Date.parse(diaLocal(new Date(ultima.fin)))) / MILISEGUNDOS_DE_UN_DIA
+    if (dias < DIAS_DE_AUSENCIA) return false
+    const entradas = dominio.entradas()
+    return preguntadosDe(entradas).some((simbolo) => entradas[simbolo].vuelve <= hoy())
+  }
+
+  function compuestosAlCerrar(oleada: Oleada): Formulando | null {
+    const entradas = dominio.entradas()
+    return empezarAFormular((simbolo) => entradas[simbolo]?.estado === 'sabido', oleada.rotulados, azar)
+  }
+
   function preguntarElSiguiente(oleada: Oleada): Oleada {
     const [siguiente, ...pendientes] = oleada.pendientes
-    if (!siguiente && oleada.pregunta) dominio.registrarOleada('oleada')
+    const terminada = !siguiente && oleada.pregunta !== null
+    if (terminada) dominio.registrarOleada('oleada')
     const tocaSorpresa = siguiente !== undefined && oleada.sorpresasEn.includes(pendientes.length)
     return {
       ...oleada,
@@ -169,6 +196,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
       pregunta: siguiente ? preguntar(elementoDe(siguiente), azar, ajustesDe(dominio.modo()).seguro) : null,
       sorpresasEn: tocaSorpresa ? oleada.sorpresasEn.filter((sitio) => sitio !== pendientes.length) : oleada.sorpresasEn,
       sorpresa: tocaSorpresa ? dictados.elegirSorpresa() : null,
+      formulando: terminada ? compuestosAlCerrar(oleada) : null,
     }
   }
 
@@ -252,7 +280,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
     },
 
     anuncio(): Anuncio {
-      const { repaso, nuevos, practica, quedan } = componer(dominio.entradas(), dominio.camino(), hoy(), azar, oleadasHechas())
+      const { repaso, nuevos, practica, quedan } = componer(dominio.entradas(), dominio.camino(), hoy(), azar, oleadasHechas(), trasUnaAusencia())
       const cuantos = repaso.length + nuevos.length + practica.length
       return {
         repaso: repaso.length,
@@ -281,7 +309,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
     },
 
     abrirOleada(): Oleada {
-      const { presentacion, repaso, nuevos, practica } = componer(dominio.entradas(), dominio.camino(), hoy(), azar, oleadasHechas())
+      const { presentacion, repaso, nuevos, practica } = componer(dominio.entradas(), dominio.camino(), hoy(), azar, oleadasHechas(), trasUnaAusencia())
       const pendientes = barajar([...repaso, ...nuevos, ...practica], azar)
       const oleada: Oleada = {
         presentacion,
@@ -295,6 +323,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
         sorpresa: null,
         respuestaDeSorpresa: null,
         comentario: null,
+        formulando: null,
       }
       return oleada.presentacion ? oleada : preguntarElSiguiente(oleada)
     },
@@ -326,6 +355,24 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
 
     cerrarCorreccion(oleada: Oleada): Oleada {
       return oleada.correccion ? avanzar({ ...oleada, correccion: null }) : oleada
+    },
+
+    responderPieza(oleada: Oleada, respuesta: RespuestaDePieza): Oleada {
+      return oleada.formulando ? { ...oleada, formulando: trasResponder(oleada.formulando, respuesta) } : oleada
+    },
+
+    seguirFormulando(oleada: Oleada): Oleada {
+      return oleada.formulando ? { ...oleada, formulando: trasSeguir(oleada.formulando) } : oleada
+    },
+
+    dejarDeFormular(oleada: Oleada): Oleada {
+      return { ...oleada, formulando: null }
+    },
+
+    trasUnaAusencia,
+
+    esPrimeraVez(): boolean {
+      return dominio.oleadas().length === 0 && preguntadosDe(dominio.entradas()).length === 0
     },
 
     copia(): string {

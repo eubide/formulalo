@@ -63,8 +63,15 @@ function pasosDeLaCadena(estudio: Estudio, oleada: Oleada): string[] {
 }
 
 describe('Camino', () => {
-  it('el Camino desde el gas noble viene puesto', () => {
-    expect(montar().estudio.camino()).toBe('gas-noble')
+  it('el Camino por uso al formular viene puesto', () => {
+    expect(montar(() => 0, almacenEnMemoria()).estudio.camino()).toBe('uso')
+  })
+
+  it('quien ya tenía elegido el Camino desde el gas noble lo conserva', () => {
+    const almacen = almacenEnMemoria()
+    almacen.setItem('formulalo:dominio', JSON.stringify({ version: 1, camino: 'gas-noble', elementos: {} }))
+
+    expect(montar(() => 0, almacen).estudio.camino()).toBe('gas-noble')
   })
 
   it('el Camino elegido se recuerda y cambiarlo no borra el Dominio', () => {
@@ -1016,7 +1023,7 @@ describe('Dominio', () => {
       const { estudio } = montar(() => 0, almacen)
 
       expect(estudio.entradas()).toEqual({})
-      expect(estudio.camino()).toBe('gas-noble')
+      expect(estudio.camino()).toBe('uso')
     },
   )
 
@@ -1095,5 +1102,100 @@ describe('Copia del Dominio', () => {
     expect(estudio.recuperar(archivo)).toBe(false)
 
     expect(estudio.copia()).toBe(antes)
+  })
+})
+
+describe('Primera Oleada tras una ausencia', () => {
+  const SABIDO_PARA_MAS_ADELANTE = { estado: 'sabido', intervalo: 30, vuelve: '2026-12-01', fallos: 0, pasosFallados: [] }
+
+  function conLosGasesNoblesEstudiados() {
+    const montado = montar()
+    acertarOleada(montado.estudio, abrir(montado.estudio))
+    return montado
+  }
+
+  it('a los 3 días sin terminar una Oleada no trae nada nuevo: solo lo que toca repasar', () => {
+    const { estudio, reloj } = conLosGasesNoblesEstudiados()
+    reloj.dia = '2026-10-08'
+
+    const oleada = estudio.abrirOleada()
+
+    expect(estudio.trasUnaAusencia()).toBe(true)
+    expect(estudio.anuncio()).toMatchObject({ repaso: 6, nuevos: 0, practica: 0, quedan: 0 })
+    expect(oleada.presentacion).toBeNull()
+    expect(GRUPO_18).toContain(oleada.pregunta!.elemento.simbolo)
+    expect(oleada.pendientes).toHaveLength(5)
+  })
+
+  it('a los 2 días sigue trayendo lo nuevo', () => {
+    const { estudio, reloj } = conLosGasesNoblesEstudiados()
+    reloj.dia = '2026-10-07'
+
+    expect(estudio.trasUnaAusencia()).toBe(false)
+    expect(estudio.anuncio().nuevos).toBeGreaterThan(0)
+  })
+
+  it('con más de lo que cabe trae 8 y dice cuánto queda', () => {
+    const { estudio, reloj } = montar()
+    estudiarElDia(estudio)
+    reloj.dia = '2026-10-20'
+
+    expect(estudio.anuncio()).toMatchObject({ repaso: 8, nuevos: 0, practica: 0, quedan: 50 })
+  })
+
+  it('al terminarla se acaba la ausencia y la siguiente vuelve a traer lo nuevo', () => {
+    const { estudio, reloj } = conLosGasesNoblesEstudiados()
+    reloj.dia = '2026-10-08'
+
+    acertarOleada(estudio, estudio.abrirOleada())
+
+    expect(estudio.trasUnaAusencia()).toBe(false)
+    expect(estudio.anuncio().nuevos).toBeGreaterThan(0)
+  })
+
+  it('dejarla a medias no la da por hecha', () => {
+    const { estudio, reloj } = conLosGasesNoblesEstudiados()
+    reloj.dia = '2026-10-08'
+
+    acertarCadena(estudio, estudio.abrirOleada())
+
+    expect(estudio.trasUnaAusencia()).toBe(true)
+  })
+
+  it('un Dictado terminado no la sustituye: los Elementos siguen atrasados', () => {
+    const { estudio, reloj } = conLosGasesNoblesEstudiados()
+    reloj.dia = '2026-10-08'
+
+    let dictado = estudio.abrirDictado()
+    if (dictado.presentacion) dictado = estudio.descartarPresentacionDelDictado(dictado)
+    while (dictado.pregunta) {
+      const vacia = dictado.pregunta.tipo === 'bloque' ? dictado.pregunta.elementos.map(() => []) : 'nada'
+      dictado = estudio.cerrarCorreccionDeDictado(estudio.responderDictado(dictado, vacia))
+    }
+
+    expect(estudio.trasUnaAusencia()).toBe(true)
+  })
+
+  it('sin nada que toque no hay de qué ponerse al día, y trae lo nuevo', () => {
+    const almacen = almacenEnMemoria()
+    almacen.setItem(
+      'formulalo:dominio',
+      JSON.stringify({ version: 1, camino: 'gas-noble', elementos: { He: SABIDO_PARA_MAS_ADELANTE }, oleadas: [{ tipo: 'oleada', fin: '2026-09-01T10:00:00' }] }),
+    )
+
+    const { estudio } = montar(() => 0, almacen)
+
+    expect(estudio.trasUnaAusencia()).toBe(false)
+    expect(estudio.anuncio().nuevos).toBeGreaterThan(0)
+  })
+
+  it('sin ninguna Oleada guardada no se puede saber que haya ausencia', () => {
+    const almacen = almacenEnMemoria()
+    almacen.setItem(
+      'formulalo:dominio',
+      JSON.stringify({ version: 1, camino: 'gas-noble', elementos: { He: { ...SABIDO_PARA_MAS_ADELANTE, vuelve: DIA_1 } } }),
+    )
+
+    expect(montar(() => 0, almacen).estudio.trasUnaAusencia()).toBe(false)
   })
 })

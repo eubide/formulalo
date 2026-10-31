@@ -39,7 +39,7 @@ interface Registro {
 
 const CLAVE = 'formulalo:dominio'
 const VERSION = 1
-const CAMINO_PUESTO: Camino = 'gas-noble'
+const CAMINO_PUESTO: Camino = 'uso'
 const MODO_PUESTO: Modo = 'normal'
 const INTERVALOS = [1, 3, 7, 14, 30]
 const PASOS_QUE_HAY_QUE_SABER: Paso[] = ['posicion', 'numeros']

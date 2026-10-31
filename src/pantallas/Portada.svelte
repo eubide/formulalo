@@ -33,11 +33,13 @@
       siguientesRadicales: estudio.anuncioDeRadicales(),
       seguimiento: estudio.seguimiento(),
       modo: estudio.modo(),
+      primeraVez: estudio.esPrimeraVez(),
+      trasUnaAusencia: estudio.trasUnaAusencia(),
     }
   }
 
   let aLaVista = $state.raw(mirar())
-  const { camino, entradas, resumen, proximaVuelta, anuncio, delDictado, siguienteDictado, deRadicales, siguientesRadicales, seguimiento, modo } =
+  const { camino, entradas, resumen, proximaVuelta, anuncio, delDictado, siguienteDictado, deRadicales, siguientesRadicales, seguimiento, modo, primeraVez, trasUnaAusencia } =
     $derived(aLaVista)
 
   const casillas = $derived(casillasDelDominio(entradas))
@@ -85,30 +87,32 @@
 
 <svelte:document onvisibilitychange={alCambiarLaVisibilidad} />
 
-<main class="pantalla">
+<main class="pantalla" class:sola={primeraVez}>
   <header>
     <h1>Formúlalo</h1>
     <p>No lo memorices: dedúcelo.</p>
     {#if resumen.sinVer === resumen.total}
       <p class="bienvenida">
-        Aprende dónde está cada elemento en la tabla y deduce de ahí su configuración y sus números de oxidación. Cada oleada dura
-        unos minutos: primero te presenta un grupo y después te pregunta.
+        Aprende dónde está cada elemento en la tabla y deduce de ahí sus números de oxidación, para poder formular. Cada oleada dura
+        unos minutos: primero te presenta unos elementos, después te pregunta y acaba con fórmulas.
       </p>
     {/if}
   </header>
 
   <section class="ejercicios">
-    <div class="modo">
-      <h2>Modo</h2>
-      <div class="selector" role="radiogroup" aria-label="Modo">
-        {#each MODOS as opcion (opcion)}
-          <button type="button" role="radio" aria-checked={modo === opcion} onclick={() => elegirModo(opcion)}>
-            {etiquetaDeModo[opcion]}
-          </button>
-        {/each}
+    {#if !primeraVez}
+      <div class="modo">
+        <h2>Modo</h2>
+        <div class="selector" role="radiogroup" aria-label="Modo">
+          {#each MODOS as opcion (opcion)}
+            <button type="button" role="radio" aria-checked={modo === opcion} onclick={() => elegirModo(opcion)}>
+              {etiquetaDeModo[opcion]}
+            </button>
+          {/each}
+        </div>
+        <p class="tenue">{descripcionDeModo[modo]}</p>
       </div>
-      <p class="tenue">{descripcionDeModo[modo]}</p>
-    </div>
+    {/if}
 
     <article class="ejercicio oleada">
       <h2>Oleada</h2>
@@ -119,7 +123,7 @@
         <p class="tenue">{porRepasar}</p>
       {/if}
 
-      {#if resumen.sinVer > 0}
+      {#if !primeraVez && resumen.sinVer > 0}
         <div class="ajustes">
           <h3>Camino</h3>
           <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
@@ -132,40 +136,44 @@
       {/if}
     </article>
 
-    <article class="ejercicio">
-      <h2>Dictado</h2>
-      <p>Solo los números de oxidación, por bloques.</p>
-      <button type="button" class="boton" onclick={alDictado}>Nuevo dictado</button>
-      <p class="trae">{textoDeLoQueTrae('Bloques', siguienteDictado)}</p>
-      <p class="tenue">{textoDeLoVisto('bloques', delDictado)}</p>
-    </article>
+    {#if !primeraVez}
+      <article class="ejercicio">
+        <h2>Dictado</h2>
+        <p>Solo los números de oxidación, por bloques.</p>
+        <button type="button" class="boton" onclick={alDictado}>Nuevo dictado</button>
+        <p class="trae">{textoDeLoQueTrae('Bloques', siguienteDictado)}</p>
+        <p class="tenue">{textoDeLoVisto('bloques', delDictado)}</p>
+      </article>
 
-    <article class="ejercicio">
-      <h2>Radicales</h2>
-      <p>Iones como ClO₃⁻, el clorato: escribe su nombre o su fórmula y calcula su número.</p>
-      <button type="button" class="boton" onclick={alRadicales}>Nuevos radicales</button>
-      <p class="trae">{textoDeLoQueTrae('Radicales', siguientesRadicales)}</p>
-      <p class="tenue">{textoDeLoVisto('radicales', deRadicales)}</p>
-    </article>
-  </section>
-
-  <section class="avance">
-    <h2>Tu avance</h2>
-    <p>
-      <b>{resumen.sabidos}</b> {resumen.sabidos === 1 ? 'sabido' : 'sabidos'} · <b>{resumen.flojos}</b>
-      {resumen.flojos === 1 ? 'flojo' : 'flojos'} · <b>{resumen.sinVer}</b> sin ver, de {resumen.total}
-    </p>
-    {#if seguimiento}
-      <p class="tenue">{textoDelSeguimiento(seguimiento)}</p>
+      <article class="ejercicio">
+        <h2>Radicales</h2>
+        <p>Iones como ClO₃⁻, el clorato: escribe su nombre o su fórmula y calcula su número.</p>
+        <button type="button" class="boton" onclick={alRadicales}>Nuevos radicales</button>
+        <p class="trae">{textoDeLoQueTrae('Radicales', siguientesRadicales)}</p>
+        <p class="tenue">{textoDeLoVisto('radicales', deRadicales)}</p>
+      </article>
     {/if}
   </section>
 
-  <div class="a-la-izquierda">
-    <Tabla {casillas} />
-    <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar la tabla</button>
-  </div>
+  {#if !primeraVez}
+    <section class="avance">
+      <h2>Tu avance</h2>
+      <p>
+        <b>{resumen.sabidos}</b> {resumen.sabidos === 1 ? 'sabido' : 'sabidos'} · <b>{resumen.flojos}</b>
+        {resumen.flojos === 1 ? 'flojo' : 'flojos'} · <b>{resumen.sinVer}</b> sin ver, de {resumen.total}
+      </p>
+      {#if seguimiento}
+        <p class="tenue">{textoDelSeguimiento(seguimiento)}</p>
+      {/if}
+    </section>
 
-  {#if conPasosFallados.length > 0}
+    <div class="a-la-izquierda">
+      <Tabla {casillas} />
+      <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar la tabla</button>
+    </div>
+  {/if}
+
+  {#if conPasosFallados.length > 0 && !trasUnaAusencia}
     <section class="donde-se-rompe">
       <h2>Dónde se rompe la cadena</h2>
       <ul>
@@ -177,10 +185,14 @@
   {/if}
 
   <section>
-    <h2>Copia</h2>
-    <p class="tenue">Lo estudiado se guarda solo en este navegador.</p>
+    {#if !primeraVez}
+      <h2>Copia</h2>
+      <p class="tenue">Lo estudiado se guarda solo en este navegador.</p>
+    {/if}
     <div class="copia">
-      <button type="button" class="boton secundario" onclick={guardarCopia}>Guardar copia</button>
+      {#if !primeraVez}
+        <button type="button" class="boton secundario" onclick={guardarCopia}>Guardar copia</button>
+      {/if}
       <button type="button" class="boton secundario" onclick={() => selector.click()}>Recuperar copia</button>
       <input bind:this={selector} type="file" accept=".json,application/json" hidden onchange={leerArchivo} />
     </div>
@@ -197,6 +209,11 @@
 </main>
 
 <style>
+  .pantalla.sola {
+    display: block;
+    max-width: 520px;
+  }
+
   h1 {
     margin: 0;
     font-size: 28px;
