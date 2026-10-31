@@ -211,5 +211,6 @@ _Evitar_: caja, nivel, plazo
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.
 - Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos e Historias escritas por el Alumno.
+- Al terminar una Oleada se dice «acertados hoy» y no «sabidos»: lo recién acertado vuelve mañana y decir que ya se sabe promete de más. Sabido sigue siendo el estado del Dominio.
 - Los comentarios del Modo no son marcas ni puntuación: ni se guardan ni se acumulan.
 - No hay examen. El objetivo es saberse los Elementos para formular después, así que nada imita un examen ni corre contra una fecha.

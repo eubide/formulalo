@@ -31,7 +31,7 @@ describe('Fin de Oleada', () => {
 
     const texto = pintarFinDeOleada(estudio, oleada)
 
-    expect(texto).toMatch(/9 elementos sabidos Mañana: (\w+, ){6}\w+ · En 3 días: (\w+, ){2}\w+ 1 2 3 /)
+    expect(texto).toMatch(/9 acertados hoy Mañana: (\w+, ){6}\w+ · En 3 días: (\w+, ){2}\w+ 1 2 3 /)
     expect(texto).toContain('Li Litio')
   })
 
@@ -44,7 +44,7 @@ describe('Fin de Oleada', () => {
     oleada = acertarOleada(estudio, fallar(estudio, oleada, ['posicion']))
     reloj.dia = '2026-10-09'
 
-    expect(pintarFinDeOleada(estudio, oleada)).toMatch(/9 elementos sabidos Hoy: (\w+, ){9}\w+ 1 2 3 /)
+    expect(pintarFinDeOleada(estudio, oleada)).toMatch(/9 acertados hoy Hoy: (\w+, ){9}\w+ 1 2 3 /)
   })
 
   it('sin nada que toque dice cuándo vuelve lo siguiente y ofrece una Oleada de práctica', () => {
@@ -57,10 +57,21 @@ describe('Fin de Oleada', () => {
     )
   })
 
-  it('cuenta entre los Sabidos el Elemento que solo falló la Clase', () => {
+  it('cuenta entre los acertados de hoy el Elemento que solo falló la Clase', () => {
     const { estudio } = montar()
     const oleada = acertarOleada(estudio, fallar(estudio, abrir(estudio), ['clase']))
 
-    expect(pintarFinDeOleada(estudio, oleada)).toContain('6 elementos sabidos')
+    expect(pintarFinDeOleada(estudio, oleada)).toContain('6 acertados hoy')
+  })
+
+  it('no promete que algo se sepa ya, y escribe en singular lo que es uno', () => {
+    const { estudio } = montar()
+    estudio.elegirCamino('uso')
+    const oleada = acertarOleada(estudio, fallar(estudio, abrir(estudio), ['numeros']))
+
+    const texto = pintarFinDeOleada(estudio, oleada)
+
+    expect(texto).toContain('1 acertado hoy')
+    expect(texto).not.toContain('sabido')
   })
 })

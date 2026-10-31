@@ -50,7 +50,7 @@
   <p class="sabidos">
     <span aria-hidden="true">✓</span>
     {oleada.sabidos.length}
-    {oleada.sabidos.length === 1 ? 'elemento sabido' : 'elementos sabidos'}
+    {oleada.sabidos.length === 1 ? 'acertado hoy' : 'acertados hoy'}
   </p>
   <p>{cuandoVuelven}</p>
 
