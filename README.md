@@ -1,6 +1,6 @@
 # Formúlalo
 
-Web para aprender dónde está cada Elemento en la tabla periódica y deducir de ahí su Configuración y sus Números de oxidación, como base para formular. Se estudia en Tandas de unos cuatro minutos, y cada Elemento vuelve cuando le toca repasarse.
+Web para aprender dónde está cada Elemento en la tabla periódica y deducir de ahí su Configuración y sus Números de oxidación, como base para formular. Se estudia en Oleadas de unos cuatro minutos, y cada Elemento vuelve cuando le toca repasarse.
 
 Está publicada en https://eubide.github.io/formulalo/
 
