@@ -303,8 +303,12 @@
     padding: 10px 14px;
   }
 
+  .selector button + button {
+    border-left: 1px solid var(--borde);
+  }
+
   .selector button[aria-checked='true'] {
-    background: var(--acento);
+    background: #000;
     color: #fff;
     font-weight: 600;
   }
