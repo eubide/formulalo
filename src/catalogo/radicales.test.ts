@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { elementoDe } from './catalogo'
-import { cuentaDe, formulaDe, numeroDeRadical, radicales, radicalesDe } from './radicales'
+import { cuentaDe, esSuFormula, esSuNombre, formulaDe, numeroDeRadical, radicales, radicalesDe } from './radicales'
 
 const DE_LA_TABLA_DE_RADICALES: [string, string, number][] = [
   ['hipofluorito', 'FO⁻', 1],
@@ -78,5 +78,36 @@ describe('Radicales', () => {
     expect(cuentaDe(radicalLlamado('hipoclorito'))).toBe('x + 1·(−2) = −1')
     expect(cuentaDe(radicalLlamado('dicromato'))).toBe('2x + 7·(−2) = −2')
     expect(cuentaDe(radicalLlamado('fosfato'))).toBe('x + 4·(−2) = −3')
+  })
+})
+
+describe('Escribir un Radical', () => {
+  it.each(['clorato', 'Clorato', 'CLORATO', '  clorato '])('«%s» vale como clorato', (texto) => {
+    expect(esSuNombre(radicalLlamado('clorato'), texto)).toBe(true)
+  })
+
+  it.each(['clorito', 'hipoclorato', 'perclorato', 'clorat', ''])('«%s» no vale como clorato', (texto) => {
+    expect(esSuNombre(radicalLlamado('clorato'), texto)).toBe(false)
+  })
+
+  it('escribir de más no vale: hipoclorito no es clorito', () => {
+    expect(esSuNombre(radicalLlamado('clorito'), 'hipoclorito')).toBe(false)
+  })
+
+  it.each(['ClO3', 'clo3', 'CLO3', 'ClO₃⁻', 'clo3-', 'ClO3 -', 'cl o 3', 'clo3 1-'])('«%s» vale como ClO₃⁻', (texto) => {
+    expect(esSuFormula(radicalLlamado('clorato'), texto)).toBe(true)
+  })
+
+  it.each(['clo2', 'clo', 'o3cl', 'clo33', ''])('«%s» no vale como ClO₃⁻', (texto) => {
+    expect(esSuFormula(radicalLlamado('clorato'), texto)).toBe(false)
+  })
+
+  it.each(['Cr2O7', 'cr2o7', 'Cr₂O₇²⁻', 'cr2o7 2-'])('«%s» vale como Cr₂O₇²⁻', (texto) => {
+    expect(esSuFormula(radicalLlamado('dicromato'), texto)).toBe(true)
+  })
+
+  it('una fórmula con oxígeno sin subíndice también se escribe sin él', () => {
+    expect(esSuFormula(radicalLlamado('hipoclorito'), 'clo')).toBe(true)
+    expect(esSuFormula(radicalLlamado('hipoclorito'), 'clo1')).toBe(true)
   })
 })
