@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { formulaDe } from '../catalogo/radicales'
   import { correccionDeElemento, correctosDe, TECLADO, type Dictada, type DictadoEnCurso } from '../estudio/estudio'
   import Correccion from './Correccion.svelte'
+  import CorreccionDeRadical from './CorreccionDeRadical.svelte'
   import Numeros from './Numeros.svelte'
   import PasoNumeros from './PasoNumeros.svelte'
 
@@ -18,7 +20,12 @@
   const falladas = $derived(dictado.falladas)
 
   function comoSeDa(dictada: Dictada): string {
-    return dictada.dadoPor === 'simbolo' ? dictada.elemento.simbolo : dictada.elemento.nombre
+    if (dictada.tipo === 'elemento') return dictada.dadoPor === 'simbolo' ? dictada.elemento.simbolo : dictada.elemento.nombre
+    return dictada.dadoPor === 'formula' ? formulaDe(dictada.radical) : dictada.radical.nombre
+  }
+
+  function escrita(dictada: Dictada): string {
+    return dictada.tipo === 'elemento' ? dictada.elemento.simbolo : formulaDe(dictada.radical)
   }
 </script>
 
@@ -28,14 +35,18 @@
     {#if falladas.length === 0}
       <p><span class="acierto" aria-hidden="true">✓</span> Sin fallos.</p>
     {:else}
-      <p>Fallados: <b>{falladas.map((fallada) => fallada.elemento.simbolo).join(', ')}</b>.</p>
-      <p>Los Elementos fallados vuelven mañana.</p>
+      <p>Fallados: <b>{falladas.map(escrita).join(', ')}</b>.</p>
+      {#if falladas.some((fallada) => fallada.tipo === 'elemento')}
+        <p>Los Elementos fallados vuelven mañana.</p>
+      {/if}
     {/if}
     <div class="botones">
       <button type="button" class="boton" onclick={alOtro}>Otro dictado</button>
       <button type="button" class="boton secundario" onclick={alSalir}>Portada</button>
     </div>
-  {:else if dictado.respuesta}
+  {:else if dictado.respuesta && pregunta.tipo === 'radical'}
+    <CorreccionDeRadical radical={pregunta.radical} alSeguir={alCerrarCorreccion} />
+  {:else if dictado.respuesta && pregunta.tipo === 'elemento'}
     <Correccion {...correccionDeElemento(pregunta.elemento, dictado.respuesta)} alSeguir={alCerrarCorreccion} />
   {:else}
     <header>
@@ -45,13 +56,17 @@
     <p class="estado">
       Quedan {dictado.pendientes.length + 1}
       {#if dictado.acertada}
-        <span class="acierto"><span aria-hidden="true">✓</span> {dictado.acertada.elemento.simbolo}</span>
+        <span class="acierto"><span aria-hidden="true">✓</span> {escrita(dictado.acertada)}</span>
         <Numeros numeros={correctosDe(dictado.acertada)} />
       {/if}
     </p>
     <div class="teclado">
       {#key pregunta}
-        <PasoNumeros opciones={TECLADO} {alResponder} />
+        <PasoNumeros
+          opciones={TECLADO}
+          enunciado={pregunta.tipo === 'radical' ? `¿Qué número lleva el ${pregunta.radical.central}?` : undefined}
+          {alResponder}
+        />
       {/key}
     </div>
   {/if}

@@ -1,9 +1,12 @@
 import { elementos, esDeTransicion, type Elemento } from '../catalogo/catalogo'
+import { numeroDeRadical, radicales, type Radical } from '../catalogo/radicales'
 import { excepcionDe, pierdeElNegativo } from '../catalogo/reglas'
 import { barajar, correccionDe, mismosNumeros, RANGO, type Azar, type Correccion, type Pregunta } from './cadena'
 import { sinPreguntar, type Dominio } from './dominio'
 
-export type Dictada = { tipo: 'elemento'; elemento: Elemento; dadoPor: 'simbolo' | 'nombre' }
+export type Dictada =
+  | { tipo: 'elemento'; elemento: Elemento; dadoPor: 'simbolo' | 'nombre' }
+  | { tipo: 'radical'; radical: Radical; dadoPor: 'formula' | 'nombre' }
 
 export interface DictadoEnCurso {
   pregunta: Dictada | null
@@ -16,6 +19,7 @@ export interface DictadoEnCurso {
 export const TECLADO = RANGO.filter((numero) => numero !== 0)
 
 const PREGUNTAS_POR_DICTADO = 15
+const RADICALES_POR_DICTADO = 5
 const PREGUNTAS_HASTA_LA_REINSERCION = 3
 
 function esDificil(elemento: Elemento): boolean {
@@ -55,14 +59,24 @@ function hastaCaber<T>(bloques: T[][], cuantos: number): T[][] {
 
 function componer(preguntados: Elemento[], azar: Azar): Dictada[] {
   const candidatos = preguntados.filter(sePregunta)
-  const deElementos = hastaCaber(enBloques(candidatos, PREGUNTAS_POR_DICTADO, azar), PREGUNTAS_POR_DICTADO).map((bloque) =>
+  const conSuCentral = barajar(
+    radicales().filter((radical) => candidatos.some((candidato) => candidato.simbolo === radical.central)),
+    azar,
+  )
+  const sitios = PREGUNTAS_POR_DICTADO - Math.min(RADICALES_POR_DICTADO, conSuCentral.length)
+  const deElementos = hastaCaber(enBloques(candidatos, sitios, azar), sitios).map((bloque) =>
     bloque.map((elemento): Dictada => ({ tipo: 'elemento', elemento, dadoPor: azar() < 0.5 ? 'simbolo' : 'nombre' })),
   )
-  return barajar(deElementos, azar).flat()
+  const deRadicales = conSuCentral
+    .slice(0, PREGUNTAS_POR_DICTADO - deElementos.flat().length)
+    .map((radical): Dictada[] => [{ tipo: 'radical', radical, dadoPor: azar() < 0.5 ? 'formula' : 'nombre' }])
+  return barajar([...deElementos, ...deRadicales], azar).flat()
 }
 
 export function correctosDe(dictada: Dictada): number[] {
-  return dictada.elemento.numeros.filter((numero) => numero !== 0)
+  return dictada.tipo === 'elemento'
+    ? dictada.elemento.numeros.filter((numero) => numero !== 0)
+    : [numeroDeRadical(dictada.radical)]
 }
 
 export function correccionDeElemento(elemento: Elemento, respuesta: number[]): { pregunta: Pregunta; correccion: Correccion } {
@@ -102,7 +116,9 @@ export function crearDictados(dominio: Dominio, azar: Azar) {
       const { pregunta } = dictado
       if (!pregunta || dictado.respuesta) return dictado
       if (mismosNumeros(correctosDe(pregunta), numeros)) return preguntarLaSiguiente({ ...dictado, acertada: pregunta })
-      if (!dictado.falladas.includes(pregunta)) dominio.anotar(pregunta.elemento.simbolo, ['numeros'])
+      if (pregunta.tipo === 'elemento' && !dictado.falladas.includes(pregunta)) {
+        dominio.anotar(pregunta.elemento.simbolo, ['numeros'])
+      }
       return { ...dictado, respuesta: numeros, acertada: null }
     },
 
