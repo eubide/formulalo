@@ -10,7 +10,10 @@ function corregida(simbolo: string, opciones: number[], respuesta: Respuesta): s
     dadoPor: 'simbolo',
     paso: respuesta.paso,
     fallados: [respuesta.paso],
+    saltados: [],
     opciones,
+    pideSeguridad: false,
+    dudo: false,
   }
   return pintar(Correccion, { pregunta, correccion: correccionDe(pregunta, respuesta), alSeguir: () => {} })
 }

@@ -3,9 +3,10 @@
 
   interface Props {
     alResponder: (subnivel: Subnivel) => void
+    alSaltar: () => void
   }
 
-  let { alResponder }: Props = $props()
+  let { alResponder, alSaltar }: Props = $props()
 
   const CAPAS = [1, 2, 3, 4, 5, 6, 7]
   const LETRAS: Letra[] = ['s', 'p', 'd']
@@ -39,14 +40,17 @@
   {/each}
 </div>
 
-<button
-  type="button"
-  class="boton"
-  disabled={capa === null || letra === null || electrones === null}
-  onclick={() => alResponder({ capa: capa!, letra: letra!, electrones: electrones! })}
->
-  Comprobar{#if capa !== null && letra !== null && electrones !== null}: {capa}{letra}<sup>{electrones}</sup>{/if}
-</button>
+<div class="botones">
+  <button
+    type="button"
+    class="boton"
+    disabled={capa === null || letra === null || electrones === null}
+    onclick={() => alResponder({ capa: capa!, letra: letra!, electrones: electrones! })}
+  >
+    Comprobar{#if capa !== null && letra !== null && electrones !== null}: {capa}{letra}<sup>{electrones}</sup>{/if}
+  </button>
+  <button type="button" class="boton secundario" onclick={alSaltar}>Saltar</button>
+</div>
 
 <style>
   p {
@@ -81,6 +85,12 @@
     border-color: var(--acento);
     background: var(--acento);
     color: #fff;
+  }
+
+  .botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   @media (max-width: 520px) {

@@ -1,16 +1,17 @@
 <script lang="ts">
   import type { Elemento } from '../catalogo/catalogo'
   import Cajas from './Cajas.svelte'
-  import { escrito, signo } from './Numeros.svelte'
+  import Teclado from './Teclado.svelte'
 
   interface Props {
     elemento?: Elemento
     opciones: number[]
     enunciado?: string
-    alResponder: (numeros: number[]) => void
+    pideSeguridad?: boolean
+    alResponder: (numeros: number[], seguro?: boolean) => void
   }
 
-  let { elemento, opciones, enunciado = '¿Qué números de oxidación tiene?', alResponder }: Props = $props()
+  let { elemento, opciones, enunciado = '¿Qué números de oxidación tiene?', pideSeguridad = false, alResponder }: Props = $props()
 
   let elegidos = $state<number[]>([])
   let conAyuda = $state(false)
@@ -22,23 +23,17 @@
 
 <p>{enunciado}</p>
 
-<div class="opciones">
-  {#each opciones as numero (numero)}
-    <button
-      type="button"
-      class={signo(numero)}
-      aria-pressed={elegidos.includes(numero)}
-      onclick={() => alternar(numero)}
-    >
-      {escrito(numero)}
-    </button>
-  {/each}
-</div>
+<Teclado {opciones} marcados={elegidos} alAlternar={alternar} />
 
 <div class="botones">
-  <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos)}>
-    Comprobar
-  </button>
+  {#if pideSeguridad}
+    <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos, true)}>Seguro</button>
+    <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos, false)}>Dudo</button>
+  {:else}
+    <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos)}>
+      Comprobar
+    </button>
+  {/if}
   {#if elemento && !conAyuda}
     <button type="button" class="boton secundario" onclick={() => (conAyuda = true)}>Ver sus cajas</button>
   {/if}
@@ -54,28 +49,6 @@
 <style>
   p {
     margin: 10px 0 8px;
-  }
-
-  .opciones {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .opciones button {
-    min-width: 52px;
-    min-height: 44px;
-    border: 2px solid var(--borde);
-    border-radius: 8px;
-    background: var(--papel);
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .opciones button[aria-pressed='true'] {
-    border-color: currentColor;
-    box-shadow: inset 0 0 0 2px currentColor;
   }
 
   .botones {

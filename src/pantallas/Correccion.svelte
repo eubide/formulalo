@@ -24,6 +24,9 @@
 
 <section class="correccion">
   <h2><span aria-hidden="true">✗</span> {elemento.simbolo} · {elemento.nombre}</h2>
+  {#if correccion.comentario}
+    <p class="comentario">{correccion.comentario}</p>
+  {/if}
 
   {#if correccion.paso === 'posicion'}
     <p>Está en el grupo {elemento.grupo}, periodo {elemento.periodo}.</p>
@@ -116,6 +119,10 @@
 
   .historia {
     font-style: italic;
+  }
+
+  .comentario {
+    font-weight: 700;
   }
 
   .boton {

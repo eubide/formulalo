@@ -1,32 +1,33 @@
 <script lang="ts">
-  import { crearEstudio, diaLocal, type DictadoEnCurso, type Respuesta, type Tanda } from './estudio/estudio'
+  import { crearEstudio, diaLocal, type DictadoEnCurso, type Respuesta, type Oleada } from './estudio/estudio'
   import Dictado from './pantallas/Dictado.svelte'
   import Explorar from './pantallas/Explorar.svelte'
-  import FinDeTanda from './pantallas/FinDeTanda.svelte'
+  import FinDeOleada from './pantallas/FinDeOleada.svelte'
   import Portada from './pantallas/Portada.svelte'
+  import Sorpresa from './pantallas/Sorpresa.svelte'
   import Pregunta from './pantallas/Pregunta.svelte'
   import Presentacion from './pantallas/Presentacion.svelte'
 
-  const estudio = crearEstudio(localStorage, () => diaLocal(new Date()), Math.random)
+  const estudio = crearEstudio(localStorage, () => diaLocal(new Date()), Math.random, () => new Date().toISOString())
 
-  let tanda = $state.raw<Tanda | null>(null)
-  let trasElAcierto = $state.raw<Tanda | null>(null)
+  let oleada = $state.raw<Oleada | null>(null)
+  let trasElAcierto = $state.raw<Oleada | null>(null)
   let explorando = $state(false)
   let dictado = $state.raw<DictadoEnCurso | null>(null)
 
   function responder(respuesta: Respuesta) {
-    const siguiente = estudio.responder(tanda!, respuesta)
-    if (siguiente.sabidos.length > tanda!.sabidos.length) trasElAcierto = siguiente
-    else tanda = siguiente
+    const siguiente = estudio.responder(oleada!, respuesta)
+    if (siguiente.sabidos.length > oleada!.sabidos.length) trasElAcierto = siguiente
+    else oleada = siguiente
   }
 
   function cerrarAcierto() {
-    tanda = trasElAcierto
+    oleada = trasElAcierto
     trasElAcierto = null
   }
 
   function salir() {
-    tanda = null
+    oleada = null
     trasElAcierto = null
   }
 </script>
@@ -36,33 +37,45 @@
 {:else if dictado}
   <Dictado
     {dictado}
-    alResponder={(numeros) => (dictado = estudio.responderDictado(dictado!, numeros))}
+    alDescartarPresentacion={() => (dictado = estudio.descartarPresentacionDelDictado(dictado!))}
+    alResponder={(respuesta) => (dictado = estudio.responderDictado(dictado!, respuesta))}
     alCerrarCorreccion={() => (dictado = estudio.cerrarCorreccionDeDictado(dictado!))}
-    alOtro={() => (dictado = estudio.abrirDictado())}
+    alOtro={() => (dictado = dictado!.tipo === 'radicales' ? estudio.abrirRadicales() : estudio.abrirDictado())}
     alSalir={() => (dictado = null)}
   />
-{:else if !tanda}
+{:else if !oleada}
   <Portada
     {estudio}
-    alEmpezar={() => (tanda = estudio.abrirTanda())}
+    alEmpezar={() => (oleada = estudio.abrirOleada())}
     alExplorar={() => (explorando = true)}
     alDictado={() => (dictado = estudio.abrirDictado())}
+    alRadicales={() => (dictado = estudio.abrirRadicales())}
   />
-{:else if tanda.presentacion}
+{:else if oleada.presentacion}
   <Presentacion
-    simbolos={tanda.presentacion}
-    alDescartar={() => (tanda = estudio.descartarPresentacion(tanda!))}
-    alSalir={() => (tanda = null)}
+    simbolos={oleada.presentacion}
+    alDescartar={() => (oleada = estudio.descartarPresentacion(oleada!))}
+    alSalir={() => (oleada = null)}
   />
-{:else if tanda.pregunta}
+{:else if oleada.sorpresa}
+  <Sorpresa
+    sorpresa={oleada.sorpresa}
+    respuesta={oleada.respuestaDeSorpresa}
+    alResponder={(respuesta) => (oleada = estudio.responderSorpresa(oleada!, respuesta))}
+    alSeguir={() => (oleada = estudio.cerrarSorpresa(oleada!))}
+    alSalir={salir}
+  />
+{:else if oleada.pregunta}
   <Pregunta
-    {tanda}
+    {oleada}
     sabido={trasElAcierto !== null}
+    comentario={trasElAcierto?.comentario ?? null}
     alResponder={responder}
-    alCerrarCorreccion={() => (tanda = estudio.cerrarCorreccion(tanda!))}
+    alSaltarConfiguracion={() => (oleada = estudio.saltarConfiguracion(oleada!))}
+    alCerrarCorreccion={() => (oleada = estudio.cerrarCorreccion(oleada!))}
     alCerrarAcierto={cerrarAcierto}
     alSalir={salir}
   />
 {:else}
-  <FinDeTanda {tanda} {estudio} alSeguir={() => (tanda = estudio.abrirTanda())} alVolver={() => (tanda = null)} />
+  <FinDeOleada {oleada} {estudio} alSeguir={() => (oleada = estudio.abrirOleada())} alVolver={() => (oleada = null)} />
 {/if}
