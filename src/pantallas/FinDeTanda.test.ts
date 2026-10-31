@@ -15,7 +15,7 @@ describe('Fin de Tanda', () => {
     estudiarElDia(estudio)
     reloj.dia = '2026-10-06'
     const tanda = acertarTanda(estudio, abrir(estudio))
-    const anuncio = '8 de repaso · unos 4 min · quedan 40 más para hoy'
+    const anuncio = '8 de repaso · unos 4 min · quedan 42 más para hoy'
 
     expect(pintarFinDeTanda(estudio, tanda)).toContain(`Queda otra tanda: ${anuncio}`)
     expect(pintar(Portada, { estudio, alEmpezar: () => {}, alExplorar: () => {} })).toContain(`Tanda de hoy ${anuncio}`)

@@ -48,8 +48,12 @@ const DE_TROZO: { elementos: string[]; historia: string }[] = [
       'Tienen dos caras. De metales copian a Fe, Co y Ni: +2 y +3. De no metales suben a su número de grupo: el Cr, grupo 6, a +6; el Mn, grupo 7, a +7, pasando por +4 y +6.',
   },
   {
-    elementos: ['Pt'],
-    historia: 'El platino copia de lejos: +2 y +4, como el Sn y el Pb.',
+    elementos: ['Pd', 'Pt'],
+    historia: 'El paladio y el platino copian de lejos: +2 y +4, como el Sn y el Pb.',
+  },
+  {
+    elementos: ['Sc'],
+    historia: 'Grupo 3, +3 y nada más: suelta sus tres electrones, como el Al.',
   },
 ]
 

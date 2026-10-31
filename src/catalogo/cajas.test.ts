@@ -34,6 +34,11 @@ describe('Cajas', () => {
     expect(escritas('Fe')).toBe('[Ar] 4s2 3d6')
     expect(escritas('Cr')).toBe('[Ar] 4s1 3d5')
     expect(escritas('Pt')).toBe('[Xe] 6s1 (4f14) 5d9')
+    expect(escritas('Sc')).toBe('[Ar] 4s2 3d1')
+  })
+
+  it('el Pd, sin electrones en su s, la lleva vacía delante de la d', () => {
+    expect(escritas('Pd')).toBe('[Kr] 5s0 4d10')
   })
 
   it('el H y el He llevan solo la Caja 1s, sin gas noble delante', () => {
@@ -104,12 +109,14 @@ describe('Filas de las Cajas resueltas', () => {
     expect(marcasDe('Fe', 3)).toEqual(['4s/0↓', '4s/0↑', '3d/4↑'])
     expect(marcasDe('Cu', 1)).toEqual(['4s/0↑'])
     expect(marcasDe('Hg', 1)).toEqual(['6s/0↓'])
+    expect(marcasDe('Pd', 2)).toEqual(['4d/4↓', '4d/4↑'])
   })
 
   it('el negativo marca las mitades que le faltan a la p', () => {
     expect(marcasDe('S', -2)).toEqual(['3p/1↓', '3p/2↓'])
     expect(marcasDe('C', -4)).toEqual(['2p/2↑', '2p/0↓', '2p/1↓', '2p/2↓'])
     expect(marcasDe('H', -1)).toEqual(['1s/0↓'])
+    expect(marcasDe('B', -3)).toEqual(['2p/1↑', '2p/2↑', '2p/0↓'])
   })
 
   it('el 0 lleva su fila sin marcas', () => {
@@ -132,6 +139,7 @@ describe('Elementos agrupados por sus Cajas resueltas', () => {
     expect(agrupados(...delGrupo(1))).toEqual(['H', 'Li, Na, K, Rb, Cs, Fr'])
     expect(agrupados(...delGrupo(14))).toEqual(['C', 'Si', 'Ge, Sn, Pb'])
     expect(agrupados(...delGrupo(18))).toEqual(['He', 'Ne, Ar, Kr, Rn', 'Xe'])
+    expect(agrupados(...delGrupo(17))).toEqual(['F, Cl, Br, I', 'At'])
   })
 
   it('en un trozo de metales de transición cuentan la Caja s y la Caja d', () => {

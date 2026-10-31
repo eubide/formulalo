@@ -56,14 +56,14 @@ describe('Portada', () => {
     expect(pintarPortada(estudio)).toMatch(/Dónde se rompe la cadena .*: Clase Guardar copia Recuperar copia$/)
   })
 
-  it('con 56 Elementos por repasar dice cuántos quedan para hoy después de la Tanda', () => {
+  it('con 58 Elementos por repasar dice cuántos quedan para hoy después de la Tanda', () => {
     const { estudio, reloj } = montar()
     estudiarElDia(estudio)
     reloj.dia = '2026-10-06'
 
     const texto = pintarPortada(estudio)
 
-    expect(texto).toContain('Tanda de hoy 8 de repaso · unos 4 min · quedan 48 más para hoy')
+    expect(texto).toContain('Tanda de hoy 8 de repaso · unos 4 min · quedan 50 más para hoy')
   })
 
   it('no escribe las partes del anuncio que valen cero, y con un minuto dice «1 min»', () => {
