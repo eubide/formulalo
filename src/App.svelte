@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { crearEstudio, diaLocal, type Respuesta, type Tanda } from './estudio/estudio'
+  import { crearEstudio, diaLocal, type DictadoEnCurso, type Respuesta, type Tanda } from './estudio/estudio'
+  import Dictado from './pantallas/Dictado.svelte'
   import Explorar from './pantallas/Explorar.svelte'
   import FinDeTanda from './pantallas/FinDeTanda.svelte'
   import Portada from './pantallas/Portada.svelte'
@@ -11,6 +12,7 @@
   let tanda = $state.raw<Tanda | null>(null)
   let trasElAcierto = $state.raw<Tanda | null>(null)
   let explorando = $state(false)
+  let dictado = $state.raw<DictadoEnCurso | null>(null)
 
   function responder(respuesta: Respuesta) {
     const siguiente = estudio.responder(tanda!, respuesta)
@@ -31,8 +33,21 @@
 
 {#if explorando}
   <Explorar alSalir={() => (explorando = false)} />
+{:else if dictado}
+  <Dictado
+    {dictado}
+    alResponder={(numeros) => (dictado = estudio.responderDictado(dictado!, numeros))}
+    alCerrarCorreccion={() => (dictado = estudio.cerrarCorreccionDeDictado(dictado!))}
+    alOtro={() => (dictado = estudio.abrirDictado())}
+    alSalir={() => (dictado = null)}
+  />
 {:else if !tanda}
-  <Portada {estudio} alEmpezar={() => (tanda = estudio.abrirTanda())} alExplorar={() => (explorando = true)} />
+  <Portada
+    {estudio}
+    alEmpezar={() => (tanda = estudio.abrirTanda())}
+    alExplorar={() => (explorando = true)}
+    alDictado={() => (dictado = estudio.abrirDictado())}
+  />
 {:else if tanda.presentacion}
   <Presentacion
     simbolos={tanda.presentacion}

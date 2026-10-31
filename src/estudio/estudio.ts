@@ -11,9 +11,11 @@ import {
   type Pregunta,
   type Respuesta,
 } from './cadena'
-import { crearDominio, type Almacen, type Entrada } from './dominio'
+import { crearDictados } from './dictado'
+import { crearDominio, sinPreguntar, type Almacen, type Entrada } from './dominio'
 
 export { almacenEnMemoria, diaLocal, type Almacen, type Entrada, type Estado } from './dominio'
+export { correccionDeElemento, correctosDe, TECLADO, type Dictada, type DictadoEnCurso } from './dictado'
 export { etiquetaDePaso, pasosDe } from './cadena'
 export type { Azar, Correccion, Paso, Pregunta, Respuesta } from './cadena'
 
@@ -62,11 +64,6 @@ const FLOJOS_POR_TANDA = 3
 const MINUTOS_DE_UNA_TANDA_LLENA = 4
 const ELEMENTOS_HASTA_LA_REINSERCION = 3
 const MILISEGUNDOS_DE_UN_DIA = 86_400_000
-
-// Un Flojo sin fallos solo puede venir de una Presentación: todavía no se le ha preguntado nada.
-function sinPreguntar(entrada: Entrada): boolean {
-  return entrada.estado === 'flojo' && entrada.fallos === 0
-}
 
 function componer(entradas: Record<string, Entrada>, camino: Camino, hoy: string, azar: Azar): Composicion {
   const esperan = Object.keys(entradas).filter((simbolo) => sinPreguntar(entradas[simbolo]))
@@ -143,6 +140,8 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar) {
   }
 
   return {
+    ...crearDictados(dominio, azar),
+
     camino(): Camino {
       return dominio.camino()
     },

@@ -4,7 +4,7 @@
   import { escrito, signo } from './Numeros.svelte'
 
   interface Props {
-    elemento: Elemento
+    elemento?: Elemento
     opciones: number[]
     alResponder: (numeros: number[]) => void
   }
@@ -38,12 +38,12 @@
   <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos)}>
     Comprobar
   </button>
-  {#if !conAyuda}
+  {#if elemento && !conAyuda}
     <button type="button" class="boton secundario" onclick={() => (conAyuda = true)}>Ver sus cajas</button>
   {/if}
 </div>
 
-{#if conAyuda}
+{#if elemento && conAyuda}
   <div class="ayuda">
     <small>Sus cajas</small>
     <Cajas {elemento} />
