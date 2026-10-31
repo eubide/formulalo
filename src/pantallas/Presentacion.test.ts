@@ -37,7 +37,7 @@ describe('Presentación', () => {
   })
 })
 
-describe('Presentación de una Tanda', () => {
+describe('Presentación de una Oleada', () => {
   it('anuncia los Elementos nuevos y se descarta con «Empezar a preguntar»', () => {
     const texto = presentacionDe(delGrupo(16))
 

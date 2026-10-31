@@ -1,10 +1,24 @@
 import { etiquetaDeCamino, type Camino } from '../catalogo/caminos'
 import { elementos } from '../catalogo/catalogo'
+import { etiquetaDeModo, type Modo } from '../catalogo/modos'
 import { PASOS, type Paso } from './cadena'
 
 export type Almacen = Pick<Storage, 'getItem' | 'setItem'>
 
 export type Estado = 'flojo' | 'sabido'
+
+export type TipoDeOleada = 'oleada' | 'dictado' | 'radicales'
+
+export interface OleadaHecha {
+  tipo: TipoDeOleada
+  fin: string
+}
+
+export interface DelDictado {
+  intervalo: number
+  vuelve: string
+  ultimo: string
+}
 
 export interface Entrada {
   estado: Estado
@@ -17,12 +31,16 @@ export interface Entrada {
 interface Registro {
   version: number
   camino: Camino
+  modo: Modo
   elementos: Record<string, Entrada>
+  oleadas: OleadaHecha[]
+  dictado: Record<string, DelDictado>
 }
 
 const CLAVE = 'formulalo:dominio'
 const VERSION = 1
 const CAMINO_PUESTO: Camino = 'gas-noble'
+const MODO_PUESTO: Modo = 'normal'
 const INTERVALOS = [1, 3, 7, 14, 30]
 const PASOS_QUE_HAY_QUE_SABER: Paso[] = ['posicion', 'numeros']
 const DIA = /^\d{4}-\d{2}-\d{2}$/
@@ -35,6 +53,10 @@ function esObjeto(valor: unknown): valor is Record<string, unknown> {
 
 function esCamino(valor: unknown): valor is Camino {
   return typeof valor === 'string' && Object.hasOwn(etiquetaDeCamino, valor)
+}
+
+function esModo(valor: unknown): valor is Modo {
+  return typeof valor === 'string' && Object.hasOwn(etiquetaDeModo, valor)
 }
 
 function esEntrada(valor: unknown): valor is Entrada {
@@ -50,8 +72,16 @@ function esEntrada(valor: unknown): valor is Entrada {
   )
 }
 
+function esOleadaHecha(valor: unknown): valor is OleadaHecha {
+  return esObjeto(valor) && (valor.tipo === 'oleada' || valor.tipo === 'dictado' || valor.tipo === 'radicales') && typeof valor.fin === 'string'
+}
+
+function esDelDictado(valor: unknown): valor is DelDictado {
+  return esObjeto(valor) && Number.isSafeInteger(valor.intervalo) && typeof valor.vuelve === 'string' && DIA.test(valor.vuelve)
+}
+
 function registroVacio(): Registro {
-  return { version: VERSION, camino: CAMINO_PUESTO, elementos: {} }
+  return { version: VERSION, camino: CAMINO_PUESTO, modo: MODO_PUESTO, elementos: {}, oleadas: [], dictado: {} }
 }
 
 function registroValido(datos: unknown): Registro {
@@ -60,12 +90,19 @@ function registroValido(datos: unknown): Registro {
   return {
     version: VERSION,
     camino: esCamino(datos.camino) ? datos.camino : CAMINO_PUESTO,
+    modo: esModo(datos.modo) ? datos.modo : MODO_PUESTO,
     elementos: Object.fromEntries(
       Object.entries(guardados).flatMap(([simbolo, entrada]) => {
         if (!estudiados.has(simbolo) || !esEntrada(entrada)) return []
         const { estado, intervalo, vuelve, fallos, pasosFallados } = entrada
         return [[simbolo, { estado, intervalo, vuelve, fallos, pasosFallados }]]
       }),
+    ),
+    oleadas: Array.isArray(datos.oleadas) ? datos.oleadas.filter(esOleadaHecha) : [],
+    dictado: Object.fromEntries(
+      Object.entries(esObjeto(datos.dictado) ? datos.dictado : {}).flatMap(([clave, delDictado]) =>
+        esDelDictado(delDictado) ? [[clave, { ...delDictado, ultimo: delDictado.ultimo ?? '' }]] : [],
+      ),
     ),
   }
 }
@@ -113,7 +150,7 @@ export function sinPreguntar(entrada: Entrada): boolean {
 
 export type Dominio = ReturnType<typeof crearDominio>
 
-export function crearDominio(almacen: Almacen, hoy: () => string) {
+export function crearDominio(almacen: Almacen, hoy: () => string, ahora: () => string) {
   function leer(): Registro {
     try {
       return registroValido(JSON.parse(almacen.getItem(CLAVE) ?? 'null'))
@@ -135,6 +172,14 @@ export function crearDominio(almacen: Almacen, hoy: () => string) {
 
     elegirCamino(camino: Camino) {
       guardar({ ...leer(), camino })
+    },
+
+    modo(): Modo {
+      return leer().modo
+    },
+
+    elegirModo(modo: Modo) {
+      guardar({ ...leer(), modo })
     },
 
     entradas(): Record<string, Entrada> {
@@ -176,6 +221,35 @@ export function crearDominio(almacen: Almacen, hoy: () => string) {
       }
       guardar(registro)
       return registro.elementos[simbolo].estado
+    },
+
+    oleadas(): OleadaHecha[] {
+      return leer().oleadas
+    },
+
+    registrarOleada(tipo: TipoDeOleada) {
+      const registro = leer()
+      registro.oleadas.push({ tipo, fin: ahora() })
+      guardar(registro)
+    },
+
+    delDictado(): Record<string, DelDictado> {
+      return leer().dictado
+    },
+
+    anotarDictado(clave: string, acierto: boolean) {
+      const registro = leer()
+      const anterior = registro.dictado[clave]
+      const ultimo = ahora()
+      if (!acierto) {
+        registro.dictado[clave] = { intervalo: 0, vuelve: diasDespues(hoy(), 1), ultimo }
+      } else if (!anterior || anterior.vuelve <= hoy()) {
+        const intervalo = INTERVALOS.find((dias) => dias > (anterior?.intervalo ?? 0)) ?? INTERVALOS.at(-1)!
+        registro.dictado[clave] = { intervalo, vuelve: diasDespues(hoy(), intervalo), ultimo }
+      } else {
+        registro.dictado[clave] = { ...anterior, ultimo }
+      }
+      guardar(registro)
     },
 
     copia(): string {

@@ -34,14 +34,17 @@ export type Respuesta =
   | { paso: 'posicion'; simbolo: string }
   | { paso: 'clase'; clase: Clase }
   | { paso: 'configuracion'; subnivel: Subnivel }
-  | { paso: 'numeros'; numeros: number[] }
+  | { paso: 'numeros'; numeros: number[]; seguro?: boolean }
 
 export interface Pregunta {
   elemento: Elemento
   dadoPor: 'simbolo' | 'nombre'
   paso: Paso
   fallados: Paso[]
+  saltados: Paso[]
   opciones: number[]
+  pideSeguridad: boolean
+  dudo: boolean
 }
 
 export interface Correccion {
@@ -53,6 +56,7 @@ export interface Correccion {
   pierdeElNegativo: boolean
   excepcion: string | null
   historias: string[]
+  comentario: string | null
 }
 
 const NUMERO_MINIMO = -4
@@ -100,13 +104,16 @@ function opcionesDe(elemento: Elemento, azar: Azar): number[] {
   return [...verdaderos, ...distractores].sort((a, b) => a - b)
 }
 
-export function preguntar(elemento: Elemento, azar: Azar): Pregunta {
+export function preguntar(elemento: Elemento, azar: Azar, probabilidadDeSeguro: number): Pregunta {
   return {
     elemento,
     dadoPor: azar() < 0.5 ? 'simbolo' : 'nombre',
     paso: 'posicion',
     fallados: [],
+    saltados: [],
     opciones: opcionesDe(elemento, azar),
+    pideSeguridad: azar() < probabilidadDeSeguro,
+    dudo: false,
   }
 }
 
@@ -140,6 +147,7 @@ export function correccionDe({ elemento }: Pregunta, respuesta: Respuesta): Corr
     pierdeElNegativo: false,
     excepcion: null,
     historias: [],
+    comentario: null,
   }
   const presentes = (historias: (string | null)[]) => historias.filter((historia) => historia !== null)
   switch (respuesta.paso) {

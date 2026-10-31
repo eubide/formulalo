@@ -1,6 +1,6 @@
 # Dictado fuera de la Tanda
 
-La Cadena pregunta los Números de oxidación al final, con el Elemento señalado en la Tabla, su Configuración a la vista y pocas opciones: nunca obliga a recordarlos sin pistas, y cada cuatro minutos solo llega a unos 8 Elementos. La spec dejó fuera la práctica libre fuera de la Tanda. El Dictado la abre solo para estos números: 15 preguntas de Elementos y Radicales, con un teclado fijo y sin ayudas. Un fallo en un Elemento cuenta como en la Cadena y lo devuelve a Flojo; un acierto no cambia nada, como en la Práctica de ADR-0002.
+La Cadena pregunta los Números de oxidación al final, con el Elemento señalado en la Tabla, su Configuración a la vista y pocas opciones: nunca obliga a recordarlos sin pistas, y cada cuatro minutos solo llega a unos 8 Elementos. La spec dejó fuera la práctica libre fuera de la Tanda. El Dictado la abre solo para estos números: Elementos y Radicales, con un teclado fijo y sin ayudas. Un fallo en un Elemento cuenta como en la Cadena y lo devuelve a Flojo; un acierto no cambia nada, como en la Práctica de ADR-0002.
 
 ## Opciones consideradas
 

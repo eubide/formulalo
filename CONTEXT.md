@@ -51,7 +51,7 @@ La hoja «Tabla de No. de oxidación y Radicales». Trae los 39 Radicales y da l
 _Evitar_: hoja, tabla de valencias
 
 **Radical**:
-Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga.
+Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: se puede hacer desde el principio y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
 _Evitar_: anión, oxoanión
 
 **Configuración**:
@@ -81,7 +81,7 @@ Número de oxidación falso que se ofrece junto a los verdaderos de un Elemento.
 _Evitar_: falso, opción falsa, señuelo
 
 **Cadena**:
-Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente. Lo que hay que saberse para formular es la Posición y los Números de oxidación; la Clase y la Configuración sirven para deducirlos.
+Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, Clase, Configuración y Números de oxidación. Cada paso es la pista del siguiente. Lo que hay que saberse para formular es la Posición y los Números de oxidación; la Clase y la Configuración sirven para deducirlos. La Configuración se puede saltar siempre, y ni saltarla ni fallarla cuenta en contra.
 _Evitar_: secuencia, ficha, pregunta
 
 **Camino**:
@@ -97,27 +97,51 @@ Lo que comparten los Elementos de un Grupo y permite deducir sus datos: cómo ac
 _Evitar_: patrón, norma, historia
 
 **Presentación**:
-Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio.
+Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio.
 _Evitar_: tutorial, introducción, lección
 
-**Tanda**:
-Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar hoy y, si sobra sitio, otros de Práctica. Se puede pedir siempre. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero. Lo que toca repasar ocupa los sitios que sobran: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos. La Práctica llena lo que quede. Los catorce metales de transición llegan en seis trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; Pd y Pt; y Sc.
-_Evitar_: ronda, sesión, lote, repaso
+**Oleada**:
+Unos minutos de estudio con Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar y, si sobra sitio, otros de Práctica. Se puede pedir siempre y un día puede tener varias: los días marcan cuándo vuelve lo repasado, no cuánto se puede avanzar. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero, junto con el siguiente si no llegan a 4. El repaso se añade según la Serie de repaso: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos, y la Práctica llena lo que quede. Sin nada nuevo, la Oleada entera son 8 Elementos de repaso. Los catorce metales de transición llegan en seis trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; Pd y Pt; y Sc.
+_Evitar_: tanda, ronda, sesión, lote, repaso
+
+**Serie de repaso**:
+La parte de una Oleada que es repaso, que va cambiando de una a otra: 20 %, 30 %, 40 %, 0 %, y vuelve a empezar. Avanza con cada Oleada terminada, y el Dictado lleva la suya, con los mismos pasos.
+_Evitar_: ciclo, ritmo, porcentaje
+
+**Seguimiento**:
+Lo que se sabe de las Oleadas y los Dictados terminados: cuántos van hoy, cuánto hace del último, cada cuánto se hacen de media y cuántos al día. Informa y no limita nada.
+_Evitar_: estadísticas, racha, historial
 
 **Práctica**:
-Los Elementos que entran en una Tanda antes de que les toque volver, cuando lo nuevo y lo que toca hoy no la llenan: los Flojos fallados hoy, dentro del tope de 3, y los Sabidos, del Intervalo más corto al más largo. Acertar un Sabido de Práctica no cambia su Intervalo ni el día en que vuelve.
+Los Elementos que entran en una Oleada antes de que les toque volver, cuando lo nuevo y lo que toca hoy no la llenan: los Flojos fallados hoy, dentro del tope de 3, y los Sabidos, del Intervalo más corto al más largo. Acertar un Sabido de Práctica no cambia su Intervalo ni el día en que vuelve.
 _Evitar_: repaso adelantado, extra, entrenamiento
 
 **Dictado**:
-Ejercicio aparte de la Tanda para marcar Números de oxidación de memoria, sin Tabla, Configuración ni Cajas, en un teclado que siempre es el mismo. Lleva 15 preguntas de los Elementos ya preguntados en una Tanda: unos 10 Elementos, con dos de cada tres entre los que no salen solo de su Regla, y 5 Radicales de esos Elementos. Detrás de una excepción va un Elemento regular de su Grupo. El 0 no se pregunta, así que no salen los gases nobles que solo tienen 0. Acertar no cambia nada. Fallar un Elemento lo devuelve a Flojo; fallar un Radical no escribe en el Dominio. Lo fallado vuelve una vez en el mismo Dictado.
+Ejercicio aparte de la Oleada para marcar Números de oxidación de memoria, sin Configuración ni Cajas, en un teclado que siempre es el mismo. La Tabla va debajo como refuerzo: señala dónde están los Elementos preguntados y, al corregir, cuáles se acertaron y cuáles no. Se puede hacer desde el principio y avanza por su cuenta, sin depender de las Oleadas: trae 2 Bloques, los siguientes del Camino. Antes de preguntar, presenta los Elementos sin ver. Los gases nobles no salen. También repasa: recuerda cada Bloque y cada Radical, con los mismos Intervalos que un Elemento, y reparte lo nuevo y lo que toca con su Serie de repaso. Entre lo ya visto, sale primero lo que lleva más tiempo sin salir. Acertar no cambia a los Elementos. Fallar uno ya preguntado en una Oleada lo devuelve a Flojo; uno solo presentado sigue entre los nuevos. Lo fallado vuelve una vez en el mismo Dictado.
 _Evitar_: examen, prueba, test
 
+**Modo**:
+Cuánto vacila la aplicación al Alumno, elegido en la Portada. En Normal, nada. En Vacilón, un ¿Seguro? de vez en cuando, una Sorpresa por Oleada y algún comentario al acertar. En Molesto, ¿Seguro? siempre, dos Sorpresas por Oleada y más comentarios. No cambia lo que se avanza ni lo que se recuerda.
+_Evitar_: dificultad, nivel, tono
+
+**¿Seguro?**:
+Lo que el Modo pide al responder los Números de oxidación de la Cadena: «Seguro» o «Dudo» en lugar de Comprobar. Fallar yendo seguro, o acertar dudando, trae su comentario.
+_Evitar_: confianza, certeza
+
+**Sorpresa**:
+Un Bloque o un Radical que el Modo cuela entre dos Cadenas de una Oleada, en un sitio al azar, solo de Elementos ya preguntados: el Bloque, con 5 de ellos como mínimo. No cuenta ni a favor ni en contra.
+_Evitar_: reto, examen sorpresa
+
+**Bloque**:
+Entre 5 y 7 Elementos que en un Dictado se responden juntos en una sola pantalla: un Grupo del 1, el 2 o del 13 al 17, o unos metales de transición juntos, que son Cu, Ag, Au, Zn, Cd y Hg; Fe, Co, Ni, Cr y Mn; y Sc, Pd, Pt, Sn y Pb.
+_Evitar_: lote, grupo, serie
+
 **Corrección**:
-Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia, y en los Números de oxidación, qué otros Elementos tienen los mismos. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
+Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia, y en los Números de oxidación, qué otros Elementos tienen los mismos. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Oleada y otra al día siguiente.
 _Evitar_: feedback, aviso
 
 **Dominio**:
-Lo que la aplicación recuerda de cada Elemento de un día para otro: si está sin ver, Flojo o Sabido, en qué pasos de la Cadena se falló y cuándo le toca volver. Vive en el navegador del Alumno, que puede guardarlo entero en un archivo, con el Camino elegido, y recuperarlo después: la copia recuperada sustituye al Dominio que hubiera.
+Lo que la aplicación recuerda de cada Elemento de un día para otro: si está sin ver, Flojo o Sabido, en qué pasos de la Cadena se falló y cuándo le toca volver. Vive en el navegador del Alumno, que puede guardarlo entero en un archivo, con el Camino y el Modo elegidos, el Seguimiento y la memoria del Dictado, y recuperarlo después: la copia recuperada sustituye al Dominio que hubiera.
 _Evitar_: progreso, nivel, memoria, cajas
 
 **Flojo**:
@@ -125,7 +149,7 @@ Estado de un Elemento en cuya última Cadena se falló la Posición o los Númer
 _Evitar_: débil, pendiente, fallado
 
 **Sabido**:
-Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo, también en la Práctica y en el Dictado. Un Flojo acertado queda Sabido para mañana, toque o no.
+Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o se fallara o saltara la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo, también en la Práctica y en el Dictado. Un Flojo acertado queda Sabido para mañana, toque o no.
 _Evitar_: dominado, aprendido, acertado
 
 **Explorar**:
@@ -137,7 +161,7 @@ El código de color, uno por significado. En los Números de oxidación, rojo es
 _Evitar_: leyenda, paleta, estilos, colores
 
 **Intervalo**:
-Los días que tarda en volver un Elemento Sabido: 1, 3, 7, 14 y 30. Solo crece cuando al Elemento le toca y la Cadena se acierta entera: en la Práctica, o con un fallo solo de Clase o de Configuración, se queda como estaba, o en 1 día si el Elemento no tenía ninguno. Un fallo en la Posición o en los Números de oxidación devuelve el Elemento al día siguiente.
+Los días que tarda en volver un Elemento Sabido: 1, 3, 7, 14 y 30. Solo crece cuando al Elemento le toca y la Cadena se acierta entera, sin contar la Configuración: en la Práctica, o con un fallo de Clase, se queda como estaba, o en 1 día si el Elemento no tenía ninguno. Un fallo en la Posición o en los Números de oxidación devuelve el Elemento al día siguiente.
 _Evitar_: caja, nivel, plazo
 
 ## Relaciones
@@ -153,7 +177,7 @@ _Evitar_: caja, nivel, plazo
 - Un **Elemento** se da unas veces solo por su **Símbolo** y otras solo por su nombre; el otro aparece al acertar su **Posición**
 - Cada **Grupo** tiene una **Regla**; lo que la **Regla** no alcanza lleva una **Historia**
 - Cada **Elemento** lleva la **Familia** de su **Grupo**, salvo el H, que no lleva ninguna
-- Una **Tanda** sale del **Dominio**: trae un **Grupo** nuevo por el **Camino** elegido, repasa los **Elementos** cuyo **Intervalo** se ha cumplido y se llena con **Práctica**
+- Una **Oleada** sale del **Dominio**: trae un **Grupo** nuevo por el **Camino** elegido, repasa los **Elementos** cuyo **Intervalo** se ha cumplido y se llena con **Práctica**
 - Cada **Elemento** está en el **Dominio** sin ver, **Flojo** o **Sabido**
 - Cada **Radical** tiene un **Elemento** central, y el número que lleva es uno de los **Números de oxidación** de ese **Elemento**
 
@@ -173,6 +197,7 @@ _Evitar_: caja, nivel, plazo
 - "La parte característica" de la Configuración en la idea original es el subnivel donde entra el último electrón.
 - Los catorce metales de transición no se preguntan por su Configuración: seis de ellos, Cr, Cu, Pd, Ag, Au y Pt, no siguen la regla de llenado, y en ninguno explica sus Números de oxidación. Se enseña la real.
 - El Cr y el Mn se responden con todos sus Números de oxidación juntos; que unos sean de metal y otros de no metal se cuenta al corregir y no se pregunta.
+- Acertar la Configuración solo se ve como ✓: el Elemento queda igual que al saltarla o fallarla, y un fallo ahí no se anota en el Dominio.
 - Los Números de oxidación se saben de memoria o se deducen rápido: por eso se seleccionan, y las Cajas solo salen cuando el Alumno las pide o falla. Acertar después de pedirlas cuenta como acierto.
 - El número de opciones delata cuántos Números de oxidación tiene un Elemento. Se acepta: dar pistas no es malo.
 - En las Cajas de un metal de transición lo primero que se suelta, la s, no queda al final de la línea. Es el coste de dibujar en orden de llenado.
@@ -181,4 +206,5 @@ _Evitar_: caja, nivel, plazo
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.
 - Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos, Historias escritas por el Alumno y formular compuestos.
+- Los comentarios del Modo no son marcas ni puntuación: ni se guardan ni se acumulan.
 - No hay examen. El objetivo es saberse los Elementos para formular después, así que nada imita un examen ni corre contra una fecha.

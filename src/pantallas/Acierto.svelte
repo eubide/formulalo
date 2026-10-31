@@ -4,22 +4,24 @@
 
   interface Props {
     elemento: Elemento
+    comentario?: string | null
     alSeguir: () => void
   }
 
-  let { elemento, alSeguir }: Props = $props()
+  let { elemento, comentario = null, alSeguir }: Props = $props()
 
   const MILISEGUNDOS_A_LA_VISTA = 1000
+  const MILISEGUNDOS_CON_COMENTARIO = 2500
 
   onMount(() => {
-    const espera = setTimeout(() => alSeguir(), MILISEGUNDOS_A_LA_VISTA)
+    const espera = setTimeout(() => alSeguir(), comentario ? MILISEGUNDOS_CON_COMENTARIO : MILISEGUNDOS_A_LA_VISTA)
     return () => clearTimeout(espera)
   })
 </script>
 
 <button type="button" class="acierto" onclick={alSeguir}>
   <span aria-hidden="true">✓</span>
-  {elemento.simbolo} · {elemento.nombre}
+  {elemento.simbolo} · {elemento.nombre}{#if comentario}<small>{comentario}</small>{/if}
 </button>
 
 <style>
@@ -37,5 +39,12 @@
 
   span {
     color: var(--acierto);
+  }
+
+  small {
+    display: block;
+    margin-top: 4px;
+    font-size: 15px;
+    font-weight: 400;
   }
 </style>

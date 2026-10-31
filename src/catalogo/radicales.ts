@@ -34,3 +34,26 @@ export function formulaDe({ central, atomos, oxigenos, carga }: Radical): string
 export function cuentaDe({ atomos, oxigenos, carga }: Radical): string {
   return `${atomos > 1 ? atomos : ''}x + ${oxigenos}·(−2) = −${carga}`
 }
+
+function normalizada(texto: string): string {
+  const digitos = [...texto].map((caracter) => {
+    const subindice = SUBINDICES.indexOf(caracter)
+    const volado = VOLADOS.indexOf(caracter)
+    return subindice >= 0 ? subindice : volado >= 0 ? volado : caracter
+  })
+  return digitos
+    .join('')
+    .normalize('NFD')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+}
+
+export function esSuNombre({ nombre }: Radical, texto: string): boolean {
+  return normalizada(texto) === normalizada(nombre)
+}
+
+export function esSuFormula(radical: Radical, texto: string): boolean {
+  const { central, atomos, oxigenos, carga } = radical
+  const sinCarga = normalizada(`${central}${atomos > 1 ? atomos : ''}O${oxigenos > 1 ? oxigenos : ''}`)
+  return [sinCarga, `${sinCarga}${carga}`].includes(normalizada(texto))
+}

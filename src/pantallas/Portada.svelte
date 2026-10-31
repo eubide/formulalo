@@ -1,22 +1,24 @@
 <script lang="ts">
   import { descripcionDeCamino, etiquetaDeCamino, type Camino } from '../catalogo/caminos'
   import { elementoDe } from '../catalogo/catalogo'
+  import { descripcionDeModo, etiquetaDeModo, type Modo } from '../catalogo/modos'
   import { etiquetaDePaso, type Estudio } from '../estudio/estudio'
   import Tabla from '../tabla/Tabla.svelte'
-  import { textoDelAnuncio, tocaAlgo } from './anuncio'
+  import { textoDeLoQueTrae, textoDeLoVisto, textoDelAnuncio, textoDelRepaso, textoDelSeguimiento } from './anuncio'
   import { casillasDelDominio } from './casillas'
-  import { fechaLarga } from './fecha'
 
   interface Props {
     estudio: Estudio
     alEmpezar: () => void
     alExplorar: () => void
     alDictado: () => void
+    alRadicales: () => void
   }
 
-  let { estudio, alEmpezar, alExplorar, alDictado }: Props = $props()
+  let { estudio, alEmpezar, alExplorar, alDictado, alRadicales }: Props = $props()
 
   const CAMINOS = Object.keys(etiquetaDeCamino) as Camino[]
+  const MODOS = Object.keys(etiquetaDeModo) as Modo[]
 
   function mirar() {
     return {
@@ -25,18 +27,30 @@
       resumen: estudio.resumen(),
       proximaVuelta: estudio.proximaVuelta(),
       anuncio: estudio.anuncio(),
-      hayDictado: estudio.hayDictado(),
+      delDictado: estudio.resumenDelDictado(),
+      siguienteDictado: estudio.anuncioDelDictado(),
+      deRadicales: estudio.resumenDeRadicales(),
+      siguientesRadicales: estudio.anuncioDeRadicales(),
+      seguimiento: estudio.seguimiento(),
+      modo: estudio.modo(),
     }
   }
 
   let aLaVista = $state.raw(mirar())
-  const { camino, entradas, resumen, proximaVuelta, anuncio, hayDictado } = $derived(aLaVista)
+  const { camino, entradas, resumen, proximaVuelta, anuncio, delDictado, siguienteDictado, deRadicales, siguientesRadicales, seguimiento, modo } =
+    $derived(aLaVista)
 
   const casillas = $derived(casillasDelDominio(entradas))
+  const porRepasar = $derived(textoDelRepaso(anuncio, proximaVuelta))
   const conPasosFallados = $derived(Object.entries(entradas).filter(([, entrada]) => entrada.pasosFallados.length > 0))
 
   function elegir(elegido: Camino) {
     estudio.elegirCamino(elegido)
+    aLaVista = mirar()
+  }
+
+  function elegirModo(elegido: Modo) {
+    estudio.elegirModo(elegido)
     aLaVista = mirar()
   }
 
@@ -77,46 +91,77 @@
     <p>No lo memorices: dedúcelo.</p>
     {#if resumen.sinVer === resumen.total}
       <p class="bienvenida">
-        Aprende dónde está cada elemento en la tabla y deduce de ahí su configuración y sus números de oxidación. Cada tanda dura
+        Aprende dónde está cada elemento en la tabla y deduce de ahí su configuración y sus números de oxidación. Cada oleada dura
         unos minutos: primero te presenta un grupo y después te pregunta.
       </p>
     {/if}
   </header>
 
-  <section class="hoy">
-    {#if tocaAlgo(anuncio)}
-      <button type="button" class="boton" onclick={alEmpezar}>Tanda de hoy</button>
-    {:else if proximaVuelta}
-      <p><b>Hoy no toca nada.</b> Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
-      <button type="button" class="boton" onclick={alEmpezar}>Tanda de práctica</button>
-    {/if}
-    <p>{textoDelAnuncio(anuncio)}</p>
-    <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar</button>
+  <section class="ejercicios">
+    <article class="ejercicio">
+      <h2>Oleada</h2>
+      <p>Elemento a elemento: dónde está, qué es y sus números.</p>
+      <button type="button" class="boton" onclick={alEmpezar}>Nueva oleada</button>
+      <p class="trae">{textoDelAnuncio(anuncio)}</p>
+      {#if porRepasar}
+        <p class="tenue">{porRepasar}</p>
+      {/if}
+    </article>
+
+    <article class="ejercicio">
+      <h2>Dictado</h2>
+      <p>Solo los números de oxidación, por bloques.</p>
+      <button type="button" class="boton" onclick={alDictado}>Nuevo dictado</button>
+      <p class="trae">{textoDeLoQueTrae('Bloques', siguienteDictado)}</p>
+      <p class="tenue">{textoDeLoVisto('bloques', delDictado)}</p>
+    </article>
+
+    <article class="ejercicio">
+      <h2>Radicales</h2>
+      <p>Iones como ClO₃⁻, el clorato: escribe su nombre o su fórmula y calcula su número.</p>
+      <button type="button" class="boton" onclick={alRadicales}>Nuevos radicales</button>
+      <p class="trae">{textoDeLoQueTrae('Radicales', siguientesRadicales)}</p>
+      <p class="tenue">{textoDeLoVisto('radicales', deRadicales)}</p>
+    </article>
   </section>
 
-  {#if hayDictado}
-    <section class="dictado">
-      <button type="button" class="boton secundario" onclick={alDictado}>Dictado</button>
-      <p>Marca de memoria los números de oxidación de lo que ya has estudiado, sin pistas.</p>
-    </section>
-  {/if}
-
-  <section class="camino">
-    <h2>Camino</h2>
-    <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
-      {#each CAMINOS as opcion (opcion)}
-        <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
+  <section class="ajustes">
+    <h2>Cómo estudias</h2>
+    <h3>Modo</h3>
+    <div class="selector" role="radiogroup" aria-label="Modo">
+      {#each MODOS as opcion (opcion)}
+        <button type="button" role="radio" aria-checked={modo === opcion} onclick={() => elegirModo(opcion)}>
+          {etiquetaDeModo[opcion]}
+        </button>
       {/each}
-    </select>
-    <p>{descripcionDeCamino[camino]}</p>
+    </div>
+    <p class="tenue">{descripcionDeModo[modo]}</p>
+
+    {#if resumen.sinVer > 0}
+      <h3>Camino</h3>
+      <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
+        {#each CAMINOS as opcion (opcion)}
+          <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
+        {/each}
+      </select>
+      <p class="tenue">{descripcionDeCamino[camino]}</p>
+    {/if}
   </section>
 
-  <p class="resumen">
-    <b>{resumen.sabidos}</b> sabidos · <b>{resumen.flojos}</b> flojos · <b>{resumen.sinVer}</b> sin ver, de {resumen.total}
-  </p>
+  <section class="avance">
+    <h2>Tu avance</h2>
+    <p>
+      <b>{resumen.sabidos}</b> {resumen.sabidos === 1 ? 'sabido' : 'sabidos'} · <b>{resumen.flojos}</b>
+      {resumen.flojos === 1 ? 'flojo' : 'flojos'} · <b>{resumen.sinVer}</b> sin ver, de {resumen.total}
+    </p>
+    {#if seguimiento}
+      <p class="tenue">{textoDelSeguimiento(seguimiento)}</p>
+    {/if}
+  </section>
 
   <div class="a-la-izquierda">
     <Tabla {casillas} />
+    <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar la tabla</button>
   </div>
 
   {#if conPasosFallados.length > 0}
@@ -131,6 +176,8 @@
   {/if}
 
   <section>
+    <h2>Copia</h2>
+    <p class="tenue">Lo estudiado se guarda solo en este navegador.</p>
     <div class="copia">
       <button type="button" class="boton secundario" onclick={guardarCopia}>Guardar copia</button>
       <button type="button" class="boton secundario" onclick={() => selector.click()}>Recuperar copia</button>
@@ -169,38 +216,64 @@
     font-size: 15px;
   }
 
-  .hoy {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 14px;
-    margin: 20px 0 8px;
-  }
-
-  .hoy p {
-    margin: 0;
-  }
-
-  .explorar {
-    margin-left: auto;
-  }
-
-  .dictado {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 14px;
-    margin: 8px 0;
-  }
-
-  .dictado p {
-    flex: 1 1 200px;
-    margin: 0;
+  h3 {
+    margin: 12px 0 6px;
+    font-size: 13px;
+    font-weight: 600;
     color: var(--tenue);
   }
 
-  .resumen {
-    margin: 12px 0;
+  .ejercicios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 10px;
+    margin: 18px 0 0;
+  }
+
+  .ejercicio {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: var(--papel);
+    padding: 12px 14px;
+  }
+
+  .ejercicio h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .ejercicio p {
+    margin: 0;
+  }
+
+  .ejercicio .boton {
+    margin: 4px 0;
+  }
+
+  .ejercicio .trae {
+    font-weight: 600;
+  }
+
+  .tenue {
+    color: var(--tenue);
+    font-size: 14px;
+  }
+
+  .ajustes p,
+  .avance p {
+    margin: 6px 0 0;
+  }
+
+  .avance {
+    margin-bottom: 12px;
+  }
+
+  .explorar {
+    display: block;
+    margin: 10px 0 0 auto;
   }
 
   .donde-se-rompe ul {
@@ -217,16 +290,30 @@
     padding: 10px 12px;
   }
 
-  .camino p {
-    margin: 8px 0 0;
-    color: var(--tenue);
+  .selector {
+    display: inline-flex;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .selector button {
+    border: 0;
+    background: var(--papel);
+    padding: 10px 14px;
+  }
+
+  .selector button[aria-checked='true'] {
+    background: var(--acento);
+    color: #fff;
+    font-weight: 600;
   }
 
   .copia {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 16px;
+    margin-top: 12px;
   }
 
   .aviso {

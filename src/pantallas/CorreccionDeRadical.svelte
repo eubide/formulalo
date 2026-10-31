@@ -1,27 +1,35 @@
 <script lang="ts">
   import { cuentaDe, formulaDe, numeroDeRadical, radicalesDe, type Radical } from '../catalogo/radicales'
+  import { casillasDeRadical } from './casillas'
   import Numeros from './Numeros.svelte'
+  import TablaDeRefuerzo from './TablaDeRefuerzo.svelte'
 
   interface Props {
     radical: Radical
+    escrito: string | null
     alSeguir: () => void
   }
 
-  let { radical, alSeguir }: Props = $props()
+  let { radical, escrito, alSeguir }: Props = $props()
 </script>
 
 <section class="correccion">
-  <h2><span aria-hidden="true">✗</span> {formulaDe(radical)} · {radical.nombre}</h2>
+  <h2><span aria-hidden="true">✗</span> Radical {formulaDe(radical)} · {radical.nombre}</h2>
+  {#if escrito !== null}
+    <p>Escribiste: <b>{escrito}</b></p>
+  {/if}
   <p>Cada oxígeno lleva −2 y todo suma la carga del radical.</p>
   <p>{cuentaDe(radical)} → x = <Numeros numeros={[numeroDeRadical(radical)]} /></p>
   <p>
     Del {radical.central}:
     {#each radicalesDe(radical.central) as hermano, indice (hermano.nombre)}
-      {#if indice > 0}{' · '}{/if}<span>{hermano.nombre} <Numeros numeros={[numeroDeRadical(hermano)]} /></span>
+      {#if indice > 0}{' · '}{/if}<span>{hermano.nombre} {formulaDe(hermano)} <Numeros numeros={[numeroDeRadical(hermano)]} /></span>
     {/each}
   </p>
   <button type="button" class="boton" onclick={alSeguir}>Seguir</button>
 </section>
+
+<TablaDeRefuerzo casillas={casillasDeRadical(radical)} />
 
 <style>
   .correccion {

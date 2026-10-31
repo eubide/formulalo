@@ -7,7 +7,7 @@
     etiquetaDeClase,
     type Clase,
   } from '../catalogo/catalogo'
-  import { etiquetaDePaso, pasosDe, type Respuesta, type Tanda } from '../estudio/estudio'
+  import { etiquetaDePaso, pasosDe, type Respuesta, type Oleada } from '../estudio/estudio'
   import Clases from '../tabla/Clases.svelte'
   import Tabla, { type Casilla } from '../tabla/Tabla.svelte'
   import Acierto from './Acierto.svelte'
@@ -17,24 +17,28 @@
   import PasoNumeros from './PasoNumeros.svelte'
 
   interface Props {
-    tanda: Tanda
+    oleada: Oleada
     sabido: boolean
+    comentario?: string | null
     alResponder: (respuesta: Respuesta) => void
+    alSaltarConfiguracion: () => void
     alCerrarCorreccion: () => void
     alCerrarAcierto: () => void
     alSalir: () => void
   }
 
-  let { tanda, sabido, alResponder, alCerrarCorreccion, alCerrarAcierto, alSalir }: Props = $props()
+  let { oleada, sabido, comentario = null, alResponder, alSaltarConfiguracion, alCerrarCorreccion, alCerrarAcierto, alSalir }: Props = $props()
+
+  const MARCAS: Record<string, string> = { fallado: '✗', saltado: '–', acertado: '✓', actual: '·', pendiente: '·' }
 
   const CLASES = Object.keys(etiquetaDeClase) as Clase[]
   const tactil = matchMedia('(pointer: coarse)').matches
 
   let tentativa = $state<string | null>(null)
 
-  const pregunta = $derived(tanda.pregunta!)
+  const pregunta = $derived(oleada.pregunta!)
   const elemento = $derived(pregunta.elemento)
-  const correccion = $derived(tanda.correccion)
+  const correccion = $derived(oleada.correccion)
   const pasos = $derived(pasosDe(elemento))
   const localizado = $derived(pregunta.paso !== 'posicion')
   const conClase = $derived(pasos.indexOf(pregunta.paso) > pasos.indexOf('clase') || correccion?.paso === 'clase')
@@ -44,7 +48,7 @@
     if (correccion?.paso === 'clase') {
       for (const { simbolo, clase } of elementos()) mapa[simbolo] = { clase }
     }
-    for (const simbolo of tanda.rotulados) {
+    for (const simbolo of oleada.rotulados) {
       if (simbolo !== elemento.simbolo) mapa[simbolo] = { rotulada: true, clase: elementoDe(simbolo).clase }
     }
     if (localizado) {
@@ -60,6 +64,7 @@
 
   function estadoDe(paso: (typeof pasos)[number]): string {
     if (pregunta.fallados.includes(paso)) return 'fallado'
+    if (pregunta.saltados.includes(paso)) return 'saltado'
     if (sabido) return 'acertado'
     if (paso === pregunta.paso) return 'actual'
     return pasos.indexOf(paso) < pasos.indexOf(pregunta.paso) ? 'acertado' : 'pendiente'
@@ -92,11 +97,11 @@
   <ol class="pasos">
     {#each pasos as paso (paso)}
       <li class={estadoDe(paso)}>
-        <span aria-hidden="true">{estadoDe(paso) === 'fallado' ? '✗' : estadoDe(paso) === 'acertado' ? '✓' : '·'}</span>
+        <span aria-hidden="true">{MARCAS[estadoDe(paso)]}</span>
         {etiquetaDePaso[paso]}
       </li>
     {/each}
-    <li class="quedan">Quedan {tanda.pendientes.length + 1}</li>
+    <li class="quedan">Quedan {oleada.pendientes.length + 1}</li>
   </ol>
 
   <div class="a-la-izquierda">
@@ -108,7 +113,7 @@
 
   <section class="panel">
     {#if sabido}
-      <Acierto {elemento} alSeguir={alCerrarAcierto} />
+      <Acierto {elemento} {comentario} alSeguir={alCerrarAcierto} />
     {:else if correccion}
       <Correccion {pregunta} {correccion} alSeguir={alCerrarCorreccion} />
     {:else if pregunta.paso === 'posicion'}
@@ -130,7 +135,10 @@
       </div>
     {:else if pregunta.paso === 'configuracion'}
       {#key elemento.simbolo}
-        <PasoConfiguracion alResponder={(subnivel) => alResponder({ paso: 'configuracion', subnivel })} />
+        <PasoConfiguracion
+          alResponder={(subnivel) => alResponder({ paso: 'configuracion', subnivel })}
+          alSaltar={alSaltarConfiguracion}
+        />
       {/key}
     {:else}
       <Configuracion {elemento} />
@@ -142,7 +150,8 @@
         <PasoNumeros
           {elemento}
           opciones={pregunta.opciones}
-          alResponder={(numeros) => alResponder({ paso: 'numeros', numeros })}
+          pideSeguridad={pregunta.pideSeguridad}
+          alResponder={(numeros, seguro) => alResponder({ paso: 'numeros', numeros, seguro })}
         />
       {/key}
     {/if}

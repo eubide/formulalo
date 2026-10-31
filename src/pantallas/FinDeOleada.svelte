@@ -1,34 +1,34 @@
 <script lang="ts">
-  import type { Estudio, Tanda } from '../estudio/estudio'
+  import type { Estudio, Oleada } from '../estudio/estudio'
   import Tabla from '../tabla/Tabla.svelte'
-  import { textoDelAnuncio, tocaAlgo } from './anuncio'
+  import { textoDelAnuncio, textoDelRepaso } from './anuncio'
   import { casillasDelDominio } from './casillas'
-  import { fechaLarga } from './fecha'
 
   interface Props {
-    tanda: Tanda
+    oleada: Oleada
     estudio: Estudio
     alSeguir: () => void
     alVolver: () => void
   }
 
-  let { tanda, estudio, alSeguir, alVolver }: Props = $props()
+  let { oleada, estudio, alSeguir, alVolver }: Props = $props()
 
   function mirar() {
     return {
       anuncio: estudio.anuncio(),
       proximaVuelta: estudio.proximaVuelta(),
       entradas: estudio.entradas(),
-      vueltas: estudio.vueltas(tanda),
+      vueltas: estudio.vueltas(oleada),
     }
   }
 
   let aLaVista = $state.raw(mirar())
   const { anuncio, proximaVuelta, entradas, vueltas } = $derived(aLaVista)
 
+  const porRepasar = $derived(textoDelRepaso(anuncio, proximaVuelta))
   const casillas = $derived.by(() => {
     const mapa = casillasDelDominio(entradas)
-    for (const simbolo of tanda.rotulados) mapa[simbolo] = { ...mapa[simbolo], senal: 'iluminada' }
+    for (const simbolo of oleada.rotulados) mapa[simbolo] = { ...mapa[simbolo], senal: 'iluminada' }
     return mapa
   })
   const cuandoVuelven = $derived(
@@ -45,12 +45,12 @@
 <svelte:document onvisibilitychange={alCambiarLaVisibilidad} />
 
 <main class="pantalla">
-  <h1>Tanda terminada</h1>
+  <h1>Oleada terminada</h1>
 
   <p class="sabidos">
     <span aria-hidden="true">✓</span>
-    {tanda.sabidos.length}
-    {tanda.sabidos.length === 1 ? 'elemento sabido' : 'elementos sabidos'}
+    {oleada.sabidos.length}
+    {oleada.sabidos.length === 1 ? 'elemento sabido' : 'elementos sabidos'}
   </p>
   <p>{cuandoVuelven}</p>
 
@@ -59,14 +59,11 @@
   </div>
 
   <section>
-    {#if tocaAlgo(anuncio)}
-      <p>Queda otra tanda: {textoDelAnuncio(anuncio)}</p>
-      <button type="button" class="boton" onclick={alSeguir}>Otra tanda</button>
-    {:else if proximaVuelta}
-      <p>Hoy no queda nada. Lo siguiente vuelve el {fechaLarga(proximaVuelta)}.</p>
-      <button type="button" class="boton" onclick={alSeguir}>Tanda de práctica</button>
-      <p>{textoDelAnuncio(anuncio)}</p>
+    <p>Siguiente: {textoDelAnuncio(anuncio)}</p>
+    {#if porRepasar}
+      <p>{porRepasar}</p>
     {/if}
+    <button type="button" class="boton" onclick={alSeguir}>Otra oleada</button>
     <button type="button" class="boton secundario" onclick={alVolver}>Portada</button>
   </section>
 </main>

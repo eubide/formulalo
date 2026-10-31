@@ -1,93 +1,166 @@
 import { describe, expect, it } from 'vitest'
-import { elementos } from '../catalogo/catalogo'
-import { numeroDeRadical, radicales } from '../catalogo/radicales'
-import { abrir, acertarTanda, estudiarElDia, montar } from './ayudantes'
-import { almacenEnMemoria, TECLADO, type Dictada, type DictadoEnCurso, type Estudio } from './estudio'
+import { bloques } from '../catalogo/bloques'
+import { elementoDe } from '../catalogo/catalogo'
+import { formulaDe, numeroDeRadical, radicales } from '../catalogo/radicales'
+import { abrir, acertarOleada, estudiarElDia, montar } from './ayudantes'
+import { almacenEnMemoria, TECLADO, type Dictada, type DictadoEnCurso, type Estudio, type RespuestaDictada } from './estudio'
 
-const CON_EXCEPCION = ['H', 'B', 'Tl', 'Si', 'Ge', 'N', 'O', 'Po', 'At', 'Xe']
-const SIN_EL_NEGATIVO = ['Sn', 'Pb', 'Bi']
-const DE_TRANSICION = ['Sc', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Pd', 'Ag', 'Cd', 'Pt', 'Au', 'Hg']
-const DIFICILES = [...CON_EXCEPCION, ...SIN_EL_NEGATIVO, ...DE_TRANSICION]
+const GRUPO_1 = ['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr']
+const GRUPO_2 = ['Be', 'Mg', 'Ca', 'Sr', 'Ba', 'Ra']
 
 function todasLasPreguntas(dictado: DictadoEnCurso): Dictada[] {
-  return dictado.pregunta ? [dictado.pregunta, ...dictado.pendientes] : []
+  return dictado.pregunta ? [dictado.pregunta, ...dictado.pendientes] : dictado.pendientes
 }
 
-function deElementos(dictadas: Dictada[]) {
-  return dictadas.flatMap((dictada) => (dictada.tipo === 'elemento' ? [dictada.elemento] : []))
+function deBloques(dictadas: Dictada[]) {
+  return dictadas.flatMap((dictada) => (dictada.tipo === 'bloque' ? [dictada] : []))
 }
 
 function deRadicales(dictadas: Dictada[]) {
-  return dictadas.flatMap((dictada) => (dictada.tipo === 'radical' ? [dictada.radical] : []))
+  return dictadas.flatMap((dictada) => (dictada.tipo === 'radical' && dictada.pide === 'escritura' ? [dictada.radical] : []))
 }
 
-function conPreguntados(...simbolos: string[]): Estudio {
+function conPreguntados(...simbolos: string[]) {
   const entrada = { estado: 'sabido', intervalo: 3, vuelve: '2026-10-09', fallos: 0, pasosFallados: [] }
   const almacen = almacenEnMemoria()
   almacen.setItem(
     'formulalo:dominio',
     JSON.stringify({ version: 1, camino: 'gas-noble', elementos: Object.fromEntries(simbolos.map((simbolo) => [simbolo, entrada])) }),
   )
-  return montar(() => 0, almacen).estudio
+  return montar(() => 0, almacen)
 }
 
-function hastaUnRadical(estudio: Estudio): DictadoEnCurso {
-  let dictado = estudio.abrirDictado()
-  while (dictado.pregunta!.tipo !== 'radical') dictado = acertar(estudio, dictado)
-  return dictado
-}
-
-function conTodoEstudiado(azar: () => number): Estudio {
-  const { estudio } = montar(azar)
+function conTodoEstudiado(azar: () => number = () => 0) {
+  const { estudio, reloj } = montar(azar)
   estudiarElDia(estudio)
-  return estudio
+  return { estudio, reloj }
+}
+
+function empezar(estudio: Estudio): DictadoEnCurso {
+  const dictado = estudio.abrirDictado()
+  return dictado.presentacion ? estudio.descartarPresentacionDelDictado(dictado) : dictado
+}
+
+function correcta(pregunta: Dictada): RespuestaDictada {
+  if (pregunta.tipo === 'bloque') return pregunta.elementos.map((elemento) => elemento.numeros)
+  if (pregunta.pide === 'numero') return [[numeroDeRadical(pregunta.radical)]]
+  return pregunta.dadoPor === 'formula' ? pregunta.radical.nombre : formulaDe(pregunta.radical)
 }
 
 function acertar(estudio: Estudio, dictado: DictadoEnCurso): DictadoEnCurso {
-  const pregunta = dictado.pregunta!
-  return estudio.responderDictado(
-    dictado,
-    pregunta.tipo === 'elemento'
-      ? pregunta.elemento.numeros.filter((numero) => numero !== 0)
-      : [numeroDeRadical(pregunta.radical)],
-  )
+  return estudio.responderDictado(dictado, correcta(dictado.pregunta!))
 }
 
 function fallar(estudio: Estudio, dictado: DictadoEnCurso): DictadoEnCurso {
-  return estudio.cerrarCorreccionDeDictado(estudio.responderDictado(dictado, []))
+  const pregunta = dictado.pregunta!
+  const vacia: RespuestaDictada = pregunta.tipo === 'bloque' ? pregunta.elementos.map(() => []) : pregunta.pide === 'numero' ? [[]] : 'nada'
+  return estudio.cerrarCorreccionDeDictado(estudio.responderDictado(dictado, vacia))
 }
 
-describe('Cuándo hay Dictado', () => {
-  it('sin ningún Elemento preguntado no hay Dictado', () => {
+function hasta(estudio: Estudio, dictado: DictadoEnCurso, tipo: Dictada['tipo']): DictadoEnCurso {
+  let actual = dictado
+  while (actual.pregunta!.tipo !== tipo) actual = acertar(estudio, actual)
+  return actual
+}
+
+function hastaElFinal(estudio: Estudio, dictado: DictadoEnCurso): DictadoEnCurso {
+  let actual = dictado
+  while (actual.pregunta) actual = acertar(estudio, actual)
+  return actual
+}
+
+describe('El Dictado avanza por su cuenta', () => {
+  it('sin nada estudiado trae los 2 primeros Bloques del Camino y presenta antes sus Elementos', () => {
     const { estudio } = montar()
 
-    expect(estudio.hayDictado()).toBe(false)
+    const dictado = estudio.abrirDictado()
+
+    expect(dictado.pregunta).toBeNull()
+    expect(new Set(dictado.presentacion)).toEqual(new Set([...GRUPO_1, ...GRUPO_2]))
+    expect(deBloques(dictado.pendientes).map((bloque) => bloque.clave).sort()).toEqual([GRUPO_1.join(' '), GRUPO_2.join(' ')].sort())
   })
 
-  it('un Elemento solo presentado no entra', () => {
-    const { estudio } = montar()
-    estudio.descartarPresentacion(estudio.abrirTanda())
+  it('solo presenta lo que no se ha visto, y el Bloque sale entero', () => {
+    const { estudio } = conPreguntados('H', 'O')
+    estudio.elegirCamino('uso')
 
-    expect(estudio.hayDictado()).toBe(false)
+    const dictado = estudio.abrirDictado()
+
+    expect(dictado.presentacion).not.toContain('H')
+    expect(dictado.presentacion).toContain('Li')
+    expect(deBloques(dictado.pendientes).flatMap((bloque) => bloque.elementos)).toContain(elementoDe('H'))
   })
 
-  it('de los gases nobles solo entra el Xe, porque el 0 no se pregunta', () => {
-    const { estudio } = montar()
-    acertarTanda(estudio, abrir(estudio))
+  it('sin nada por presentar empieza directamente', () => {
+    const { estudio } = conTodoEstudiado()
 
-    expect(estudio.hayDictado()).toBe(true)
-    expect(deElementos(todasLasPreguntas(estudio.abrirDictado())).map((elemento) => elemento.simbolo)).toEqual(['Xe'])
+    const dictado = estudio.abrirDictado()
+
+    expect(dictado.presentacion).toBeNull()
+    expect(dictado.pregunta).not.toBeNull()
+  })
+
+  it('al descartar la Presentación empieza a preguntar, y lo presentado ya no se vuelve a presentar', () => {
+    const { estudio } = montar()
+
+    const dictado = estudio.descartarPresentacionDelDictado(estudio.abrirDictado())
+
+    expect(dictado.presentacion).toBeNull()
+    expect(dictado.pregunta).not.toBeNull()
+    expect(estudio.entradas().Li).toMatchObject({ estado: 'flojo', fallos: 0 })
+  })
+
+  it('Dictado tras Dictado, sin hacer ninguna Oleada, llega a los 10 Bloques', () => {
+    const { estudio } = montar()
+
+    for (let dictados = 0; dictados < 12 && estudio.resumenDelDictado().vistos < 10; dictados++) hastaElFinal(estudio, empezar(estudio))
+
+    expect(estudio.resumenDelDictado().vistos).toBe(10)
+    expect(estudio.resumen().sinVer).toBe(6)
+  })
+
+  it('no repite un Elemento entre los dos Bloques de un Dictado', () => {
+    for (const valor of [0, 0.3, 0.6, 0.9]) {
+      const { estudio } = montar(() => valor)
+      for (let dictados = 0; dictados < 10; dictados++) {
+        const dictado = empezar(estudio)
+        const delDictado = deBloques(todasLasPreguntas(dictado)).flatMap((bloque) => bloque.elementos)
+        expect(new Set(delDictado).size).toBe(delDictado.length)
+        hastaElFinal(estudio, dictado)
+      }
+    }
+  })
+
+  it('fallar un Elemento solo presentado no lo saca de los nuevos; fallar uno ya preguntado lo deja Flojo', () => {
+    const { estudio } = conPreguntados('H')
+    const dictado = hasta(estudio, empezar(estudio), 'bloque')
+    const pregunta = dictado.pregunta!
+    if (pregunta.tipo !== 'bloque') throw new Error('Se esperaba un Bloque')
+
+    estudio.responderDictado(dictado, pregunta.elementos.map(() => []))
+
+    const presentado = pregunta.elementos.find((elemento) => elemento.simbolo !== 'H')!
+    expect(estudio.entradas()[presentado.simbolo]).toMatchObject({ estado: 'flojo', fallos: 0 })
+    if (pregunta.elementos.includes(elementoDe('H'))) expect(estudio.entradas().H).toMatchObject({ estado: 'flojo', fallos: 1 })
+  })
+
+  it('lo presentado en un Dictado espera en las Oleadas, de 8 en 8 como mucho', () => {
+    const { estudio } = montar()
+    hastaElFinal(estudio, empezar(estudio))
+
+    expect(estudio.abrirOleada().presentacion).toBeNull()
+    expect(estudio.anuncio().nuevos).toBe(8)
   })
 })
 
 describe('Teclado', () => {
-  it('va de −4 a +7, sin el 0', () => {
-    expect(TECLADO).toEqual([-4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7])
+  it('va de −5 a +7, sin el 0', () => {
+    expect(TECLADO).toEqual([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7])
   })
 
   it('tiene todos los números que se preguntan', () => {
-    for (const elemento of elementos()) {
-      expect(TECLADO, elemento.simbolo).toEqual(expect.arrayContaining(elemento.numeros.filter((numero) => numero !== 0)))
+    for (const elemento of bloques().flat()) {
+      expect(TECLADO, elemento.simbolo).toEqual(expect.arrayContaining(elemento.numeros))
     }
     for (const radical of radicales()) {
       expect(TECLADO, radical.nombre).toContain(numeroDeRadical(radical))
@@ -96,180 +169,354 @@ describe('Teclado', () => {
 })
 
 describe('Qué lleva un Dictado', () => {
-  it.each([0, 0.3, 0.6, 0.9])('con el azar en %s lleva 15 preguntas, sin repetir ninguna', (valor) => {
-    const dictadas = todasLasPreguntas(conTodoEstudiado(() => valor).abrirDictado())
+  it.each([0, 0.3, 0.6, 0.9])('con el azar en %s, lleva 2 Bloques y ningún Radical', (valor) => {
+    const dictadas = todasLasPreguntas(conTodoEstudiado(() => valor).estudio.abrirDictado())
 
-    expect(dictadas).toHaveLength(15)
-    expect(new Set(dictadas).size).toBe(15)
+    expect(deBloques(dictadas)).toHaveLength(2)
+    expect(deRadicales(dictadas)).toEqual([])
   })
 
-  it.each([0, 0.3, 0.6, 0.9])('con el azar en %s, al menos la mitad de los Elementos son de los difíciles, sin ser todos', (valor) => {
-    const simbolos = deElementos(todasLasPreguntas(conTodoEstudiado(() => valor).abrirDictado())).map(
-      (elemento) => elemento.simbolo,
-    )
-    const dificiles = simbolos.filter((simbolo) => DIFICILES.includes(simbolo))
+  it('numera los Bloques por el orden en que salen', () => {
+    const dictado = conTodoEstudiado(() => 0.6).estudio.abrirDictado()
 
-    expect(dificiles.length).toBeGreaterThanOrEqual(simbolos.length / 2)
-    expect(dificiles.length).toBeLessThan(simbolos.length)
+    expect(deBloques(todasLasPreguntas(dictado)).map((bloque) => bloque.numero)).toEqual([1, 2])
+    expect(dictado.bloques).toBe(2)
   })
 
-  it.each([0, 0.3, 0.6, 0.9])('con el azar en %s, cada excepción va seguida de un Elemento regular de su Grupo', (valor) => {
-    const dictadas = todasLasPreguntas(conTodoEstudiado(() => valor).abrirDictado())
-    const conVecinoSeguro = CON_EXCEPCION.filter((simbolo) => !['Si', 'Ge', 'Xe'].includes(simbolo))
+  it('da el Bloque por Símbolos o por nombres', () => {
+    const dadosPor = (valor: number) => deBloques(todasLasPreguntas(conTodoEstudiado(() => valor).estudio.abrirDictado())).map((bloque) => bloque.dadoPor)
 
-    for (const [indice, dictada] of dictadas.entries()) {
-      if (dictada.tipo !== 'elemento' || !conVecinoSeguro.includes(dictada.elemento.simbolo)) continue
-      const [siguiente] = deElementos(dictadas.slice(indice + 1, indice + 2))
-      expect(siguiente?.grupo, dictada.elemento.simbolo).toBe(dictada.elemento.grupo)
-      expect(DIFICILES, dictada.elemento.simbolo).not.toContain(siguiente?.simbolo)
-    }
-  })
-
-  it('da el Elemento por su Símbolo o por su nombre, y el Radical por su fórmula o por su nombre', () => {
-    const conAzar = (valor: number) => todasLasPreguntas(conTodoEstudiado(() => valor).abrirDictado())
-
-    expect(conAzar(0).map((dictada) => dictada.dadoPor)).toEqual(
-      conAzar(0).map((dictada) => (dictada.tipo === 'elemento' ? 'simbolo' : 'formula')),
-    )
-    expect(new Set(conAzar(0.9).map((dictada) => dictada.dadoPor))).toEqual(new Set(['nombre']))
-  })
-
-  it.each([0, 0.3, 0.6, 0.9])('con el azar en %s, con todo estudiado lleva 5 Radicales', (valor) => {
-    const dictadas = todasLasPreguntas(conTodoEstudiado(() => valor).abrirDictado())
-
-    expect(deRadicales(dictadas)).toHaveLength(5)
-    expect(deElementos(dictadas)).toHaveLength(10)
-  })
-
-  it('un Radical solo entra si su Elemento central ya se ha preguntado', () => {
-    const dictadas = todasLasPreguntas(conPreguntados('Cl').abrirDictado())
-
-    expect(deElementos(dictadas).map((elemento) => elemento.simbolo)).toEqual(['Cl'])
-    expect(deRadicales(dictadas).map((radical) => radical.nombre).sort()).toEqual([
-      'clorato',
-      'clorito',
-      'hipoclorito',
-      'perclorato',
-    ])
-  })
-
-  it('con pocos Elementos preguntados, los Radicales llenan lo que sobra', () => {
-    const dictadas = todasLasPreguntas(conPreguntados('Cl', 'Br', 'S').abrirDictado())
-
-    expect(deElementos(dictadas)).toHaveLength(3)
-    expect(deRadicales(dictadas)).toHaveLength(11)
+    expect(new Set(dadosPor(0))).toEqual(new Set(['simbolo']))
+    expect(new Set(dadosPor(0.9))).toEqual(new Set(['nombre']))
   })
 })
 
-describe('Responder un Elemento', () => {
-  it('solo acierta el conjunto exacto, en cualquier orden', () => {
+describe('El ejercicio de Radicales', () => {
+  it('se puede hacer desde el principio, sin Presentación, con 10 Radicales y ningún Bloque', () => {
     const { estudio } = montar()
-    acertarTanda(estudio, abrir(estudio))
-    const dictado = estudio.abrirDictado()
 
-    expect(estudio.responderDictado(dictado, [2, 4]).respuesta).toEqual([2, 4])
-    expect(estudio.responderDictado(dictado, [6, 2, 4]).respuesta).toBeNull()
-    expect(estudio.responderDictado(dictado, [6, 2, 4]).pregunta).toBeNull()
+    const ejercicio = estudio.abrirRadicales()
+
+    expect(ejercicio.presentacion).toBeNull()
+    expect(ejercicio.pregunta).not.toBeNull()
+    expect(deRadicales(todasLasPreguntas(ejercicio))).toHaveLength(10)
+    expect(deBloques(todasLasPreguntas(ejercicio))).toEqual([])
   })
 
-  it('acertar no cambia el Dominio, ni siquiera el de un Flojo', () => {
-    const estudio = conTodoEstudiado(() => 0)
-    let dictado = fallar(estudio, estudio.abrirDictado())
-    const antes = estudio.entradas()
+  it('avanza por el Camino, con los Radicales del Elemento central que llega antes', () => {
+    const { estudio } = montar()
+    const nombres = deRadicales(todasLasPreguntas(estudio.abrirRadicales())).map((radical) => radical.nombre)
 
-    while (dictado.pregunta) dictado = acertar(estudio, dictado)
+    expect(nombres).toEqual(expect.arrayContaining(['hipofluorito', 'fluorito', 'fluorato', 'perfluorato']))
+    expect(nombres).not.toContain('borato')
+  })
+
+  it('no cambia a los Elementos, ni al acertar ni al fallar', () => {
+    const { estudio } = conTodoEstudiado()
+    const antes = estudio.entradas()
+    let ejercicio = estudio.abrirRadicales()
+
+    ejercicio = fallar(estudio, ejercicio)
+    hastaElFinal(estudio, ejercicio)
 
     expect(estudio.entradas()).toEqual(antes)
   })
 
-  it('al acertar deja a la vista la pregunta acertada', () => {
-    const estudio = conTodoEstudiado(() => 0)
-    const dictado = estudio.abrirDictado()
+  it('sigue su propia serie: el segundo, con un 30 %, repasa 3 y avanza 7', () => {
+    const { estudio, reloj } = montar()
+    hastaElFinal(estudio, estudio.abrirRadicales())
+    const vistos = Object.keys(estudio.memoriaDelDictado())
+    reloj.dia = '2026-10-06'
 
-    expect(acertar(estudio, dictado).acertada).toBe(dictado.pregunta)
+    const nombres = deRadicales(todasLasPreguntas(estudio.abrirRadicales())).map((radical) => radical.nombre)
+
+    expect(nombres.filter((nombre) => vistos.includes(nombre))).toHaveLength(3)
+    expect(nombres.filter((nombre) => !vistos.includes(nombre))).toHaveLength(7)
   })
 
-  it('fallar deja el Elemento Flojo y de vuelta mañana, con el fallo en los Números de oxidación', () => {
-    const estudio = conTodoEstudiado(() => 0)
-    const dictado = estudio.abrirDictado()
-    const { simbolo } = deElementos([dictado.pregunta!])[0]
+  it('terminar uno no mueve la serie del Dictado', () => {
+    const { estudio } = conTodoEstudiado()
+    hastaElFinal(estudio, estudio.abrirRadicales())
 
-    estudio.responderDictado(dictado, [])
-
-    expect(estudio.entradas()[simbolo]).toEqual({
-      estado: 'flojo',
-      intervalo: 0,
-      vuelve: '2026-10-06',
-      fallos: 1,
-      pasosFallados: ['numeros'],
-    })
+    expect(estudio.anuncioDelDictado()).toEqual({ nuevos: 2, deRepaso: 0 })
   })
 
-  it('mientras la Corrección está abierta no se responde otra cosa', () => {
-    const estudio = conTodoEstudiado(() => 0)
-    const conCorreccion = estudio.responderDictado(estudio.abrirDictado(), [])
+  it('anuncia lo que trae el siguiente y cuenta lo visto', () => {
+    const { estudio, reloj } = montar()
+    expect(estudio.anuncioDeRadicales()).toEqual({ nuevos: 10, deRepaso: 0 })
 
-    expect(estudio.responderDictado(conCorreccion, [1])).toBe(conCorreccion)
+    hastaElFinal(estudio, estudio.abrirRadicales())
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncioDeRadicales()).toEqual({ nuevos: 7, deRepaso: 3 })
+    expect(estudio.resumenDeRadicales()).toEqual({ vistos: 10, total: 39, tocan: 10 })
   })
 
-  it('lo fallado vuelve tres preguntas después y queda entre las falladas', () => {
-    const estudio = conTodoEstudiado(() => 0)
-    const dictado = estudio.abrirDictado()
-    const fallada = dictado.pregunta!
+  it('de cada Radical pide primero escribir y después su número', () => {
+    const { estudio } = montar()
+    const ejercicio = estudio.abrirRadicales()
+    const pregunta = ejercicio.pregunta!
+    if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
 
-    const siguiente = fallar(estudio, dictado)
-
-    expect(siguiente.pregunta).toBe(dictado.pendientes[0])
-    expect(siguiente.pendientes.indexOf(fallada)).toBe(2)
-    expect(siguiente.falladas).toEqual([fallada])
+    expect(pregunta.pide).toBe('escritura')
+    expect(acertar(estudio, ejercicio).pregunta).toMatchObject({ radical: pregunta.radical, pide: 'numero' })
   })
 
-  it('fallarlo otra vez no lo trae una tercera vez ni anota otro fallo', () => {
-    const estudio = conTodoEstudiado(() => 0)
-    let dictado = estudio.abrirDictado()
-    const fallada = dictado.pregunta!
-    const { simbolo } = deElementos([fallada])[0]
-    dictado = fallar(estudio, dictado)
-    while (dictado.pregunta !== fallada) dictado = acertar(estudio, dictado)
+  it('dado por su fórmula se escribe el nombre, sin importar las mayúsculas', () => {
+    const { estudio } = montar(() => 0)
+    const ejercicio = estudio.abrirRadicales()
+    const pregunta = ejercicio.pregunta!
+    if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
 
-    dictado = fallar(estudio, dictado)
-
-    expect(todasLasPreguntas(dictado)).not.toContain(fallada)
-    expect(dictado.falladas).toEqual([fallada])
-    expect(estudio.entradas()[simbolo].fallos).toBe(1)
-  })
-})
-
-describe('Responder un Radical', () => {
-  it('se acierta con el número de su Elemento central', () => {
-    const estudio = conPreguntados('Cl')
-    let dictado = estudio.abrirDictado()
-    while (deRadicales([dictado.pregunta!])[0]?.nombre !== 'clorato') dictado = acertar(estudio, dictado)
-
-    expect(estudio.responderDictado(dictado, [3]).respuesta).toEqual([3])
-    expect(estudio.responderDictado(dictado, [5]).respuesta).toBeNull()
+    expect(pregunta.dadoPor).toBe('formula')
+    expect(estudio.responderDictado(ejercicio, pregunta.radical.nombre.toUpperCase()).respuesta).toBeNull()
+    expect(estudio.responderDictado(ejercicio, formulaDe(pregunta.radical)).respuesta).not.toBeNull()
   })
 
-  it('fallarlo no escribe en el Dominio', () => {
-    const estudio = conPreguntados('Cl')
-    const antes = estudio.entradas()
+  it('dado por su nombre se escribe la fórmula, sin importar las mayúsculas', () => {
+    const { estudio } = montar(() => 0.9)
+    const ejercicio = estudio.abrirRadicales()
+    const pregunta = ejercicio.pregunta!
+    if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
 
-    fallar(estudio, hastaUnRadical(estudio))
-
-    expect(estudio.entradas()).toEqual(antes)
+    expect(pregunta.dadoPor).toBe('nombre')
+    expect(estudio.responderDictado(ejercicio, formulaDe(pregunta.radical).toUpperCase()).respuesta).toBeNull()
+    expect(estudio.responderDictado(ejercicio, pregunta.radical.nombre).respuesta).not.toBeNull()
   })
 
-  it('lo fallado vuelve una vez y queda entre las falladas', () => {
-    const estudio = conTodoEstudiado(() => 0)
-    const dictado = hastaUnRadical(estudio)
-    const fallada = dictado.pregunta!
+  it('el número se acierta con el de su Elemento central, y fallarlo cuenta como fallo aunque se escribiera bien', () => {
+    const { estudio } = montar()
+    const dictado = acertar(estudio, estudio.abrirRadicales())
+    const pregunta = dictado.pregunta!
+    if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
+    const numero = numeroDeRadical(pregunta.radical)
+    expect(estudio.memoriaDelDictado()[pregunta.radical.nombre]).toMatchObject({ intervalo: 1 })
 
-    let siguiente = fallar(estudio, dictado)
+    expect(estudio.responderDictado(dictado, [[numero]]).respuesta).toBeNull()
+    expect(estudio.responderDictado(dictado, [[numero === 7 ? 6 : numero + 1]]).respuesta).not.toBeNull()
+    expect(estudio.memoriaDelDictado()[pregunta.radical.nombre]).toMatchObject({ intervalo: 0 })
+  })
+
+  it('lo fallado vuelve una vez, y queda entre lo fallado', () => {
+    const { estudio } = montar()
+    const ejercicio = estudio.abrirRadicales()
+    const fallada = ejercicio.pregunta!
+
+    let siguiente = fallar(estudio, ejercicio)
     expect(todasLasPreguntas(siguiente)).toContain(fallada)
-    expect(siguiente.falladas).toEqual([fallada])
+    expect(siguiente.radicalesFallados).toHaveLength(1)
 
     while (siguiente.pregunta !== fallada) siguiente = acertar(estudio, siguiente)
     siguiente = fallar(estudio, siguiente)
     expect(todasLasPreguntas(siguiente)).not.toContain(fallada)
+    expect(siguiente.radicalesFallados).toHaveLength(1)
+  })
+
+  it('lo acertado vuelve a 1 día, y lo fallado vuelve mañana con Intervalo 0', () => {
+    const { estudio } = montar()
+    const ejercicio = estudio.abrirRadicales()
+    const pregunta = ejercicio.pregunta!
+    if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
+    const { nombre } = pregunta.radical
+
+    hastaElFinal(estudio, fallar(estudio, ejercicio))
+
+    expect(estudio.memoriaDelDictado()[nombre]).toMatchObject({ intervalo: 0, vuelve: '2026-10-06' })
+    const otro = Object.entries(estudio.memoriaDelDictado()).find(([clave]) => clave !== nombre)!
+    expect(otro[1]).toMatchObject({ intervalo: 1, vuelve: '2026-10-06' })
+  })
+})
+
+describe('Responder un Bloque', () => {
+  it('acierta con todos los conjuntos exactos, en cualquier orden', () => {
+    const { estudio } = conTodoEstudiado()
+    const dictado = hasta(estudio, estudio.abrirDictado(), 'bloque')
+
+    const alReves = (correcta(dictado.pregunta!) as number[][]).map((numeros) => [...numeros].reverse())
+
+    expect(estudio.responderDictado(dictado, alReves).respuesta).toBeNull()
+  })
+
+  it('acertar no cambia a los Elementos', () => {
+    const { estudio } = conTodoEstudiado()
+    const antes = estudio.entradas()
+
+    const final = hastaElFinal(estudio, estudio.abrirDictado())
+
+    expect(estudio.entradas()).toEqual(antes)
+    expect(final.elementosFallados).toEqual([])
+  })
+
+  it('al acertar deja a la vista lo acertado', () => {
+    const { estudio } = conTodoEstudiado()
+    const dictado = hasta(estudio, estudio.abrirDictado(), 'bloque')
+
+    expect(acertar(estudio, dictado).acertada).toBe(dictado.pregunta)
+  })
+
+  it('fallar una fila deja Flojo solo ese Elemento, de vuelta mañana', () => {
+    const { estudio } = conTodoEstudiado()
+    const dictado = hasta(estudio, estudio.abrirDictado(), 'bloque')
+    const pregunta = dictado.pregunta!
+    if (pregunta.tipo !== 'bloque') throw new Error('Se esperaba un Bloque')
+    const [primero, segundo] = pregunta.elementos
+
+    estudio.responderDictado(dictado, pregunta.elementos.map((elemento) => (elemento === primero ? [] : elemento.numeros)))
+
+    expect(estudio.entradas()[primero.simbolo]).toEqual({ estado: 'flojo', intervalo: 0, vuelve: '2026-10-06', fallos: 1, pasosFallados: ['numeros'] })
+    expect(estudio.entradas()[segundo.simbolo].estado).toBe('sabido')
+  })
+
+  it('mientras la Corrección está abierta no se responde otra cosa', () => {
+    const { estudio } = conTodoEstudiado()
+    const dictado = hasta(estudio, estudio.abrirDictado(), 'bloque')
+    const pregunta = dictado.pregunta!
+    if (pregunta.tipo !== 'bloque') throw new Error('Se esperaba un Bloque')
+    const conCorreccion = estudio.responderDictado(dictado, pregunta.elementos.map(() => []))
+
+    expect(estudio.responderDictado(conCorreccion, pregunta.elementos.map(() => [1]))).toBe(conCorreccion)
+  })
+
+  it('solo vuelve lo fallado, después del otro Bloque, y queda entre lo fallado', () => {
+    const { estudio } = conTodoEstudiado()
+    const dictado = hasta(estudio, estudio.abrirDictado(), 'bloque')
+    const { pregunta } = dictado
+    if (pregunta?.tipo !== 'bloque') throw new Error('Se esperaba un Bloque')
+    const [primero, segundo] = pregunta.elementos
+    const respuesta = pregunta.elementos.map((elemento) => (elemento === primero || elemento === segundo ? [] : elemento.numeros))
+
+    const siguiente = estudio.cerrarCorreccionDeDictado(estudio.responderDictado(dictado, respuesta))
+
+    expect(siguiente.pregunta).toBe(dictado.pendientes[0])
+    expect(siguiente.pendientes.at(-1)).toMatchObject({ tipo: 'bloque', numero: pregunta.numero, elementos: [primero, segundo] })
+    expect(siguiente.elementosFallados).toEqual([primero, segundo])
+  })
+
+  it('fallarlo otra vez no lo trae una tercera vez ni anota otro fallo', () => {
+    const { estudio } = conTodoEstudiado()
+    let dictado = fallar(estudio, hasta(estudio, estudio.abrirDictado(), 'bloque'))
+    const fallado = dictado.elementosFallados[0]
+    dictado = hastaOtroIntentoDe(estudio, dictado, fallado.simbolo)
+
+    dictado = fallar(estudio, dictado)
+
+    expect(todasLasPreguntas(dictado).filter((dictada) => dictada.tipo === 'bloque' && dictada.elementos.includes(fallado))).toEqual([])
+    expect(estudio.entradas()[fallado.simbolo].fallos).toBe(1)
+  })
+})
+
+function hastaOtroIntentoDe(estudio: Estudio, dictado: DictadoEnCurso, simbolo: string): DictadoEnCurso {
+  let actual = dictado
+  while (!(actual.pregunta?.tipo === 'bloque' && actual.pregunta.elementos.some((elemento) => elemento.simbolo === simbolo))) {
+    actual = acertar(estudio, actual)
+  }
+  return actual
+}
+
+describe('El Dictado repasa', () => {
+  it('la serie manda: el segundo Dictado, con un 30 %, repasa 1 Bloque y avanza otro', () => {
+    const { estudio, reloj } = conTodoEstudiado()
+    hastaElFinal(estudio, estudio.abrirDictado())
+    const vistos = Object.keys(estudio.memoriaDelDictado())
+    reloj.dia = '2026-10-06'
+
+    const dictadas = deBloques(todasLasPreguntas(estudio.abrirDictado()))
+
+    expect(dictadas.filter((bloque) => vistos.includes(bloque.clave))).toHaveLength(1)
+    expect(dictadas).toHaveLength(2)
+  })
+
+  it('lo fallado no se repite Dictado tras Dictado mientras haya otros Bloques que sacar', () => {
+    const { estudio, reloj } = conTodoEstudiado()
+    const salen: string[] = []
+
+    for (let hora = 10; hora < 24; hora++) {
+      reloj.hora = `${hora}:00`
+      let dictado = estudio.abrirDictado()
+      if (hora >= 18) salen.push(...deBloques(todasLasPreguntas(dictado)).map((bloque) => bloque.clave))
+      while (dictado.pregunta) {
+        const { pregunta } = dictado
+        dictado = estudio.responderDictado(
+          dictado,
+          pregunta.tipo === 'bloque'
+            ? pregunta.elementos.map((elemento) => (['H', 'O'].includes(elemento.simbolo) ? [] : elemento.numeros))
+            : correcta(pregunta),
+        )
+        if (dictado.respuesta) dictado = estudio.cerrarCorreccionDeDictado(dictado)
+      }
+    }
+
+    expect(new Set(salen).size).toBeGreaterThanOrEqual(6)
+  })
+
+  it('anuncia cuántos Bloques nuevos y de repaso trae el siguiente', () => {
+    const { estudio, reloj } = conTodoEstudiado()
+    expect(estudio.anuncioDelDictado()).toEqual({ nuevos: 2, deRepaso: 0 })
+
+    hastaElFinal(estudio, estudio.abrirDictado())
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.anuncioDelDictado()).toEqual({ nuevos: 1, deRepaso: 1 })
+  })
+
+  it('cuenta lo visto y lo que toca', () => {
+    const { estudio, reloj } = conTodoEstudiado()
+    hastaElFinal(estudio, estudio.abrirDictado())
+    reloj.dia = '2026-10-06'
+
+    expect(estudio.resumenDelDictado()).toEqual({ vistos: 2, total: 10, tocan: 2 })
+  })
+})
+
+describe('Seguimiento de las Oleadas', () => {
+  it('sin ninguna hecha no hay nada que seguir', () => {
+    expect(montar().estudio.seguimiento()).toBeNull()
+  })
+
+  it('cuenta las de hoy, la distancia a la última y la media por día, también de los Dictados', () => {
+    const { estudio, reloj } = montar()
+    reloj.hora = '10:00'
+    acertarOleada(estudio, abrir(estudio))
+    reloj.dia = '2026-10-06'
+    reloj.hora = '09:00'
+    acertarOleada(estudio, abrir(estudio))
+    reloj.hora = '11:00'
+    hastaElFinal(estudio, empezar(estudio))
+    reloj.hora = '11:30'
+
+    expect(estudio.seguimiento()).toEqual({
+      oleadasDeHoy: 1,
+      dictadosDeHoy: 1,
+      radicalesDeHoy: 0,
+      minutosDesdeLaUltima: 30,
+      minutosEntreOleadas: 750,
+      mediaPorDia: 1.5,
+    })
+  })
+
+  it('el ejercicio de Radicales cuenta aparte', () => {
+    const { estudio } = montar()
+    hastaElFinal(estudio, estudio.abrirRadicales())
+
+    expect(estudio.seguimiento()).toMatchObject({ oleadasDeHoy: 0, dictadosDeHoy: 0, radicalesDeHoy: 1 })
+  })
+
+  it('una Oleada abandonada no cuenta', () => {
+    const { estudio } = montar()
+    abrir(estudio)
+
+    expect(estudio.seguimiento()).toBeNull()
+  })
+
+  it('un registro guardado sin Oleadas se conserva: los Elementos siguen', () => {
+    const almacen = almacenEnMemoria()
+    const entrada = { estado: 'sabido', intervalo: 3, vuelve: '2026-10-09', fallos: 0, pasosFallados: [] }
+    almacen.setItem('formulalo:dominio', JSON.stringify({ version: 1, camino: 'uso', elementos: { He: entrada } }))
+
+    const { estudio } = montar(() => 0, almacen)
+
+    expect(estudio.entradas()).toEqual({ He: entrada })
+    expect(estudio.seguimiento()).toBeNull()
+    expect(estudio.memoriaDelDictado()).toEqual({})
   })
 })

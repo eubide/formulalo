@@ -5,12 +5,27 @@ import type { Dictada, DictadoEnCurso } from '../estudio/estudio'
 import Dictado from './Dictado.svelte'
 import { pintar } from './pintar'
 
-const TECLADO = '−4 −3 −2 −1 +1 +2 +3 +4 +5 +6 +7'
+const TECLADO = '+7 +5 +3 +1 +6 +4 +2 −1 −3 −5 −2 −4'
+const GRUPO_16 = ['O', 'S', 'Se', 'Te', 'Po']
 
 function pintarDictado(cambios: Partial<DictadoEnCurso>): string {
-  const dictado: DictadoEnCurso = { pregunta: null, pendientes: [], respuesta: null, acertada: null, falladas: [], ...cambios }
+  const dictado: DictadoEnCurso = {
+    tipo: 'dictado',
+    presentacion: null,
+    pregunta: null,
+    pendientes: [],
+    bloques: 2,
+    respuesta: null,
+    acertada: null,
+    elementosFallados: [],
+    radicalesFallados: [],
+    anotadas: [],
+    vueltas: [],
+    ...cambios,
+  }
   return pintar(Dictado, {
     dictado,
+    alDescartarPresentacion: () => {},
     alResponder: () => {},
     alCerrarCorreccion: () => {},
     alOtro: () => {},
@@ -18,86 +33,125 @@ function pintarDictado(cambios: Partial<DictadoEnCurso>): string {
   })
 }
 
-function deElemento(simbolo: string, dadoPor: 'simbolo' | 'nombre' = 'simbolo'): Dictada {
-  return { tipo: 'elemento', elemento: elementoDe(simbolo), dadoPor }
+function deBloque(simbolos: string[], dadoPor: 'simbolo' | 'nombre' = 'simbolo'): Dictada {
+  return { tipo: 'bloque', clave: simbolos.join(' '), elementos: simbolos.map(elementoDe), dadoPor, numero: 1 }
 }
 
-function deRadical(nombre: string, dadoPor: 'formula' | 'nombre' = 'formula'): Dictada {
-  return { tipo: 'radical', radical: radicales().find((radical) => radical.nombre === nombre)!, dadoPor }
+function radicalLlamado(nombre: string) {
+  return radicales().find((radical) => radical.nombre === nombre)!
 }
+
+function deRadical(nombre: string, pide: 'escritura' | 'numero' = 'numero', dadoPor: 'formula' | 'nombre' = 'formula'): Dictada {
+  return { tipo: 'radical', radical: radicalLlamado(nombre), dadoPor, pide }
+}
+
+describe('Presentación de un Dictado', () => {
+  it('enseña lo nuevo con su Regla antes de preguntar', () => {
+    const texto = pintarDictado({ presentacion: ['Li', 'Na'], pendientes: [deBloque(['Li', 'Na'])] })
+
+    expect(texto).toMatch(/^Nuevos: Li, Na Salir /)
+    expect(texto).toContain('Regla del grupo 1')
+    expect(texto).toMatch(/ Empezar a preguntar$/)
+  })
+})
 
 describe('Pregunta de un Dictado', () => {
-  it('de un Elemento enseña solo cómo se da y el teclado, sin ayudas', () => {
-    const texto = pintarDictado({ pregunta: deElemento('Cl'), pendientes: [deElemento('Na')] })
+  it('de un Bloque enseña sus Elementos y el teclado, y debajo la Tabla con ellos rotulados', () => {
+    const texto = pintarDictado({ pregunta: deBloque(GRUPO_16), pendientes: [deRadical('clorato')] })
 
-    expect(texto).toBe(`Cl Salir Quedan 2 ¿Qué números de oxidación tiene? ${TECLADO} Comprobar`)
+    expect(texto).toContain(`Bloque 1 de 2 Salir Quedan 2 Toca cada elemento y marca sus números de oxidación. O S Se Te Po ${TECLADO} Comprobar 1 2 3`)
+    expect(texto).toContain('O Oxígeno')
+    expect(texto).not.toContain('Capa de valencia')
   })
 
-  it('de un Elemento dado por su nombre no enseña el Símbolo', () => {
-    expect(pintarDictado({ pregunta: deElemento('Cl', 'nombre') })).toMatch(/^Cloro Salir Quedan 1 /)
+  it('de un Bloque dado por nombres pone los nombres en las filas', () => {
+    expect(pintarDictado({ pregunta: deBloque(['O', 'S'], 'nombre') })).toContain('Oxígeno Azufre +7')
   })
 
-  it('de un Radical pregunta el número de su Elemento central', () => {
-    const texto = pintarDictado({ pregunta: deRadical('clorato') })
+  it('de un Radical dice que lo es, con su fórmula y su nombre, y pregunta el número de su Elemento central', () => {
+    const texto = pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato') })
 
-    expect(texto).toBe(`ClO₃⁻ Salir Quedan 1 ¿Qué número lleva el Cl? ${TECLADO} Comprobar`)
+    expect(texto).toContain(`Radical ClO₃⁻ clorato Salir Quedan 1 ¿Qué número lleva el Cl? ${TECLADO} Comprobar 1 2 3`)
+    expect(texto).toContain('Cl Cloro')
   })
 
-  it('de un Radical dado por su nombre no enseña la fórmula', () => {
-    const texto = pintarDictado({ pregunta: deRadical('dicromato', 'nombre') })
+  it('al escribir el nombre de un Radical, enseña la fórmula y no el nombre', () => {
+    const texto = pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato', 'escritura', 'formula') })
 
-    expect(texto).toMatch(/^dicromato Salir Quedan 1 ¿Qué número lleva el Cr\? /)
-    expect(texto).not.toContain('Cr₂O₇')
+    expect(texto).toContain('Radical ClO₃⁻ Salir Quedan 1 ¿Cómo se llama? Da igual mayúsculas o minúsculas. Comprobar')
+    expect(texto).not.toContain('clorato')
   })
 
-  it('tras un acierto enseña lo acertado con sus números', () => {
-    expect(pintarDictado({ pregunta: deElemento('Na'), acertada: deElemento('Cl', 'nombre') })).toContain(
-      'Quedan 1 ✓ Cl −1 +1 +3 +5 +7 ¿Qué',
-    )
-    expect(pintarDictado({ pregunta: deElemento('Na'), acertada: deRadical('clorato', 'nombre') })).toContain(
-      'Quedan 1 ✓ ClO₃⁻ +5 ¿Qué',
-    )
+  it('al escribir la fórmula de un Radical, enseña el nombre y no la fórmula', () => {
+    const texto = pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato', 'escritura', 'nombre') })
+
+    expect(texto).toContain('Radical clorato Salir Quedan 1 ¿Cuál es su fórmula? Da igual mayúsculas o minúsculas. Los subíndices, como números normales. Comprobar')
+    expect(texto).not.toContain('ClO₃')
+  })
+
+  it('tras un acierto enseña lo acertado', () => {
+    expect(pintarDictado({ pregunta: deRadical('clorato'), acertada: deBloque(GRUPO_16) })).toContain('Quedan 1 ✓ O, S, Se, Te, Po ¿Qué')
+    expect(pintarDictado({ pregunta: deBloque(GRUPO_16), acertada: deRadical('clorato') })).toContain('Quedan 1 ✓ ClO₃⁻ +5 Toca')
   })
 })
 
 describe('Corrección de un Dictado', () => {
-  it('de un Elemento marca lo elegido y lo correcto, con su Regla', () => {
-    const texto = pintarDictado({ pregunta: deElemento('Cl'), respuesta: [-1, 1, 2] })
+  it('de un Bloque marca cada fila, y de las falladas da la Regla y la excepción', () => {
+    const texto = pintarDictado({
+      pregunta: deBloque(GRUPO_16),
+      respuesta: [[-2], [-2, 2, 4, 6], [-2, 2, 4], [-2, 2, 4, 6], [-2, 2, 4]],
+    })
 
-    expect(texto).toContain('✗ Cl · Cloro')
-    expect(texto).toContain('−1 ✓ +1 ✓ +2 ✗ sobra +3 faltaba +5 faltaba +7 faltaba Regla del grupo 17')
-    expect(texto).not.toContain('−4')
+    expect(texto).toContain('✓ O −2 ✓ S −2 +2 +4 +6 ✗ Se faltaba +6 ✓ Te −2 +2 +4 +6 ✗ Po sobra −2 ')
+    expect(texto).toContain('Regla del grupo 16: 6 electrones: le faltan 2. Los positivos, pares hasta 6. −2 +2 +4 +6')
+    expect(texto).toContain('Po se aparta de la regla : solo +2 y +4.')
+    expect(texto).toContain(' Seguir 1 2 3')
+    expect(texto).toContain('Po Polonio')
   })
 
-  it('del Xe no da por fallado el 0, que no se pregunta', () => {
-    const texto = pintarDictado({ pregunta: deElemento('Xe'), respuesta: [2, 4] })
+  it('de un Bloque no habla de la Regla de lo que está bien', () => {
+    const texto = pintarDictado({ pregunta: deBloque(['S', 'Pt']), respuesta: [[-2, 2, 4, 6], [2]] })
 
-    expect(texto).toContain('0 ✓ +2 ✓ +4 ✓ +6 faltaba')
+    expect(texto).toContain('✓ S −2 +2 +4 +6 ✗ Pt faltaba +4 ')
+    expect(texto).not.toContain('Regla del grupo')
+    expect(texto).toContain('El paladio y el platino copian de lejos')
   })
 
   it('de un Radical enseña la cuenta y los números de los otros Radicales de su Elemento central', () => {
-    const texto = pintarDictado({ pregunta: deRadical('clorato', 'nombre'), respuesta: [3] })
+    const texto = pintarDictado({ pregunta: deRadical('clorato'), respuesta: [[3]] })
 
-    expect(texto).toContain('✗ ClO₃⁻ · clorato')
-    expect(texto).toContain('Cada oxígeno lleva −2 y todo suma la carga del radical.')
+    expect(texto).toContain('✗ Radical ClO₃⁻ · clorato')
     expect(texto).toContain('x + 3·(−2) = −1 → x = +5')
-    expect(texto).toContain('Del Cl: hipoclorito +1 · clorito +3 · clorato +5 · perclorato +7')
-    expect(texto).toMatch(/ Seguir$/)
+    expect(texto).toContain('Del Cl: hipoclorito ClO⁻ +1 · clorito ClO₂⁻ +3 · clorato ClO₃⁻ +5 · perclorato ClO₄⁻ +7')
+    expect(texto).toContain(' Seguir 1 2 3')
+    expect(texto).toContain('Cl Cloro')
   })
 })
 
-describe('Fin de un Dictado', () => {
+describe('Corrección al escribir un Radical', () => {
+  it('dice lo que se escribió', () => {
+    const texto = pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato', 'escritura'), respuesta: 'clorito' })
+
+    expect(texto).toContain('✗ Radical ClO₃⁻ · clorato Escribiste: clorito')
+  })
+})
+
+describe('Fin de un ejercicio', () => {
+  it('de Radicales dice su nombre y ofrece otro igual', () => {
+    expect(pintarDictado({ tipo: 'radicales' })).toBe('Radicales terminados ✓ Sin fallos. Otros radicales Portada')
+  })
+
   it('sin fallos lo dice y ofrece otro', () => {
     expect(pintarDictado({})).toBe('Dictado terminado ✓ Sin fallos. Otro dictado Portada')
   })
 
   it('con fallos los lista, y avisa de que los Elementos vuelven mañana', () => {
-    const texto = pintarDictado({ falladas: [deElemento('Cl', 'nombre'), deRadical('clorato', 'nombre')] })
+    const texto = pintarDictado({ elementosFallados: [elementoDe('Cl')], radicalesFallados: [radicalLlamado('clorato')] })
 
     expect(texto).toBe('Dictado terminado Fallados: Cl, ClO₃⁻ . Los Elementos fallados vuelven mañana. Otro dictado Portada')
   })
 
   it('si solo falló Radicales, no habla de los Elementos', () => {
-    expect(pintarDictado({ falladas: [deRadical('clorato')] })).toBe('Dictado terminado Fallados: ClO₃⁻ . Otro dictado Portada')
+    expect(pintarDictado({ radicalesFallados: [radicalLlamado('clorato')] })).toBe('Dictado terminado Fallados: ClO₃⁻ . Otro dictado Portada')
   })
 })

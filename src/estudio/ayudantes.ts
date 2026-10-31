@@ -7,14 +7,15 @@ import {
   type Paso,
   type Pregunta,
   type Respuesta,
-  type Tanda,
+  type Oleada,
 } from './estudio'
 
 export const DIA_1 = '2026-10-05'
 
 export function montar(azar = () => 0, almacen: Almacen = almacenEnMemoria()) {
-  const reloj = { dia: DIA_1 }
-  return { estudio: crearEstudio(almacen, () => reloj.dia, azar), reloj, almacen }
+  const reloj = { dia: DIA_1, hora: '10:00' }
+  const ahora = () => `${reloj.dia}T${reloj.hora}:00`
+  return { estudio: crearEstudio(almacen, () => reloj.dia, azar, ahora), reloj, almacen }
 }
 
 export function correctaDe({ elemento, paso }: Pregunta): Respuesta {
@@ -31,17 +32,17 @@ function equivocadaDe({ elemento, paso }: Pregunta): Respuesta {
   return { paso, numeros: [] }
 }
 
-export function sigueLaMismaCadena(tanda: Tanda, simbolo: string): boolean {
-  return tanda.pregunta?.elemento.simbolo === simbolo && tanda.pregunta.paso !== 'posicion'
+export function sigueLaMismaCadena(oleada: Oleada, simbolo: string): boolean {
+  return oleada.pregunta?.elemento.simbolo === simbolo && oleada.pregunta.paso !== 'posicion'
 }
 
-export function acertarCadena(estudio: Estudio, tanda: Tanda): Tanda {
-  return fallar(estudio, tanda, [])
+export function acertarCadena(estudio: Estudio, oleada: Oleada): Oleada {
+  return fallar(estudio, oleada, [])
 }
 
-export function fallar(estudio: Estudio, tanda: Tanda, pasos: Paso[]): Tanda {
-  const simbolo = tanda.pregunta!.elemento.simbolo
-  let actual = tanda
+export function fallar(estudio: Estudio, oleada: Oleada, pasos: Paso[]): Oleada {
+  const simbolo = oleada.pregunta!.elemento.simbolo
+  let actual = oleada
   do {
     const pregunta = actual.pregunta!
     actual = pasos.includes(pregunta.paso)
@@ -51,24 +52,24 @@ export function fallar(estudio: Estudio, tanda: Tanda, pasos: Paso[]): Tanda {
   return actual
 }
 
-export function abrir(estudio: Estudio): Tanda {
-  const tanda = estudio.abrirTanda()
-  return tanda.presentacion ? estudio.descartarPresentacion(tanda) : tanda
+export function abrir(estudio: Estudio): Oleada {
+  const oleada = estudio.abrirOleada()
+  return oleada.presentacion ? estudio.descartarPresentacion(oleada) : oleada
 }
 
-export function acertarTanda(estudio: Estudio, tanda: Tanda): Tanda {
-  let actual = tanda
+export function acertarOleada(estudio: Estudio, oleada: Oleada): Oleada {
+  let actual = oleada
   while (actual.pregunta) actual = acertarCadena(estudio, actual)
   return actual
 }
 
 export function estudiarElDia(estudio: Estudio, fallados: string[] = []) {
   while (estudio.anuncio().repaso + estudio.anuncio().nuevos > 0) {
-    let tanda = abrir(estudio)
-    while (tanda.pregunta) {
-      const { simbolo } = tanda.pregunta.elemento
-      const falla = fallados.includes(simbolo) && !tanda.vuelven.includes(simbolo)
-      tanda = fallar(estudio, tanda, falla ? ['numeros'] : [])
+    let oleada = abrir(estudio)
+    while (oleada.pregunta) {
+      const { simbolo } = oleada.pregunta.elemento
+      const falla = fallados.includes(simbolo) && !oleada.vuelven.includes(simbolo)
+      oleada = fallar(estudio, oleada, falla ? ['numeros'] : [])
     }
   }
 }
