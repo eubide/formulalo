@@ -60,6 +60,23 @@ describe('Presentación de un Dictado', () => {
   })
 })
 
+describe('Presentación de Radicales', () => {
+  it('enseña los nuevos por Elemento central, con su cuenta y su número, antes de preguntar', () => {
+    const texto = pintarDictado({ tipo: 'radicales', presentacion: ['clorito', 'clorato', 'bromato'], pendientes: [deRadical('clorito', 'escritura')] })
+
+    expect(texto).toMatch(/^Nuevos radicales Salir /)
+    expect(texto).toContain('Cada oxígeno lleva −2 y todo suma la carga del radical.')
+    expect(texto).toContain('Del Cl ClO₂⁻ clorito: x + 2·(−2) = −1 → x = +3 ClO₃⁻ clorato: x + 3·(−2) = −1 → x = +5 Del Br BrO₃⁻ bromato:')
+    expect(texto).toMatch(/ Empezar a preguntar$/)
+  })
+
+  it('señala en la Tabla los Elementos centrales', () => {
+    const texto = pintarDictado({ tipo: 'radicales', presentacion: ['clorato'], pendientes: [deRadical('clorato', 'escritura')] })
+
+    expect(texto).toContain('Cl Cloro')
+  })
+})
+
 describe('Pregunta de un Dictado', () => {
   it('de un Bloque enseña sus Elementos y el teclado, y debajo la Tabla con ellos rotulados', () => {
     const texto = pintarDictado({ pregunta: deBloque(GRUPO_16), pendientes: [deRadical('clorato')] })

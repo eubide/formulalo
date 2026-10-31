@@ -54,6 +54,8 @@ const BLOQUES_POR_DICTADO = 2
 const ELEMENTOS_MINIMOS_POR_BLOQUE = 5
 const RADICALES_POR_EJERCICIO = 10
 const PREGUNTAS_HASTA_LA_REINSERCION = 3
+// Siguen la hoja, pero FO₂⁻, FO₃⁻ y FO₄⁻ no existen en la química real: que no abran el ejercicio.
+const CENTRAL_DE_LOS_ULTIMOS_RADICALES = 'F'
 
 function claveDe(bloque: Elemento[]): string {
   return bloque.map((elemento) => elemento.simbolo).join(' ')
@@ -73,7 +75,8 @@ function bloquesPorElCamino(camino: Camino): BloqueDisponible[] {
 
 function radicalesPorElCamino(camino: Camino): Radical[] {
   const orden = ordenDelCamino(camino)
-  return [...radicales()].sort((a, b) => orden.indexOf(a.central) - orden.indexOf(b.central))
+  const sitioDe = ({ central }: Radical) => (central === CENTRAL_DE_LOS_ULTIMOS_RADICALES ? orden.length : orden.indexOf(central))
+  return [...radicales()].sort((a, b) => sitioDe(a) - sitioDe(b))
 }
 
 function bloquesEntre(preguntados: Elemento[]): BloqueDisponible[] {
@@ -295,13 +298,17 @@ export function crearDictados(dominio: Dominio, hoy: () => string, azar: Azar) {
     },
 
     abrirRadicales(): DictadoEnCurso {
-      const pendientes = barajar(radicalesDelSiguiente(), azar).flatMap((radical) => preguntasDe(radical, azar))
-      return preguntarLaSiguiente(vacio('radicales', pendientes, null))
+      const elegidos = radicalesDelSiguiente()
+      const memoria = dominio.delDictado()
+      const nuevos = elegidos.map((radical) => radical.nombre).filter((nombre) => !memoria[nombre])
+      const pendientes = barajar(elegidos, azar).flatMap((radical) => preguntasDe(radical, azar))
+      const ejercicio = vacio('radicales', pendientes, nuevos.length > 0 ? nuevos : null)
+      return ejercicio.presentacion ? ejercicio : preguntarLaSiguiente(ejercicio)
     },
 
     descartarPresentacionDelDictado(dictado: DictadoEnCurso): DictadoEnCurso {
       if (!dictado.presentacion) return dictado
-      dominio.presentar(dictado.presentacion)
+      if (dictado.tipo === 'dictado') dominio.presentar(dictado.presentacion)
       return preguntarLaSiguiente({ ...dictado, presentacion: null })
     },
 

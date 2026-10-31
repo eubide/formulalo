@@ -10,6 +10,7 @@
   import PasoNumeros from './PasoNumeros.svelte'
   import RadicalDado from './RadicalDado.svelte'
   import Presentacion from './Presentacion.svelte'
+  import PresentacionDeRadicales from './PresentacionDeRadicales.svelte'
   import TablaDeRefuerzo from './TablaDeRefuerzo.svelte'
 
   interface Props {
@@ -31,7 +32,9 @@
   ])
 </script>
 
-{#if dictado.presentacion}
+{#if dictado.presentacion && dictado.tipo === 'radicales'}
+  <PresentacionDeRadicales nombres={dictado.presentacion} alDescartar={alDescartarPresentacion} {alSalir} />
+{:else if dictado.presentacion}
   <Presentacion simbolos={dictado.presentacion} alDescartar={alDescartarPresentacion} {alSalir} />
 {:else}
 <main class="pantalla dictado">
