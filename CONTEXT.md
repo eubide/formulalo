@@ -104,6 +104,10 @@ _Evitar_: ronda, sesión, lote, repaso
 Los Elementos que entran en una Tanda antes de que les toque volver, cuando lo nuevo y lo que toca hoy no la llenan: los Flojos fallados hoy, dentro del tope de 3, y los Sabidos, del Intervalo más corto al más largo. Acertar un Sabido de Práctica no cambia su Intervalo ni el día en que vuelve.
 _Evitar_: repaso adelantado, extra, entrenamiento
 
+**Dictado**:
+Ejercicio aparte de la Tanda para marcar Números de oxidación de memoria, sin Tabla, Configuración ni Cajas, en un teclado que siempre es el mismo. Lleva 15 preguntas de los Elementos ya preguntados en una Tanda, con dos de cada tres entre los que no salen solo de su Regla. Detrás de una excepción va un Elemento regular de su Grupo. El 0 no se pregunta, así que no salen los gases nobles que solo tienen 0. Acertar no cambia nada. Fallar lo devuelve a Flojo. Lo fallado vuelve una vez en el mismo Dictado.
+_Evitar_: examen, prueba, test
+
 **Corrección**:
 Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia, y en los Números de oxidación, qué otros Elementos tienen los mismos. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
 _Evitar_: feedback, aviso
@@ -113,11 +117,11 @@ Lo que la aplicación recuerda de cada Elemento de un día para otro: si está s
 _Evitar_: progreso, nivel, memoria, cajas
 
 **Flojo**:
-Estado de un Elemento en cuya última Cadena se falló la Posición o los Números de oxidación, o que solo se ha presentado.
+Estado de un Elemento en cuya última Cadena se falló la Posición o los Números de oxidación, cuyos Números de oxidación se han fallado después en un Dictado, o que solo se ha presentado.
 _Evitar_: débil, pendiente, fallado
 
 **Sabido**:
-Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo, también en la Práctica. Un Flojo acertado queda Sabido para mañana, toque o no.
+Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Números de oxidación, aunque se fallara la Clase o la Configuración. No es definitivo: vuelve cuando se cumple su Intervalo, y un fallo en la Posición o en los Números de oxidación lo devuelve a Flojo, también en la Práctica y en el Dictado. Un Flojo acertado queda Sabido para mañana, toque o no.
 _Evitar_: dominado, aprendido, acertado
 
 **Explorar**:

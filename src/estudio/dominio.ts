@@ -106,6 +106,13 @@ export function almacenEnMemoria(): Almacen {
   }
 }
 
+// Un Flojo sin fallos solo puede venir de una Presentación: todavía no se le ha preguntado nada.
+export function sinPreguntar(entrada: Entrada): boolean {
+  return entrada.estado === 'flojo' && entrada.fallos === 0
+}
+
+export type Dominio = ReturnType<typeof crearDominio>
+
 export function crearDominio(almacen: Almacen, hoy: () => string) {
   function leer(): Registro {
     try {

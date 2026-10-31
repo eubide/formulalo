@@ -11,9 +11,10 @@
     estudio: Estudio
     alEmpezar: () => void
     alExplorar: () => void
+    alDictado: () => void
   }
 
-  let { estudio, alEmpezar, alExplorar }: Props = $props()
+  let { estudio, alEmpezar, alExplorar, alDictado }: Props = $props()
 
   const CAMINOS = Object.keys(etiquetaDeCamino) as Camino[]
 
@@ -24,11 +25,12 @@
       resumen: estudio.resumen(),
       proximaVuelta: estudio.proximaVuelta(),
       anuncio: estudio.anuncio(),
+      hayDictado: estudio.hayDictado(),
     }
   }
 
   let aLaVista = $state.raw(mirar())
-  const { camino, entradas, resumen, proximaVuelta, anuncio } = $derived(aLaVista)
+  const { camino, entradas, resumen, proximaVuelta, anuncio, hayDictado } = $derived(aLaVista)
 
   const casillas = $derived(casillasDelDominio(entradas))
   const conPasosFallados = $derived(Object.entries(entradas).filter(([, entrada]) => entrada.pasosFallados.length > 0))
@@ -91,6 +93,13 @@
     <p>{textoDelAnuncio(anuncio)}</p>
     <button type="button" class="boton secundario explorar" onclick={alExplorar}>Explorar</button>
   </section>
+
+  {#if hayDictado}
+    <section class="dictado">
+      <button type="button" class="boton secundario" onclick={alDictado}>Dictado</button>
+      <p>Marca de memoria los números de oxidación de lo que ya has estudiado, sin pistas.</p>
+    </section>
+  {/if}
 
   <section class="camino">
     <h2>Camino</h2>
@@ -174,6 +183,20 @@
 
   .explorar {
     margin-left: auto;
+  }
+
+  .dictado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    margin: 8px 0;
+  }
+
+  .dictado p {
+    flex: 1 1 200px;
+    margin: 0;
+    color: var(--tenue);
   }
 
   .resumen {

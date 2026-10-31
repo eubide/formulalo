@@ -10,7 +10,7 @@ const DESDE_EL_GAS_NOBLE = 'Grupos 18, 1, 2, 17, 16, 15, 14 y 13, y después los
 const POR_USO = 'Primero el H y el O; después los grupos 1, 2, 17, 16, 15, 14 y 13, los metales de transición y el 18.'
 
 function pintarPortada(estudio: Estudio): string {
-  return pintar(Portada, { estudio, alEmpezar: () => {}, alExplorar: () => {} })
+  return pintar(Portada, { estudio, alEmpezar: () => {}, alExplorar: () => {}, alDictado: () => {} })
 }
 
 describe('Portada', () => {
@@ -40,6 +40,21 @@ describe('Portada', () => {
 
     expect(pintarPortada(estudio)).toContain(`Camino Desde el gas noble Por uso al formular ${POR_USO}`)
     expect(pintarPortada(estudio)).not.toContain(DESDE_EL_GAS_NOBLE)
+  })
+
+  it('sin ningún Elemento preguntado no ofrece el Dictado', () => {
+    const { estudio } = montar()
+
+    expect(pintarPortada(estudio)).not.toContain('Dictado')
+  })
+
+  it('con algún Elemento preguntado ofrece el Dictado entre la Tanda de hoy y el Camino', () => {
+    const { estudio } = montar()
+    estudiarElDia(estudio)
+
+    expect(pintarPortada(estudio)).toMatch(
+      /Explorar Dictado Marca de memoria los números de oxidación de lo que ya has estudiado, sin pistas\. Camino/,
+    )
   })
 
   it('elige el Camino entre la Tanda de hoy y el resumen', () => {

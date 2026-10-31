@@ -18,7 +18,7 @@ describe('Fin de Tanda', () => {
     const anuncio = '8 de repaso · unos 4 min · quedan 42 más para hoy'
 
     expect(pintarFinDeTanda(estudio, tanda)).toContain(`Queda otra tanda: ${anuncio}`)
-    expect(pintar(Portada, { estudio, alEmpezar: () => {}, alExplorar: () => {} })).toContain(`Tanda de hoy ${anuncio}`)
+    expect(pintar(Portada, { estudio, alEmpezar: () => {}, alExplorar: () => {}, alDictado: () => {} })).toContain(`Tanda de hoy ${anuncio}`)
   })
 
   it('enseña la tabla y dice cuándo vuelve cada Elemento de la Tanda, del día más cercano al más lejano', () => {

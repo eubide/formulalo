@@ -57,7 +57,7 @@ export interface Correccion {
 
 const NUMERO_MINIMO = -4
 const NUMERO_MAXIMO = 7
-const RANGO = Array.from({ length: NUMERO_MAXIMO - NUMERO_MINIMO + 1 }, (_, i) => NUMERO_MINIMO + i)
+export const RANGO = Array.from({ length: NUMERO_MAXIMO - NUMERO_MINIMO + 1 }, (_, i) => NUMERO_MINIMO + i)
 
 export function barajar<T>(lista: T[], azar: Azar): T[] {
   const copia = [...lista]
@@ -110,6 +110,10 @@ export function preguntar(elemento: Elemento, azar: Azar): Pregunta {
   }
 }
 
+export function mismosNumeros(unos: number[], otros: number[]): boolean {
+  return unos.length === otros.length && unos.every((numero) => otros.includes(numero))
+}
+
 export function acierta({ elemento }: Pregunta, respuesta: Respuesta): boolean {
   switch (respuesta.paso) {
     case 'posicion':
@@ -122,10 +126,7 @@ export function acierta({ elemento }: Pregunta, respuesta: Respuesta): boolean {
       return dado.capa === capa && dado.letra === letra && dado.electrones === electrones
     }
     case 'numeros':
-      return (
-        respuesta.numeros.length === elemento.numeros.length &&
-        elemento.numeros.every((numero) => respuesta.numeros.includes(numero))
-      )
+      return mismosNumeros(elemento.numeros, respuesta.numeros)
   }
 }
 
