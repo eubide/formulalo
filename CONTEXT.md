@@ -54,6 +54,10 @@ _Evitar_: hoja, tabla de valencias
 Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: se puede hacer desde el principio y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. Los del F llegan los últimos, porque FO₂⁻, FO₃⁻ y FO₄⁻ no existen en la química real. Presenta antes los que no ha visto. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
 _Evitar_: anión, oxoanión
 
+**Compuesto**:
+Combinación de dos Elementos que se formula al cierre de una Oleada: de su nombre, como óxido de hierro(III), se piden sus dos Símbolos, sus números y su fórmula, Fe₂O₃, en la que las cargas se anulan. Hasta 5 por Oleada, de una lista hecha a mano, con dos Sabidos y alguno de ellos de esa Oleada. Fallarlo no escribe en el Dominio. Todavía no lleva Radicales.
+_Evitar_: molécula, fórmula, sustancia
+
 **Configuración**:
 El reparto de los electrones de un Elemento en subniveles, escrito entero (1s² 2s² 2p⁴) o abreviado desde el gas noble anterior ([He] 2s² 2p⁴). De ella se responde solo el subnivel donde entra el último electrón, 2p⁴ en el O, que es el que se ve resaltado.
 _Evitar_: estructura electrónica, distribución
@@ -101,7 +105,7 @@ Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo ilumi
 _Evitar_: tutorial, introducción, lección
 
 **Oleada**:
-Unos minutos de estudio con Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar y, si sobra sitio, otros de Práctica. Se puede pedir siempre y un día puede tener varias: los días marcan cuándo vuelve lo repasado, no cuánto se puede avanzar. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero, junto con el siguiente si no llegan a 4. El repaso se añade según la Serie de repaso: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos, y la Práctica llena lo que quede. Sin nada nuevo, la Oleada entera son 8 Elementos de repaso. Los catorce metales de transición llegan en seis trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; Pd y Pt; y Sc.
+Unos minutos de estudio con Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar y, si sobra sitio, otros de Práctica. Se puede pedir siempre y un día puede tener varias: los días marcan cuándo vuelve lo repasado, no cuánto se puede avanzar. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero, junto con el siguiente si no llegan a 4. El repaso se añade según la Serie de repaso: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos, y la Práctica llena lo que quede. Sin nada nuevo, la Oleada entera son 8 Elementos de repaso. Cada Oleada se cierra con Compuestos. Los catorce metales de transición llegan en seis trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; Pd y Pt; y Sc.
 _Evitar_: tanda, ronda, sesión, lote, repaso
 
 **Serie de repaso**:
@@ -180,6 +184,7 @@ _Evitar_: caja, nivel, plazo
 - Una **Oleada** sale del **Dominio**: trae un **Grupo** nuevo por el **Camino** elegido, repasa los **Elementos** cuyo **Intervalo** se ha cumplido y se llena con **Práctica**
 - Cada **Elemento** está en el **Dominio** sin ver, **Flojo** o **Sabido**
 - Cada **Radical** tiene un **Elemento** central, y el número que lleva es uno de los **Números de oxidación** de ese **Elemento**
+- Un **Compuesto** lleva dos **Elementos**, cada uno con uno de sus **Números de oxidación**
 
 ## Ambigüedades resueltas
 
@@ -205,6 +210,6 @@ _Evitar_: caja, nivel, plazo
 - De los números cuánticos solo se enseñan los del último electrón, y solo en Explorar.
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.
-- Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos, Historias escritas por el Alumno y formular compuestos.
+- Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos e Historias escritas por el Alumno.
 - Los comentarios del Modo no son marcas ni puntuación: ni se guardan ni se acumulan.
 - No hay examen. El objetivo es saberse los Elementos para formular después, así que nada imita un examen ni corre contra una fecha.

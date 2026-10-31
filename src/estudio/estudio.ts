@@ -14,11 +14,13 @@ import {
 } from './cadena'
 import { crearDictados, sitiosDeSorpresa, type Dictada } from './dictado'
 import { crearDominio, diaLocal, sinPreguntar, type Almacen, type Entrada } from './dominio'
+import { empezarAFormular, trasResponder, trasSeguir, type Formulando, type RespuestaDePieza } from './formular'
 import { parteDeRepaso } from './serie'
 
 export { almacenEnMemoria, diaLocal, type Almacen, type Entrada, type Estado } from './dominio'
 export { aciertaDictada, correccionDeElemento, TECLADO, type AnuncioDeEjercicio, type Dictada, type DictadoEnCurso, type RespuestaDictada, type ResumenDeEjercicio } from './dictado'
 export { etiquetaDePaso, pasosDe } from './cadena'
+export { PIEZAS, type Formulando, type Pieza, type RespuestaDePieza } from './formular'
 export type { Azar, Correccion, Paso, Pregunta, Respuesta } from './cadena'
 
 export type Estudio = ReturnType<typeof crearEstudio>
@@ -35,6 +37,7 @@ export interface Oleada {
   sorpresa: Dictada | null
   respuestaDeSorpresa: number[][] | null
   comentario: string | null
+  formulando: Formulando | null
 }
 
 interface ConSorpresa {
@@ -159,9 +162,15 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
     return dominio.oleadas().filter(({ tipo }) => tipo === 'oleada').length
   }
 
+  function compuestosAlCerrar(oleada: Oleada): Formulando | null {
+    const entradas = dominio.entradas()
+    return empezarAFormular((simbolo) => entradas[simbolo]?.estado === 'sabido', oleada.rotulados, azar)
+  }
+
   function preguntarElSiguiente(oleada: Oleada): Oleada {
     const [siguiente, ...pendientes] = oleada.pendientes
-    if (!siguiente && oleada.pregunta) dominio.registrarOleada('oleada')
+    const terminada = !siguiente && oleada.pregunta !== null
+    if (terminada) dominio.registrarOleada('oleada')
     const tocaSorpresa = siguiente !== undefined && oleada.sorpresasEn.includes(pendientes.length)
     return {
       ...oleada,
@@ -169,6 +178,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
       pregunta: siguiente ? preguntar(elementoDe(siguiente), azar, ajustesDe(dominio.modo()).seguro) : null,
       sorpresasEn: tocaSorpresa ? oleada.sorpresasEn.filter((sitio) => sitio !== pendientes.length) : oleada.sorpresasEn,
       sorpresa: tocaSorpresa ? dictados.elegirSorpresa() : null,
+      formulando: terminada ? compuestosAlCerrar(oleada) : null,
     }
   }
 
@@ -295,6 +305,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
         sorpresa: null,
         respuestaDeSorpresa: null,
         comentario: null,
+        formulando: null,
       }
       return oleada.presentacion ? oleada : preguntarElSiguiente(oleada)
     },
@@ -326,6 +337,18 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
 
     cerrarCorreccion(oleada: Oleada): Oleada {
       return oleada.correccion ? avanzar({ ...oleada, correccion: null }) : oleada
+    },
+
+    responderPieza(oleada: Oleada, respuesta: RespuestaDePieza): Oleada {
+      return oleada.formulando ? { ...oleada, formulando: trasResponder(oleada.formulando, respuesta) } : oleada
+    },
+
+    seguirFormulando(oleada: Oleada): Oleada {
+      return oleada.formulando ? { ...oleada, formulando: trasSeguir(oleada.formulando) } : oleada
+    },
+
+    dejarDeFormular(oleada: Oleada): Oleada {
+      return { ...oleada, formulando: null }
     },
 
     copia(): string {

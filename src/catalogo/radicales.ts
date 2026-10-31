@@ -10,7 +10,7 @@ export interface Radical {
 
 const RADICALES = datos as Radical[]
 const NUMERO_DEL_OXIGENO = -2
-const SUBINDICES = '₀₁₂₃₄₅₆₇₈₉'
+export const SUBINDICES = '₀₁₂₃₄₅₆₇₈₉'
 const VOLADOS = '⁰¹²³⁴⁵⁶⁷⁸⁹'
 
 export function radicales(): Radical[] {
@@ -35,7 +35,7 @@ export function cuentaDe({ atomos, oxigenos, carga }: Radical): string {
   return `${atomos > 1 ? atomos : ''}x + ${oxigenos}·(−2) = −${carga}`
 }
 
-function normalizada(texto: string): string {
+export function normalizada(texto: string): string {
   const digitos = [...texto].map((caracter) => {
     const subindice = SUBINDICES.indexOf(caracter)
     const volado = VOLADOS.indexOf(caracter)

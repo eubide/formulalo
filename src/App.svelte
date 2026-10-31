@@ -3,6 +3,7 @@
   import Dictado from './pantallas/Dictado.svelte'
   import Explorar from './pantallas/Explorar.svelte'
   import FinDeOleada from './pantallas/FinDeOleada.svelte'
+  import Formular from './pantallas/Formular.svelte'
   import Portada from './pantallas/Portada.svelte'
   import Sorpresa from './pantallas/Sorpresa.svelte'
   import Pregunta from './pantallas/Pregunta.svelte'
@@ -83,6 +84,13 @@
     alCerrarCorreccion={() => (oleada = estudio.cerrarCorreccion(oleada!))}
     alCerrarAcierto={cerrarAcierto}
     alSalir={salir}
+  />
+{:else if oleada.formulando}
+  <Formular
+    formulando={oleada.formulando}
+    alResponder={(respuesta) => (oleada = estudio.responderPieza(oleada!, respuesta))}
+    alSeguir={() => (oleada = estudio.seguirFormulando(oleada!))}
+    alSalir={() => (oleada = estudio.dejarDeFormular(oleada!))}
   />
 {:else}
   <FinDeOleada {oleada} {estudio} alSeguir={() => (oleada = estudio.abrirOleada())} alVolver={() => (oleada = null)} />
