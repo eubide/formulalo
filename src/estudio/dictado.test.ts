@@ -41,6 +41,11 @@ function empezar(estudio: Estudio): DictadoEnCurso {
   return dictado.presentacion ? estudio.descartarPresentacionDelDictado(dictado) : dictado
 }
 
+function empezarRadicales(estudio: Estudio): DictadoEnCurso {
+  const ejercicio = estudio.abrirRadicales()
+  return ejercicio.presentacion ? estudio.descartarPresentacionDelDictado(ejercicio) : ejercicio
+}
+
 function correcta(pregunta: Dictada): RespuestaDictada {
   if (pregunta.tipo === 'bloque') return pregunta.elementos.map((elemento) => elemento.numeros)
   if (pregunta.pide === 'numero') return [[numeroDeRadical(pregunta.radical)]]
@@ -192,29 +197,80 @@ describe('Qué lleva un Dictado', () => {
 })
 
 describe('El ejercicio de Radicales', () => {
-  it('se puede hacer desde el principio, sin Presentación, con 10 Radicales y ningún Bloque', () => {
+  it('se puede hacer desde el principio, con 10 Radicales y ningún Bloque', () => {
     const { estudio } = montar()
 
-    const ejercicio = estudio.abrirRadicales()
+    const ejercicio = empezarRadicales(estudio)
 
-    expect(ejercicio.presentacion).toBeNull()
     expect(ejercicio.pregunta).not.toBeNull()
     expect(deRadicales(todasLasPreguntas(ejercicio))).toHaveLength(10)
     expect(deBloques(todasLasPreguntas(ejercicio))).toEqual([])
   })
 
+  it('presenta antes los Radicales nuevos, sin preguntar ni tocar el Dominio', () => {
+    const { estudio } = montar()
+    const antes = estudio.entradas()
+
+    const ejercicio = estudio.abrirRadicales()
+
+    expect(ejercicio.pregunta).toBeNull()
+    expect(ejercicio.presentacion).toHaveLength(10)
+
+    const empezado = estudio.descartarPresentacionDelDictado(ejercicio)
+
+    expect(empezado.presentacion).toBeNull()
+    expect(empezado.pregunta).not.toBeNull()
+    expect(estudio.entradas()).toEqual(antes)
+  })
+
+  it('presenta solo los nuevos, no los que repasa', () => {
+    const { estudio, reloj } = montar()
+    hastaElFinal(estudio, empezarRadicales(estudio))
+    const vistos = Object.keys(estudio.memoriaDelDictado())
+    reloj.dia = '2026-10-06'
+
+    const { presentacion } = estudio.abrirRadicales()
+
+    expect(presentacion).toHaveLength(7)
+    expect(presentacion!.filter((nombre) => vistos.includes(nombre))).toEqual([])
+  })
+
+  it('sin nada nuevo pregunta directamente', () => {
+    const { estudio } = montar()
+    while (estudio.anuncioDeRadicales().nuevos > 0) hastaElFinal(estudio, empezarRadicales(estudio))
+
+    const ejercicio = estudio.abrirRadicales()
+
+    expect(ejercicio.presentacion).toBeNull()
+    expect(ejercicio.pregunta).not.toBeNull()
+  })
+
   it('avanza por el Camino, con los Radicales del Elemento central que llega antes', () => {
     const { estudio } = montar()
-    const nombres = deRadicales(todasLasPreguntas(estudio.abrirRadicales())).map((radical) => radical.nombre)
+    const nombres = deRadicales(todasLasPreguntas(empezarRadicales(estudio))).map((radical) => radical.nombre)
 
-    expect(nombres).toEqual(expect.arrayContaining(['hipofluorito', 'fluorito', 'fluorato', 'perfluorato']))
+    expect(nombres).toEqual(expect.arrayContaining(['hipoclorito', 'clorito', 'clorato', 'perclorato']))
     expect(nombres).not.toContain('borato')
+  })
+
+  it.each(['gas-noble', 'uso'] as const)('con el Camino %s, los del F llegan los últimos', (camino) => {
+    const { estudio } = montar()
+    estudio.elegirCamino(camino)
+    const nuevos: string[] = []
+    while (estudio.anuncioDeRadicales().nuevos > 0) {
+      const ejercicio = estudio.abrirRadicales()
+      nuevos.push(...ejercicio.presentacion!)
+      hastaElFinal(estudio, estudio.descartarPresentacionDelDictado(ejercicio))
+    }
+
+    expect(nuevos).toHaveLength(39)
+    expect(nuevos.slice(-4)).toEqual(['hipofluorito', 'fluorito', 'fluorato', 'perfluorato'])
   })
 
   it('no cambia a los Elementos, ni al acertar ni al fallar', () => {
     const { estudio } = conTodoEstudiado()
     const antes = estudio.entradas()
-    let ejercicio = estudio.abrirRadicales()
+    let ejercicio = empezarRadicales(estudio)
 
     ejercicio = fallar(estudio, ejercicio)
     hastaElFinal(estudio, ejercicio)
@@ -224,11 +280,11 @@ describe('El ejercicio de Radicales', () => {
 
   it('sigue su propia serie: el segundo, con un 30 %, repasa 3 y avanza 7', () => {
     const { estudio, reloj } = montar()
-    hastaElFinal(estudio, estudio.abrirRadicales())
+    hastaElFinal(estudio, empezarRadicales(estudio))
     const vistos = Object.keys(estudio.memoriaDelDictado())
     reloj.dia = '2026-10-06'
 
-    const nombres = deRadicales(todasLasPreguntas(estudio.abrirRadicales())).map((radical) => radical.nombre)
+    const nombres = deRadicales(todasLasPreguntas(empezarRadicales(estudio))).map((radical) => radical.nombre)
 
     expect(nombres.filter((nombre) => vistos.includes(nombre))).toHaveLength(3)
     expect(nombres.filter((nombre) => !vistos.includes(nombre))).toHaveLength(7)
@@ -236,7 +292,7 @@ describe('El ejercicio de Radicales', () => {
 
   it('terminar uno no mueve la serie del Dictado', () => {
     const { estudio } = conTodoEstudiado()
-    hastaElFinal(estudio, estudio.abrirRadicales())
+    hastaElFinal(estudio, empezarRadicales(estudio))
 
     expect(estudio.anuncioDelDictado()).toEqual({ nuevos: 2, deRepaso: 0 })
   })
@@ -245,7 +301,7 @@ describe('El ejercicio de Radicales', () => {
     const { estudio, reloj } = montar()
     expect(estudio.anuncioDeRadicales()).toEqual({ nuevos: 10, deRepaso: 0 })
 
-    hastaElFinal(estudio, estudio.abrirRadicales())
+    hastaElFinal(estudio, empezarRadicales(estudio))
     reloj.dia = '2026-10-06'
 
     expect(estudio.anuncioDeRadicales()).toEqual({ nuevos: 7, deRepaso: 3 })
@@ -254,7 +310,7 @@ describe('El ejercicio de Radicales', () => {
 
   it('de cada Radical pide primero escribir y después su número', () => {
     const { estudio } = montar()
-    const ejercicio = estudio.abrirRadicales()
+    const ejercicio = empezarRadicales(estudio)
     const pregunta = ejercicio.pregunta!
     if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
 
@@ -264,7 +320,7 @@ describe('El ejercicio de Radicales', () => {
 
   it('dado por su fórmula se escribe el nombre, sin importar las mayúsculas', () => {
     const { estudio } = montar(() => 0)
-    const ejercicio = estudio.abrirRadicales()
+    const ejercicio = empezarRadicales(estudio)
     const pregunta = ejercicio.pregunta!
     if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
 
@@ -275,7 +331,7 @@ describe('El ejercicio de Radicales', () => {
 
   it('dado por su nombre se escribe la fórmula, sin importar las mayúsculas', () => {
     const { estudio } = montar(() => 0.9)
-    const ejercicio = estudio.abrirRadicales()
+    const ejercicio = empezarRadicales(estudio)
     const pregunta = ejercicio.pregunta!
     if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
 
@@ -286,7 +342,7 @@ describe('El ejercicio de Radicales', () => {
 
   it('el número se acierta con el de su Elemento central, y fallarlo cuenta como fallo aunque se escribiera bien', () => {
     const { estudio } = montar()
-    const dictado = acertar(estudio, estudio.abrirRadicales())
+    const dictado = acertar(estudio, empezarRadicales(estudio))
     const pregunta = dictado.pregunta!
     if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
     const numero = numeroDeRadical(pregunta.radical)
@@ -299,7 +355,7 @@ describe('El ejercicio de Radicales', () => {
 
   it('lo fallado vuelve una vez, y queda entre lo fallado', () => {
     const { estudio } = montar()
-    const ejercicio = estudio.abrirRadicales()
+    const ejercicio = empezarRadicales(estudio)
     const fallada = ejercicio.pregunta!
 
     let siguiente = fallar(estudio, ejercicio)
@@ -314,7 +370,7 @@ describe('El ejercicio de Radicales', () => {
 
   it('lo acertado vuelve a 1 día, y lo fallado vuelve mañana con Intervalo 0', () => {
     const { estudio } = montar()
-    const ejercicio = estudio.abrirRadicales()
+    const ejercicio = empezarRadicales(estudio)
     const pregunta = ejercicio.pregunta!
     if (pregunta.tipo !== 'radical') throw new Error('Se esperaba un Radical')
     const { nombre } = pregunta.radical
@@ -496,7 +552,7 @@ describe('Seguimiento de las Oleadas', () => {
 
   it('el ejercicio de Radicales cuenta aparte', () => {
     const { estudio } = montar()
-    hastaElFinal(estudio, estudio.abrirRadicales())
+    hastaElFinal(estudio, empezarRadicales(estudio))
 
     expect(estudio.seguimiento()).toMatchObject({ oleadasDeHoy: 0, dictadosDeHoy: 0, radicalesDeHoy: 1 })
   })

@@ -9,7 +9,7 @@ export const etiquetaDeModo: Record<Modo, string> = {
 export const descripcionDeModo: Record<Modo, string> = {
   normal: 'Sin sorpresas.',
   vacilon: 'A veces te pregunta si vas seguro, te cuela un ejercicio y te suelta algún comentario.',
-  molesto: 'Siempre te pregunta si vas seguro, te cuela dos ejercicios por oleada y no se calla.',
+  molesto: 'Siempre te pregunta si vas seguro, te cuela hasta dos ejercicios cada vez y no se calla.',
 }
 
 interface Ajustes {

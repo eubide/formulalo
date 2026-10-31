@@ -51,7 +51,7 @@ La hoja «Tabla de No. de oxidación y Radicales». Trae los 39 Radicales y da l
 _Evitar_: hoja, tabla de valencias
 
 **Radical**:
-Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: se puede hacer desde el principio y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
+Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: se puede hacer desde el principio y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. Los del F llegan los últimos, porque FO₂⁻, FO₃⁻ y FO₄⁻ no existen en la química real. Presenta antes los que no ha visto. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
 _Evitar_: anión, oxoanión
 
 **Configuración**:
@@ -97,7 +97,7 @@ Lo que comparten los Elementos de un Grupo y permite deducir sus datos: cómo ac
 _Evitar_: patrón, norma, historia
 
 **Presentación**:
-Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio.
+Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. En Radicales, los Radicales nuevos con su cuenta y su número, y sus Elementos centrales iluminados. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio.
 _Evitar_: tutorial, introducción, lección
 
 **Oleada**:
@@ -121,7 +121,7 @@ Ejercicio aparte de la Oleada para marcar Números de oxidación de memoria, sin
 _Evitar_: examen, prueba, test
 
 **Modo**:
-Cuánto vacila la aplicación al Alumno en cualquier ejercicio: se elige en la Portada, por encima de los tres. En Normal, nada. En Vacilón, un ¿Seguro? de vez en cuando, una Sorpresa por ejercicio y algún comentario al acertar. En Molesto, ¿Seguro? siempre, dos Sorpresas por ejercicio, una en el Dictado, y más comentarios. No cambia lo que se avanza ni lo que se recuerda.
+Cuánto vacila la aplicación al Alumno en cualquier ejercicio: se elige en la Portada, por encima de los tres. En Normal, nada. En Vacilón, un ¿Seguro? de vez en cuando, una Sorpresa por ejercicio y algún comentario al acertar. En Molesto, ¿Seguro? siempre, hasta dos Sorpresas por ejercicio, que en el Dictado es una, y más comentarios. No cambia lo que se avanza ni lo que se recuerda.
 _Evitar_: dificultad, nivel, tono
 
 **¿Seguro?**:
