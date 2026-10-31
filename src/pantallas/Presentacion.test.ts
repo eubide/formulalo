@@ -44,6 +44,10 @@ describe('Presentación de una Oleada', () => {
     expect(texto).toMatch(/^Nuevos: O, S, Se, Te, Po Salir /)
     expect(texto).toMatch(/ Empezar a preguntar$/)
   })
+
+  it('no carga las Reglas generales antes de preguntar', () => {
+    expect(presentacionDe(delGrupo(16))).not.toContain('Reglas generales')
+  })
 })
 
 describe('Presentación abierta desde Explorar', () => {
@@ -52,7 +56,7 @@ describe('Presentación abierta desde Explorar', () => {
 
     expect(texto).toMatch(/^Grupo 16: O, S, Se, Te, Po Salir /)
     expect(texto).toMatch(/Regla del grupo 16/i)
-    expect(texto).toMatch(/ Volver$/)
+    expect(texto).toMatch(/ Reglas generales .* Volver$/)
     expect(texto).not.toContain('Empezar a preguntar')
   })
 
@@ -65,7 +69,7 @@ describe('Cajas de la Presentación', () => {
   it('los Elementos con las mismas Cajas resueltas comparten un dibujo con todos sus Símbolos, sin gas noble ni número de capa', () => {
     const texto = presentacionDe(delGrupo(1))
 
-    expect(texto).toContain('Hidrógeno H 1s¹ ↑ ↓ −1 +1 Li, Na, K, Rb, Cs, Fr s¹ ↑ p⁰ +1 Reglas generales')
+    expect(texto).toContain('Hidrógeno H 1s¹ ↑ ↓ −1 +1 Li, Na, K, Rb, Cs, Fr s¹ ↑ p⁰ +1 Empezar a preguntar')
   })
 
   it('las fichas de los subniveles llenos tampoco van en el dibujo común', () => {

@@ -109,7 +109,7 @@
     {/each}
   </ul>
 
-  {#if hayDeducibles}
+  {#if hayDeducibles && desdeExplorar}
     <section>
       <h2>Reglas generales</h2>
       <ul>

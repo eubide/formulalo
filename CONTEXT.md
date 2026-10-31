@@ -101,7 +101,7 @@ Lo que comparten los Elementos de un Grupo y permite deducir sus datos: cómo ac
 _Evitar_: patrón, norma, historia
 
 **Presentación**:
-Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. En Radicales, los Radicales nuevos con su cuenta y su número, y sus Elementos centrales iluminados. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio.
+Lo primero de una Oleada o de un Dictado que trae un Grupo nuevo: el Grupo iluminado en la tabla con su Familia, su Regla, sus excepciones y sus Historias. En Radicales, los Radicales nuevos con su cuenta y su número, y sus Elementos centrales iluminados. No se pregunta nada hasta que se descarta. No llega una nueva mientras quede algún Elemento presentado al que todavía no se le ha preguntado nada. Desde Explorar se vuelve a ver la del Grupo entero de un Elemento, o la de su trozo si es un metal de transición, sin escribir en el Dominio y con las reglas generales, que antes de preguntar no salen.
 _Evitar_: tutorial, introducción, lección
 
 **Oleada**:
