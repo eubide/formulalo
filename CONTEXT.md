@@ -85,7 +85,7 @@ Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, 
 _Evitar_: secuencia, ficha, pregunta
 
 **Camino**:
-El orden en que llegan los Grupos al aprender. Hay dos y se elige: desde el gas noble (18, 1, 2, 17, 16, 15, 14, 13 y los metales de transición), que es el que viene puesto, o por uso al formular (el H y el O, y después 1, 2, 17, 16, 15, 14, 13, los metales de transición y el 18). Los dos se distinguen en el Grupo 18 y en el H y el O, así que solo cambian lo que trae la Oleada: los Bloques y los Radicales salen en el mismo orden con cualquiera. Por eso se elige en la tarjeta de la Oleada.
+El orden en que llegan los Grupos al aprender. Hay dos y se elige: desde el gas noble (18, 1, 2, 17, 16, 15, 14, 13 y los metales de transición), o por uso al formular (el H y el O, y después 1, 2, 17, 16, 15, 14, 13, los metales de transición y el 18), que es el que viene puesto. Los dos se distinguen en el Grupo 18 y en el H y el O, así que solo cambian lo que trae la Oleada: los Bloques y los Radicales salen en el mismo orden con cualquiera. Por eso se elige en la tarjeta de la Oleada.
 _Evitar_: ruta, itinerario, orden
 
 **Historia**:

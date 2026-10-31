@@ -12,10 +12,14 @@ import {
 
 export const DIA_1 = '2026-10-05'
 
-export function montar(azar = () => 0, almacen: Almacen = almacenEnMemoria()) {
+// Con un almacén nuevo fija el Camino desde el gas noble: sus trozos son los Grupos enteros de los que parten los tests.
+export function montar(azar = () => 0, almacenDado?: Almacen) {
+  const almacen = almacenDado ?? almacenEnMemoria()
   const reloj = { dia: DIA_1, hora: '10:00' }
   const ahora = () => `${reloj.dia}T${reloj.hora}:00`
-  return { estudio: crearEstudio(almacen, () => reloj.dia, azar, ahora), reloj, almacen }
+  const estudio = crearEstudio(almacen, () => reloj.dia, azar, ahora)
+  if (!almacenDado) estudio.elegirCamino('gas-noble')
+  return { estudio, reloj, almacen }
 }
 
 export function correctaDe({ elemento, paso }: Pregunta): Respuesta {

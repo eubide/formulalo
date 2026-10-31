@@ -63,8 +63,15 @@ function pasosDeLaCadena(estudio: Estudio, oleada: Oleada): string[] {
 }
 
 describe('Camino', () => {
-  it('el Camino desde el gas noble viene puesto', () => {
-    expect(montar().estudio.camino()).toBe('gas-noble')
+  it('el Camino por uso al formular viene puesto', () => {
+    expect(montar(() => 0, almacenEnMemoria()).estudio.camino()).toBe('uso')
+  })
+
+  it('quien ya tenía elegido el Camino desde el gas noble lo conserva', () => {
+    const almacen = almacenEnMemoria()
+    almacen.setItem('formulalo:dominio', JSON.stringify({ version: 1, camino: 'gas-noble', elementos: {} }))
+
+    expect(montar(() => 0, almacen).estudio.camino()).toBe('gas-noble')
   })
 
   it('el Camino elegido se recuerda y cambiarlo no borra el Dominio', () => {
@@ -1016,7 +1023,7 @@ describe('Dominio', () => {
       const { estudio } = montar(() => 0, almacen)
 
       expect(estudio.entradas()).toEqual({})
-      expect(estudio.camino()).toBe('gas-noble')
+      expect(estudio.camino()).toBe('uso')
     },
   )
 
