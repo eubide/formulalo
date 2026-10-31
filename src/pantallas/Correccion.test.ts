@@ -42,6 +42,16 @@ describe('Corrección de Números de oxidación', () => {
     expect(texto).not.toContain('se aparta de la regla')
   })
 
+  it('dice qué Elementos tienen los mismos números', () => {
+    const texto = corregida('Pt', [2, 3, 4], { paso: 'numeros', numeros: [2] })
+
+    expect(texto).toContain('Con los mismos números: Ge, Pd, Sn, Pb, Po.')
+  })
+
+  it('no dice nada de eso si ningún Elemento los comparte', () => {
+    expect(corregida('N', [-3, 1, 3, 5], { paso: 'numeros', numeros: [1] })).not.toContain('Con los mismos números')
+  })
+
   it('de un metaloide sin negativo sigue diciendo que se aparta de la regla', () => {
     const texto = corregida('Ge', [-4, 2, 4], { paso: 'numeros', numeros: [2] })
 

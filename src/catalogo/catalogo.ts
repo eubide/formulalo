@@ -47,6 +47,10 @@ export function elementoDe(simbolo: string): Elemento {
   return elemento
 }
 
+export function conLosMismosNumeros(elemento: Elemento): Elemento[] {
+  return ELEMENTOS.filter((otro) => otro !== elemento && String(otro.numeros) === String(elemento.numeros))
+}
+
 export function esDeTransicion(elemento: Elemento): boolean {
   return elemento.grupo >= 3 && elemento.grupo <= 12
 }

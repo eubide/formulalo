@@ -105,7 +105,7 @@ Los Elementos que entran en una Tanda antes de que les toque volver, cuando lo n
 _Evitar_: repaso adelantado, extra, entrenamiento
 
 **Corrección**:
-Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
+Lo que sigue a un fallo en un paso de la Cadena: el dato correcto junto a su Regla o su Historia, y en los Números de oxidación, qué otros Elementos tienen los mismos. La Cadena continúa después. Si el fallo fue en la Posición o en los Números de oxidación, el Elemento vuelve una vez en la misma Tanda y otra al día siguiente.
 _Evitar_: feedback, aviso
 
 **Dominio**:

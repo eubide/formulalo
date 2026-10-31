@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { etiquetaDeClase, ultimoSubnivel } from '../catalogo/catalogo'
+  import { conLosMismosNumeros, etiquetaDeClase, ultimoSubnivel } from '../catalogo/catalogo'
   import { familiaDe, familiaDeGrupo } from '../catalogo/familias'
   import { SIN_EL_NEGATIVO } from '../catalogo/reglas'
   import type { Correccion, Pregunta } from '../estudio/estudio'
@@ -19,6 +19,7 @@
   const elemento = $derived(pregunta.elemento)
   const ultimo = $derived(ultimoSubnivel(elemento))
   const familia = $derived(familiaDe(elemento))
+  const conSusNumeros = $derived(conLosMismosNumeros(elemento).map((otro) => otro.simbolo))
 </script>
 
 <section class="correccion">
@@ -62,6 +63,9 @@
     {/if}
     {#if correccion.excepcion}
       <p><b>{elemento.simbolo} se aparta de la regla</b>: {correccion.excepcion}</p>
+    {/if}
+    {#if conSusNumeros.length > 0}
+      <p>Con los mismos números: {conSusNumeros.join(', ')}.</p>
     {/if}
   {/if}
 
