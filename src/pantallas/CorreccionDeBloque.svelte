@@ -10,10 +10,11 @@
   interface Props {
     elementos: Elemento[]
     respuesta: number[][]
+    comentario?: string | null
     alSeguir: () => void
   }
 
-  let { elementos, respuesta, alSeguir }: Props = $props()
+  let { elementos, respuesta, comentario = null, alSeguir }: Props = $props()
 
   const filas = $derived(
     elementos.map((elemento, fila) => {
@@ -27,6 +28,9 @@
 </script>
 
 <section class="correccion">
+  {#if comentario}
+    <p class="comentario">{comentario}</p>
+  {/if}
   <ul>
     {#each filas as { elemento, correccion, bien } (elemento.simbolo)}
       <li>
@@ -63,6 +67,10 @@
 <TablaDeRefuerzo casillas={casillasDeCorreccion(filas)} />
 
 <style>
+  .comentario {
+    font-weight: 700;
+  }
+
   .correccion {
     border: 2px solid var(--fallo);
     border-radius: 10px;

@@ -34,11 +34,19 @@
 
 {#if explorando}
   <Explorar alSalir={() => (explorando = false)} />
+{:else if dictado?.sorpresa}
+  <Sorpresa
+    sorpresa={dictado.sorpresa}
+    respuesta={dictado.respuestaDeSorpresa}
+    alResponder={(respuesta) => (dictado = estudio.responderSorpresa(dictado!, respuesta))}
+    alSeguir={() => (dictado = estudio.cerrarSorpresa(dictado!))}
+    alSalir={() => (dictado = null)}
+  />
 {:else if dictado}
   <Dictado
     {dictado}
     alDescartarPresentacion={() => (dictado = estudio.descartarPresentacionDelDictado(dictado!))}
-    alResponder={(respuesta) => (dictado = estudio.responderDictado(dictado!, respuesta))}
+    alResponder={(respuesta, seguro) => (dictado = estudio.responderDictado(dictado!, respuesta, seguro))}
     alCerrarCorreccion={() => (dictado = estudio.cerrarCorreccionDeDictado(dictado!))}
     alOtro={() => (dictado = dictado!.tipo === 'radicales' ? estudio.abrirRadicales() : estudio.abrirDictado())}
     alSalir={() => (dictado = null)}

@@ -3,10 +3,11 @@
 
   interface Props {
     pide: 'nombre' | 'formula'
-    alResponder: (texto: string) => void
+    pideSeguridad?: boolean
+    alResponder: (texto: string, seguro?: boolean) => void
   }
 
-  let { pide, alResponder }: Props = $props()
+  let { pide, pideSeguridad = false, alResponder }: Props = $props()
 
   let texto = $state('')
   let caja: HTMLInputElement
@@ -15,7 +16,7 @@
 
   function comprobar(evento: SubmitEvent) {
     evento.preventDefault()
-    if (texto.trim() !== '') alResponder(texto)
+    if (texto.trim() !== '') alResponder(texto, pideSeguridad ? true : undefined)
   }
 </script>
 
@@ -31,7 +32,14 @@
     spellcheck="false"
   />
   <small>{pide === 'formula' ? 'Da igual mayúsculas o minúsculas. Los subíndices, como números normales.' : 'Da igual mayúsculas o minúsculas.'}</small>
-  <button type="submit" class="boton" disabled={texto.trim() === ''}>Comprobar</button>
+  {#if pideSeguridad}
+    <div class="botones">
+      <button type="submit" class="boton" disabled={texto.trim() === ''}>Seguro</button>
+      <button type="button" class="boton" disabled={texto.trim() === ''} onclick={() => alResponder(texto, false)}>Dudo</button>
+    </div>
+  {:else}
+    <button type="submit" class="boton" disabled={texto.trim() === ''}>Comprobar</button>
+  {/if}
 </form>
 
 <style>
@@ -56,5 +64,10 @@
 
   small {
     color: var(--tenue);
+  }
+
+  .botones {
+    display: flex;
+    gap: 8px;
   }
 </style>
