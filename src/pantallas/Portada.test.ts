@@ -51,7 +51,7 @@ describe('Portada', () => {
     expect(texto).toContain('Oleada Elemento a elemento: dónde está, qué es y sus números. Nueva oleada 8 de práctica')
     expect(texto).toContain('Dictado Solo los números de oxidación, por bloques. Nuevo dictado Bloques: 2 nuevos 0 de 10 bloques')
     expect(texto).toContain(
-      'Radicales Iones como ClO₃⁻, el clorato: escribe su nombre o su fórmula y calcula su número. Nuevos radicales Radicales: 10 nuevos 0 de 39 radicales Cómo estudias Modo',
+      'Radicales Iones como ClO₃⁻, el clorato: escribe su nombre o su fórmula y calcula su número. Nuevos radicales Radicales: 10 nuevos 0 de 39 radicales Tu avance',
     )
   })
 
@@ -76,10 +76,12 @@ describe('Portada', () => {
     expect(pintarPortada(estudio)).not.toContain('Desde el gas noble')
   })
 
-  it('los ajustes van antes que el avance, y Explorar junto a la tabla', () => {
+  it('el Modo va antes de los tres ejercicios, el Camino dentro de la Oleada, y Explorar junto a la tabla', () => {
     const { estudio } = montar()
 
-    expect(pintarPortada(estudio)).toMatch(/Dictado .* Cómo estudias Modo .* Camino .* Tu avance 0 sabidos · 0 flojos · 58 sin ver, de 58 1 2 3 .* Explorar la tabla/)
+    expect(pintarPortada(estudio)).toMatch(
+      /Modo Normal Vacilón Molesto Sin sorpresas\. Oleada Elemento .* Nueva oleada .* Camino .* Dictado Solo .* Radicales Iones .* Tu avance 0 sabidos · 0 flojos · 58 sin ver, de 58 1 2 3 .* Explorar la tabla/,
+    )
   })
 
   it('dice dónde vive lo estudiado antes de ofrecer la copia', () => {

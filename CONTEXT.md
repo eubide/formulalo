@@ -85,7 +85,7 @@ Los pasos en que se pregunta un Elemento, siempre en el mismo orden: Posición, 
 _Evitar_: secuencia, ficha, pregunta
 
 **Camino**:
-El orden en que llegan los Grupos al aprender. Hay dos y se elige: desde el gas noble (18, 1, 2, 17, 16, 15, 14, 13 y los metales de transición), que es el que viene puesto, o por uso al formular (el H y el O, y después 1, 2, 17, 16, 15, 14, 13, los metales de transición y el 18).
+El orden en que llegan los Grupos al aprender. Hay dos y se elige: desde el gas noble (18, 1, 2, 17, 16, 15, 14, 13 y los metales de transición), que es el que viene puesto, o por uso al formular (el H y el O, y después 1, 2, 17, 16, 15, 14, 13, los metales de transición y el 18). Los dos se distinguen en el Grupo 18 y en el H y el O, así que solo cambian lo que trae la Oleada: los Bloques y los Radicales salen en el mismo orden con cualquiera. Por eso se elige en la tarjeta de la Oleada.
 _Evitar_: ruta, itinerario, orden
 
 **Historia**:
@@ -121,15 +121,15 @@ Ejercicio aparte de la Oleada para marcar Números de oxidación de memoria, sin
 _Evitar_: examen, prueba, test
 
 **Modo**:
-Cuánto vacila la aplicación al Alumno, elegido en la Portada. En Normal, nada. En Vacilón, un ¿Seguro? de vez en cuando, una Sorpresa por Oleada y algún comentario al acertar. En Molesto, ¿Seguro? siempre, dos Sorpresas por Oleada y más comentarios. No cambia lo que se avanza ni lo que se recuerda.
+Cuánto vacila la aplicación al Alumno en cualquier ejercicio: se elige en la Portada, por encima de los tres. En Normal, nada. En Vacilón, un ¿Seguro? de vez en cuando, una Sorpresa por ejercicio y algún comentario al acertar. En Molesto, ¿Seguro? siempre, dos Sorpresas por ejercicio, una en el Dictado, y más comentarios. No cambia lo que se avanza ni lo que se recuerda.
 _Evitar_: dificultad, nivel, tono
 
 **¿Seguro?**:
-Lo que el Modo pide al responder los Números de oxidación de la Cadena: «Seguro» o «Dudo» en lugar de Comprobar. Fallar yendo seguro, o acertar dudando, trae su comentario.
+Lo que el Modo pide al responder los Números de oxidación de la Cadena, o cualquier pregunta del Dictado y de Radicales: «Seguro» o «Dudo» en lugar de Comprobar. Fallar yendo seguro, o acertar dudando, trae su comentario.
 _Evitar_: confianza, certeza
 
 **Sorpresa**:
-Un Bloque o un Radical que el Modo cuela entre dos Cadenas de una Oleada, en un sitio al azar, solo de Elementos ya preguntados: el Bloque, con 5 de ellos como mínimo. No cuenta ni a favor ni en contra.
+Un Bloque o un Radical que el Modo cuela entre dos preguntas de un ejercicio, en un sitio al azar, solo de Elementos ya preguntados: el Bloque, con 5 de ellos como mínimo. La Oleada cuela cualquiera de los dos, el Dictado un Radical y Radicales un Bloque. No cuenta ni a favor ni en contra.
 _Evitar_: reto, examen sorpresa
 
 **Bloque**:

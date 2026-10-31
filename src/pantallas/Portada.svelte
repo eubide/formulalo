@@ -98,13 +98,37 @@
   </header>
 
   <section class="ejercicios">
-    <article class="ejercicio">
+    <div class="modo">
+      <h2>Modo</h2>
+      <div class="selector" role="radiogroup" aria-label="Modo">
+        {#each MODOS as opcion (opcion)}
+          <button type="button" role="radio" aria-checked={modo === opcion} onclick={() => elegirModo(opcion)}>
+            {etiquetaDeModo[opcion]}
+          </button>
+        {/each}
+      </div>
+      <p class="tenue">{descripcionDeModo[modo]}</p>
+    </div>
+
+    <article class="ejercicio oleada">
       <h2>Oleada</h2>
       <p>Elemento a elemento: dónde está, qué es y sus números.</p>
       <button type="button" class="boton" onclick={alEmpezar}>Nueva oleada</button>
       <p class="trae">{textoDelAnuncio(anuncio)}</p>
       {#if porRepasar}
         <p class="tenue">{porRepasar}</p>
+      {/if}
+
+      {#if resumen.sinVer > 0}
+        <div class="ajustes">
+          <h3>Camino</h3>
+          <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
+            {#each CAMINOS as opcion (opcion)}
+              <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
+            {/each}
+          </select>
+          <p class="tenue">{descripcionDeCamino[camino]}</p>
+        </div>
       {/if}
     </article>
 
@@ -123,29 +147,6 @@
       <p class="trae">{textoDeLoQueTrae('Radicales', siguientesRadicales)}</p>
       <p class="tenue">{textoDeLoVisto('radicales', deRadicales)}</p>
     </article>
-  </section>
-
-  <section class="ajustes">
-    <h2>Cómo estudias</h2>
-    <h3>Modo</h3>
-    <div class="selector" role="radiogroup" aria-label="Modo">
-      {#each MODOS as opcion (opcion)}
-        <button type="button" role="radio" aria-checked={modo === opcion} onclick={() => elegirModo(opcion)}>
-          {etiquetaDeModo[opcion]}
-        </button>
-      {/each}
-    </div>
-    <p class="tenue">{descripcionDeModo[modo]}</p>
-
-    {#if resumen.sinVer > 0}
-      <h3>Camino</h3>
-      <select aria-label="Camino" value={camino} onchange={(evento) => elegir(evento.currentTarget.value as Camino)}>
-        {#each CAMINOS as opcion (opcion)}
-          <option value={opcion}>{etiquetaDeCamino[opcion]}</option>
-        {/each}
-      </select>
-      <p class="tenue">{descripcionDeCamino[camino]}</p>
-    {/if}
   </section>
 
   <section class="avance">
@@ -262,6 +263,25 @@
     font-size: 14px;
   }
 
+  .oleada {
+    grid-column: 1 / -1;
+  }
+
+  .ajustes {
+    border-top: 1px solid var(--borde);
+    margin-top: 6px;
+    padding-top: 2px;
+  }
+
+  .modo {
+    grid-column: 1 / -1;
+  }
+
+  .modo h2 {
+    margin: 0 0 6px;
+  }
+
+  .modo p,
   .ajustes p,
   .avance p {
     margin: 6px 0 0;
