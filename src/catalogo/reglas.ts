@@ -35,7 +35,7 @@ const REGLAS: Regla[] = [
     acabaEn: 'p⁵',
     puente: '7 electrones: le falta 1. Los positivos, impares hasta 7.',
     numeros: [-1, 1, 3, 5, 7],
-    excepciones: { F: 'solo −1.', At: 'solo −1 y +1.' },
+    excepciones: { At: 'solo −1 y +1.' },
   },
   {
     grupo: 16,
@@ -63,7 +63,7 @@ const REGLAS: Regla[] = [
     acabaEn: 'p¹',
     puente: '3 electrones: los pierde.',
     numeros: [3],
-    excepciones: { Tl: 'además +1.' },
+    excepciones: { B: 'además −3. No sale de contar: le faltan 5 para 8.', Tl: 'además +1.' },
   },
 ]
 

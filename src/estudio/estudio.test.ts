@@ -283,7 +283,7 @@ describe('Números de oxidación', () => {
     const { estudio } = montar(() => valor)
     const vistos = new Set<string>()
 
-    while (vistos.size < 56) {
+    while (vistos.size < 58) {
       let tanda = abrir(estudio)
       while (tanda.pregunta) {
         const { elemento, opciones } = tanda.pregunta
@@ -301,7 +301,7 @@ describe('Números de oxidación', () => {
       }
     }
 
-    expect(vistos.size).toBe(56)
+    expect(vistos.size).toBe(58)
   })
 })
 
@@ -520,11 +520,11 @@ describe('Tanda', () => {
 
   it('con un solo nuevo, el repaso ocupa los otros siete', () => {
     const { estudio, reloj } = montar()
-    hastaPresentar(estudio, 'Pt')
+    hastaPresentar(estudio, 'Sc')
     reloj.dia = '2026-10-06'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 7, nuevos: 1, practica: 0, minutos: 4, quedan: 48 })
-    expect(enLaTanda(estudio.abrirTanda())).toContain('Pt')
+    expect(estudio.anuncio()).toEqual({ repaso: 7, nuevos: 1, practica: 0, minutos: 4, quedan: 50 })
+    expect(enLaTanda(estudio.abrirTanda())).toContain('Sc')
   })
 
   it('sin nada nuevo, la Tanda es toda de repaso', () => {
@@ -532,7 +532,7 @@ describe('Tanda', () => {
     estudiarElDia(estudio)
     reloj.dia = '2026-10-06'
 
-    expect(estudio.anuncio()).toEqual({ repaso: 8, nuevos: 0, practica: 0, minutos: 4, quedan: 48 })
+    expect(estudio.anuncio()).toEqual({ repaso: 8, nuevos: 0, practica: 0, minutos: 4, quedan: 50 })
     const tanda = estudio.abrirTanda()
     expect(tanda.presentacion).toBeNull()
     expect(enLaTanda(tanda)).toHaveLength(8)
@@ -645,7 +645,7 @@ describe('Tanda', () => {
     estudiarElDia(estudio)
 
     expect(estudio.proximaVuelta()).toBe('2026-10-06')
-    expect(estudio.resumen()).toEqual({ sabidos: 56, flojos: 0, sinVer: 0, total: 56 })
+    expect(estudio.resumen()).toEqual({ sabidos: 58, flojos: 0, sinVer: 0, total: 58 })
   })
 
   function estadosDe(estudio: Estudio, tanda: Tanda) {
@@ -816,7 +816,7 @@ describe('Dominio', () => {
 
     acertarCadena(estudio, tanda)
 
-    expect(estudio.resumen()).toEqual({ sabidos: 1, flojos: 5, sinVer: 50, total: 56 })
+    expect(estudio.resumen()).toEqual({ sabidos: 1, flojos: 5, sinVer: 52, total: 58 })
   })
 
   it('lo estudiado sigue ahí al volver a abrir la aplicación', () => {
@@ -844,7 +844,7 @@ describe('Dominio', () => {
     const buena = { estado: 'sabido', intervalo: 3, vuelve: '2026-10-09', fallos: 0, pasosFallados: [] }
     almacen.setItem(
       'formulalo:dominio',
-      JSON.stringify({ version: 1, camino: 'uso', elementos: { He: buena, Pd: buena, Ne: { ...buena, vuelve: 'mañana' } } }),
+      JSON.stringify({ version: 1, camino: 'uso', elementos: { He: buena, Ti: buena, Ne: { ...buena, vuelve: 'mañana' } } }),
     )
 
     const { estudio } = montar(() => 0, almacen)
@@ -901,7 +901,7 @@ describe('Copia del Dominio', () => {
     ['no trae Camino', JSON.stringify({ version: 1, elementos: {} })],
     ['trae un Camino que no existe', JSON.stringify({ version: 1, camino: 'alfabetico', elementos: {} })],
     ['no trae Elementos', JSON.stringify({ version: 1, camino: 'uso' })],
-    ['trae un Elemento que no se estudia', JSON.stringify({ version: 1, camino: 'uso', elementos: { He: ENTRADA, Pd: ENTRADA } })],
+    ['trae un Elemento que no se estudia', JSON.stringify({ version: 1, camino: 'uso', elementos: { He: ENTRADA, Ti: ENTRADA } })],
     [
       'trae una entrada mal formada',
       JSON.stringify({ version: 1, camino: 'uso', elementos: { He: ENTRADA, Ne: { ...ENTRADA, vuelve: 'mañana' } } }),

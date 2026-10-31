@@ -19,7 +19,7 @@ Columna de la tabla periódica, numerada del 1 al 18.
 _Evitar_: columna
 
 **Familia**:
-El nombre de un Grupo: alcalinos el 1, alcalinotérreos el 2, térreos o boroideos el 13, carbonoideos el 14, nitrogenoideos el 15, anfígenos o calcógenos el 16, halógenos el 17 y gases nobles el 18. Los doce metales de transición comparten una sola, y el H no tiene: está en el Grupo 1 sin ser alcalino. Se enseña y nunca se pregunta.
+El nombre de un Grupo: alcalinos el 1, alcalinotérreos el 2, térreos o boroideos el 13, carbonoideos el 14, nitrogenoideos el 15, anfígenos o calcógenos el 16, halógenos el 17 y gases nobles el 18. Los catorce metales de transición comparten una sola, y el H no tiene: está en el Grupo 1 sin ser alcalino. Se enseña y nunca se pregunta.
 _Evitar_: grupo, serie, bloque
 
 **Periodo**:
@@ -39,12 +39,16 @@ Número con signo que dice cuántos electrones gana, pierde o comparte un Elemen
 _Evitar_: valencia, estado de oxidación
 
 **Hoja de oxidación**:
-La hoja «Formulación y nomenclatura inorgánica» que lista los Números de oxidación de 43 Elementos. Es el canon de esos números, salvo el del B.
+La hoja «Formulación y nomenclatura inorgánica» que lista los Números de oxidación de 43 Elementos. Es el canon de esos números, salvo los del B y el F.
 _Evitar_: hoja, tabla de valencias
 
 **Tabla del libro**:
-La tabla periódica del anexo A3 del libro de texto. Da la Clase de todos los Elementos y los Números de oxidación de los 13 que la Hoja de oxidación no trae, además del +3 del B.
+La tabla periódica del anexo A3 del libro de texto. Da la Clase de todos los Elementos y los Números de oxidación de los 13 que la Hoja de oxidación no trae.
 _Evitar_: libro, tabla periódica
+
+**Tabla de radicales**:
+La hoja «Tabla de No. de oxidación y Radicales». Da los Números de oxidación del Sc y el Pd, que no están en las otras dos fuentes, y los del B y el F, que mandan sobre ellas.
+_Evitar_: hoja, tabla de valencias
 
 **Configuración**:
 El reparto de los electrones de un Elemento en subniveles, escrito entero (1s² 2s² 2p⁴) o abreviado desde el gas noble anterior ([He] 2s² 2p⁴). De ella se responde solo el subnivel donde entra el último electrón, 2p⁴ en el O, que es el que se ve resaltado.
@@ -93,7 +97,7 @@ Lo primero de una Tanda que trae un Grupo nuevo: el Grupo iluminado en la tabla 
 _Evitar_: tutorial, introducción, lección
 
 **Tanda**:
-Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar hoy y, si sobra sitio, otros de Práctica. Se puede pedir siempre. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero. Lo que toca repasar ocupa los sitios que sobran: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos. La Práctica llena lo que quede. Los doce metales de transición llegan en cinco trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; y Pt.
+Unos cuatro minutos de estudio con hasta 8 Elementos, cada uno por su Cadena entera: unos nuevos, otros que toca repasar hoy y, si sobra sitio, otros de Práctica. Se puede pedir siempre. Es nuevo el Elemento al que todavía no se le ha preguntado nada, esté presentado o sin ver. Los nuevos entran primero: los presentados que esperan y, cuando no queda ninguno, el trozo siguiente del Camino, entero. Lo que toca repasar ocupa los sitios que sobran: hasta 3 Flojos, elegidos al azar, y el resto Sabidos, primero el que más lleva esperando. Si no hay Sabidos bastantes, entran más Flojos. La Práctica llena lo que quede. Los catorce metales de transición llegan en seis trozos: Cu, Ag y Au; Zn, Cd y Hg; Fe, Co y Ni; Cr y Mn; Pd y Pt; y Sc.
 _Evitar_: ronda, sesión, lote, repaso
 
 **Práctica**:
@@ -117,7 +121,7 @@ Estado de un Elemento en cuya última Cadena se acertaron la Posición y los Nú
 _Evitar_: dominado, aprendido, acertado
 
 **Explorar**:
-Consulta libre: la tabla periódica con los 56 Elementos rotulados, y al tocar uno se ven todos sus datos, sus Cajas, su Regla y sus Historias. No pregunta nada ni escribe en el Dominio.
+Consulta libre: la tabla periódica con los 58 Elementos rotulados, y al tocar uno se ven todos sus datos, sus Cajas, su Regla y sus Historias. No pregunta nada ni escribe en el Dominio.
 _Evitar_: ficha, consulta, modo libre
 
 **Señales**:
@@ -132,9 +136,9 @@ _Evitar_: caja, nivel, plazo
 
 - Cada **Elemento** tiene un **Símbolo**, una **Posición**, una **Clase** y uno o varios **Números de oxidación**
 - Una **Posición** es un **Grupo** y un **Periodo**
-- Los **Números de oxidación** de un **Elemento** salen de la **Hoja de oxidación** si lo trae, y de la **Tabla del libro** si no
+- Los **Números de oxidación** del B, el F, el Sc y el Pd salen de la **Tabla de radicales**; los de los demás **Elementos**, de la **Hoja de oxidación** si los trae, y de la **Tabla del libro** si no
 - La **Posición** da la **Clase** y la **Configuración**; la **Clase** y la **Capa de valencia** dan los **Números de oxidación**. Ese es el orden de la **Cadena**
-- La **Cadena** de los doce metales de transición no lleva **Configuración**
+- La **Cadena** de los catorce metales de transición no lleva **Configuración**
 - Los **Números de oxidación** de un **Elemento** se responden eligiéndolos entre los verdaderos y dos o tres **Distractores**
 - Las **Cajas** de un **Elemento** se enseñan cuando el **Alumno** las pide, sin números, y resueltas en la **Presentación**, la **Corrección** y **Explorar**: una fila por **Número de oxidación**, con una marca bajo cada flecha que suelta o cada **Hueco** que llena
 - Un **Elemento** que no es de transición lleva las **Cajas** s y p de su última capa; un metal de transición, la s y la d
@@ -146,17 +150,19 @@ _Evitar_: caja, nivel, plazo
 
 ## Ambigüedades resueltas
 
-- Se estudian 56 Elementos: los Grupos 1 y 2 enteros, los Grupos 13 a 18 hasta el Periodo 6, y doce metales de transición, que son Cr, Mn, Fe, Co, Ni, Cu, Zn, Ag, Cd, Pt, Au y Hg. El Periodo 7 de los Grupos 13 a 18 queda fuera: la Tabla del libro lo da como de propiedades desconocidas y sin Números de oxidación.
-- "Hierro, cobalto, níquel hacia la derecha" de la idea original incluye el Cr y el Mn, que están en el recuadro a boli y en la Hoja de oxidación, y se para en el Zn: Pd no entra.
+- Se estudian 58 Elementos: los Grupos 1 y 2 enteros, los Grupos 13 a 18 hasta el Periodo 6, y catorce metales de transición, que son Sc, Cr, Mn, Fe, Co, Ni, Cu, Zn, Pd, Ag, Cd, Pt, Au y Hg. El Periodo 7 de los Grupos 13 a 18 queda fuera: la Tabla del libro lo da como de propiedades desconocidas y sin Números de oxidación.
+- "Hierro, cobalto, níquel hacia la derecha" de la idea original incluye el Cr y el Mn, que están en el recuadro a boli y en la Hoja de oxidación, y se para en el Zn. El Sc y el Pd no salen de ahí: entran por la Tabla de radicales.
 - La Hoja de oxidación manda sobre la Tabla del libro: el N lleva −3, +1, +3 y +5 aunque la Tabla del libro no traiga el +1.
 - Los 13 Elementos que la Hoja de oxidación no trae son Ga, In, Tl, Ge, Bi, Po, At y los seis gases nobles.
-- El B es la excepción a que mande la Hoja de oxidación: ella le da −3 y la Tabla del libro +3. Se estudia solo el +3: el −3 no sale de llenar su Caja p.
+- El B lleva −3 y +3, como en la Tabla de radicales. El −3 no sale de llenar su Caja p, que tiene 5 mitades vacías y llena 3: se enseña como excepción a su Regla.
+- El F lleva −1, +1, +3, +5 y +7 porque así lo da la Tabla de radicales, aunque en la química real solo tenga −1.
+- La Tabla de radicales solo manda en el B y el F. También difiere en otros tres, y se quedan como estaban: el H con −1 y +1, el C con −4, +2 y +4, y el Bi como metal con +3 y +5. El N sigue con −3, +1, +3 y +5: el «1» añadido a mano en esa hoja no se extiende a los demás de su casilla.
 - El Cr y el Mn están dos veces en la Hoja de oxidación, como metal (+2 y +3 los dos) y como no metal (+6 el Cr; +4, +6 y +7 el Mn). Se estudian los dos juegos.
-- La Hoja de oxidación solo reparte en metales y no metales, y pone B, Si, As, Sb y Te entre los no metales. La Clase sigue a la Tabla del libro, que los da como metaloides.
+- La Hoja de oxidación solo reparte en metales y no metales, y pone B, Si, As, Sb y Te entre los no metales. La Clase sigue a la Tabla del libro, que los da como metaloides. La Tabla de radicales pone el B entre los metales y entre los no metales, y el Bi entre los no metales: tampoco manda en la Clase.
 - "Valencias" en la idea original son los Números de oxidación. La Hoja de oxidación define valencia como otra cosa, la capacidad de un átomo para combinarse, y esa no se estudia.
 - "Acrónimo" en la idea original es el Símbolo.
 - "La parte característica" de la Configuración en la idea original es el subnivel donde entra el último electrón.
-- Los doce metales de transición no se preguntan por su Configuración: cinco de ellos, Cr, Cu, Ag, Au y Pt, no siguen la regla de llenado, y en ninguno explica sus Números de oxidación. Se enseña la real.
+- Los catorce metales de transición no se preguntan por su Configuración: seis de ellos, Cr, Cu, Pd, Ag, Au y Pt, no siguen la regla de llenado, y en ninguno explica sus Números de oxidación. Se enseña la real.
 - El Cr y el Mn se responden con todos sus Números de oxidación juntos; que unos sean de metal y otros de no metal se cuenta al corregir y no se pregunta.
 - Los Números de oxidación se saben de memoria o se deducen rápido: por eso se seleccionan, y las Cajas solo salen cuando el Alumno las pide o falla. Acertar después de pedirlas cuenta como acierto.
 - El número de opciones delata cuántos Números de oxidación tiene un Elemento. Se acepta: dar pistas no es malo.

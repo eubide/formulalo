@@ -21,20 +21,23 @@ function escrito(subniveles: Subnivel[]): string {
   return subniveles.map(({ capa, letra, electrones }) => `${capa}${letra}${electrones}`).join(' ')
 }
 
-describe('Los 56 Elementos', () => {
-  it('son 56, con Símbolos distintos', () => {
-    expect(estudiados).toHaveLength(56)
-    expect(new Set(estudiados.map((elemento) => elemento.simbolo)).size).toBe(56)
+describe('Los 58 Elementos', () => {
+  it('son 58, con Símbolos distintos', () => {
+    expect(estudiados).toHaveLength(58)
+    expect(new Set(estudiados.map((elemento) => elemento.simbolo)).size).toBe(58)
   })
 
-  it('42 traen sus Números de oxidación de la Hoja de oxidación y 14 de la Tabla del libro', () => {
-    expect(estudiados.filter((elemento) => elemento.fuente === 'hoja')).toHaveLength(42)
-    expect(estudiados.filter((elemento) => elemento.fuente === 'libro')).toHaveLength(14)
+  it('41 traen sus Números de oxidación de la Hoja de oxidación, 13 de la Tabla del libro y 4 de la Tabla de radicales', () => {
+    expect(estudiados.filter((elemento) => elemento.fuente === 'hoja')).toHaveLength(41)
+    expect(estudiados.filter((elemento) => elemento.fuente === 'libro')).toHaveLength(13)
+    expect(estudiados.filter((elemento) => elemento.fuente === 'radicales').map((elemento) => elemento.simbolo)).toEqual([
+      'B', 'F', 'Sc', 'Pd',
+    ])
   })
 
-  it('doce son metales de transición', () => {
+  it('catorce son metales de transición', () => {
     expect(deTransicion.map((elemento) => elemento.simbolo)).toEqual([
-      'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ag', 'Cd', 'Pt', 'Au', 'Hg',
+      'Sc', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Pd', 'Ag', 'Cd', 'Pt', 'Au', 'Hg',
     ])
   })
 
@@ -56,9 +59,14 @@ describe('Los 56 Elementos', () => {
     expect(metaloides.map((elemento) => elemento.simbolo)).toEqual(['B', 'Si', 'Ge', 'As', 'Sb', 'Te', 'Po', 'At'])
   })
 
-  it('el B lleva solo el +3 de la Tabla del libro', () => {
-    expect(elementoDe('B').numeros).toEqual([3])
-    expect(elementoDe('B').fuente).toBe('libro')
+  it('la Tabla de radicales da al B −3 y +3, y al F −1, +1, +3, +5 y +7', () => {
+    expect(elementoDe('B').numeros).toEqual([-3, 3])
+    expect(elementoDe('F').numeros).toEqual([-1, 1, 3, 5, 7])
+  })
+
+  it('la Tabla de radicales da al Sc +3 y al Pd +2 y +4', () => {
+    expect(elementoDe('Sc').numeros).toEqual([3])
+    expect(elementoDe('Pd').numeros).toEqual([2, 4])
   })
 })
 
@@ -130,13 +138,18 @@ describe('Reglas', () => {
     }
   })
 
+  it('el F sigue la Regla de su Grupo y el B se aparta de la suya', () => {
+    expect(excepcionDe(elementoDe('F'))).toBeNull()
+    expect(excepcionDe(elementoDe('B'))).toContain('además −3')
+  })
+
   it('pierden el negativo de su Regla por ser metales Sn, Pb y Bi', () => {
     expect(estudiados.filter(pierdeElNegativo).map((elemento) => elemento.simbolo)).toEqual(['Sn', 'Pb', 'Bi'])
   })
 })
 
 describe('Familias', () => {
-  it('los 56 Elementos tienen Familia, salvo el H', () => {
+  it('los 58 Elementos tienen Familia, salvo el H', () => {
     const sinFamilia = estudiados.filter((elemento) => familiaDe(elemento) === null)
 
     expect(sinFamilia.map((elemento) => elemento.simbolo)).toEqual(['H'])
@@ -163,7 +176,7 @@ describe('Familias', () => {
     }
   })
 
-  it('los doce metales de transición son de la misma Familia', () => {
+  it('los catorce metales de transición son de la misma Familia', () => {
     expect(deTransicion.map(familiaDe)).toEqual(deTransicion.map(() => 'Metales de transición'))
   })
 })
@@ -192,16 +205,16 @@ describe('Caminos', () => {
   it.each<Camino>(['gas-noble', 'uso'])('en el Camino %s cada Elemento llega en un trozo y solo en uno', (camino) => {
     const llegados = trozosDe(camino).flat()
 
-    expect(llegados).toHaveLength(56)
+    expect(llegados).toHaveLength(58)
     expect(new Set(llegados)).toEqual(new Set(estudiados.map((elemento) => elemento.simbolo)))
   })
 
-  it('desde el gas noble se empieza por el Grupo 18 y se acaba por el Pt', () => {
+  it('desde el gas noble se empieza por el Grupo 18 y se acaba por el Sc', () => {
     const trozos = trozosDe('gas-noble')
 
     expect(trozos[0]).toEqual(['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn'])
     expect(trozos[1]).toEqual(['H', 'Li', 'Na', 'K', 'Rb', 'Cs', 'Fr'])
-    expect(trozos.slice(-5)).toEqual([['Cu', 'Ag', 'Au'], ['Zn', 'Cd', 'Hg'], ['Fe', 'Co', 'Ni'], ['Cr', 'Mn'], ['Pt']])
+    expect(trozos.slice(-6)).toEqual([['Cu', 'Ag', 'Au'], ['Zn', 'Cd', 'Hg'], ['Fe', 'Co', 'Ni'], ['Cr', 'Mn'], ['Pd', 'Pt'], ['Sc']])
   })
 
   it('por uso al formular llegan primero el H y el O juntos, y el Grupo 18 al final', () => {

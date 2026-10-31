@@ -19,7 +19,7 @@ export interface Elemento {
   clase: Clase
   configuracion: string
   numeros: number[]
-  fuente: 'hoja' | 'libro'
+  fuente: 'hoja' | 'libro' | 'radicales'
 }
 
 export interface Configuracion {

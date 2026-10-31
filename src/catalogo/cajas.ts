@@ -47,9 +47,10 @@ export function cajasDe(elemento: Elemento): Cajas {
   const sinEstrenar = valencia
     .filter((nombre) => !escritos.includes(nombre))
     .map((nombre): Subnivel => ({ capa: Number(nombre[0]), letra: nombre[1] as Letra, electrones: 0 }))
+  const enOrdenDeLlenado = esDeTransicion(elemento) ? [...sinEstrenar, ...trasElGasNoble] : [...trasElGasNoble, ...sinEstrenar]
   return {
     gasNoble,
-    partes: [...trasElGasNoble, ...sinEstrenar].map((subnivel) => ({
+    partes: enOrdenDeLlenado.map((subnivel) => ({
       ...subnivel,
       orbitales: 2 * LETRAS.indexOf(subnivel.letra) + 1,
       recogida: !valencia.includes(nombreDe(subnivel)),
