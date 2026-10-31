@@ -34,11 +34,12 @@
       seguimiento: estudio.seguimiento(),
       modo: estudio.modo(),
       primeraVez: estudio.esPrimeraVez(),
+      trasUnaAusencia: estudio.trasUnaAusencia(),
     }
   }
 
   let aLaVista = $state.raw(mirar())
-  const { camino, entradas, resumen, proximaVuelta, anuncio, delDictado, siguienteDictado, deRadicales, siguientesRadicales, seguimiento, modo, primeraVez } =
+  const { camino, entradas, resumen, proximaVuelta, anuncio, delDictado, siguienteDictado, deRadicales, siguientesRadicales, seguimiento, modo, primeraVez, trasUnaAusencia } =
     $derived(aLaVista)
 
   const casillas = $derived(casillasDelDominio(entradas))
@@ -172,7 +173,7 @@
     </div>
   {/if}
 
-  {#if conPasosFallados.length > 0}
+  {#if conPasosFallados.length > 0 && !trasUnaAusencia}
     <section class="donde-se-rompe">
       <h2>Dónde se rompe la cadena</h2>
       <ul>

@@ -50,6 +50,27 @@ describe('Portada la primera vez', () => {
   })
 })
 
+describe('Portada tras una ausencia', () => {
+  function conUnFalloAtrasado() {
+    const montado = montar()
+    acertarOleadaEntera(montado.estudio, fallar(montado.estudio, abrir(montado.estudio), ['clase']))
+    montado.reloj.dia = '2026-10-08'
+    return montado
+  }
+
+  it('no recibe con la lista de fallos', () => {
+    expect(pintarPortada(conUnFalloAtrasado().estudio)).not.toContain('Dónde se rompe la cadena')
+  })
+
+  it('al terminar esa Oleada la lista vuelve', () => {
+    const { estudio } = conUnFalloAtrasado()
+    const oleada = estudio.abrirOleada()
+    acertarOleadaEntera(estudio, fallar(estudio, oleada, ['clase']))
+
+    expect(pintarPortada(estudio)).toContain('Dónde se rompe la cadena')
+  })
+})
+
 describe('Portada', () => {
   it('con el Dominio vacío da la bienvenida bajo el lema', () => {
     const { estudio } = montar()
