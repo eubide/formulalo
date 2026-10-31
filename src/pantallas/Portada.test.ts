@@ -1,17 +1,54 @@
 import { describe, expect, it } from 'vitest'
-import { abrir, acertarOleada as acertarOleadaEntera, estudiarElDia, fallar, montar } from '../estudio/ayudantes'
-import type { Estudio } from '../estudio/estudio'
+import { abrir, acertarCadena, acertarOleada as acertarOleadaEntera, estudiarElDia, fallar, montar } from '../estudio/ayudantes'
+import { almacenEnMemoria, type Estudio } from '../estudio/estudio'
 import { pintar } from './pintar'
 import Portada from './Portada.svelte'
 
 const BIENVENIDA =
-  'Aprende dónde está cada elemento en la tabla y deduce de ahí su configuración y sus números de oxidación. Cada oleada dura unos minutos: primero te presenta un grupo y después te pregunta.'
+  'Aprende dónde está cada elemento en la tabla y deduce de ahí sus números de oxidación, para poder formular. Cada oleada dura unos minutos: primero te presenta unos elementos, después te pregunta y acaba con fórmulas.'
 const DESDE_EL_GAS_NOBLE = 'Grupos 18, 1, 2, 17, 16, 15, 14 y 13, y después los metales de transición.'
 const POR_USO = 'Primero el H y el O; después los grupos 1, 2, 17, 16, 15, 14 y 13, los metales de transición y el 18.'
 
 function pintarPortada(estudio: Estudio): string {
   return pintar(Portada, { estudio, alEmpezar: () => {}, alExplorar: () => {}, alDictado: () => {}, alRadicales: () => {} })
 }
+
+function conLaPrimeraCadenaRespondida() {
+  const montado = montar()
+  acertarCadena(montado.estudio, abrir(montado.estudio))
+  return montado
+}
+
+describe('Portada la primera vez', () => {
+  it.each(['Modo', 'Camino', 'Dictado', 'Radicales', 'Tu avance', 'Explorar la tabla', 'Guardar copia'])('no ofrece todavía «%s»', (oculto) => {
+    expect(pintarPortada(montar().estudio)).not.toContain(oculto)
+  })
+
+  it('ofrece la Oleada, con lo que trae, y recuperar una copia de otro navegador', () => {
+    expect(pintarPortada(montar().estudio)).toMatch(/Oleada Elemento .* Nueva oleada 6 nuevos · unos 3 min Recuperar copia$/)
+  })
+
+  it('sigue igual si solo ha visto la Presentación', () => {
+    const { estudio } = montar()
+    estudio.descartarPresentacion(estudio.abrirOleada())
+
+    expect(pintarPortada(estudio)).not.toContain('Dictado')
+  })
+
+  it('con la primera Cadena respondida lo ofrece todo', () => {
+    const texto = pintarPortada(conLaPrimeraCadenaRespondida().estudio)
+
+    for (const visible of ['Modo', 'Camino', 'Dictado', 'Radicales', 'Tu avance', 'Explorar la tabla', 'Guardar copia']) expect(texto).toContain(visible)
+  })
+
+  it('un Dominio guardado sin Oleadas, pero con Elementos preguntados, tampoco es la primera vez', () => {
+    const almacen = almacenEnMemoria()
+    const entrada = { estado: 'sabido', intervalo: 3, vuelve: '2026-10-07', fallos: 0, pasosFallados: [] }
+    almacen.setItem('formulalo:dominio', JSON.stringify({ version: 1, camino: 'gas-noble', elementos: { He: entrada } }))
+
+    expect(pintarPortada(montar(() => 0, almacen).estudio)).toContain('Dictado')
+  })
+})
 
 describe('Portada', () => {
   it('con el Dominio vacío da la bienvenida bajo el lema', () => {
@@ -31,7 +68,7 @@ describe('Portada', () => {
   })
 
   it('bajo el selector dice el orden del Camino elegido', () => {
-    const { estudio } = montar()
+    const { estudio } = conLaPrimeraCadenaRespondida()
 
     expect(pintarPortada(estudio)).toContain(`Camino Desde el gas noble Por uso al formular ${DESDE_EL_GAS_NOBLE}`)
     expect(pintarPortada(estudio)).not.toContain(POR_USO)
@@ -55,8 +92,8 @@ describe('Portada', () => {
     )
   })
 
-  it('el Dictado se puede hacer desde el principio, y dice qué trae', () => {
-    const { estudio } = montar()
+  it('el Dictado no depende de las Oleadas, y dice qué trae', () => {
+    const { estudio } = conLaPrimeraCadenaRespondida()
 
     expect(pintarPortada(estudio)).toContain('Nuevo dictado Bloques: 2 nuevos 0 de 10 bloques')
   })
@@ -77,15 +114,15 @@ describe('Portada', () => {
   })
 
   it('el Modo va antes de los tres ejercicios, el Camino dentro de la Oleada, y Explorar junto a la tabla', () => {
-    const { estudio } = montar()
+    const { estudio } = conLaPrimeraCadenaRespondida()
 
     expect(pintarPortada(estudio)).toMatch(
-      /Modo Normal Vacilón Molesto Sin sorpresas\. Oleada Elemento .* Nueva oleada .* Camino .* Dictado Solo .* Radicales Iones .* Tu avance 0 sabidos · 0 flojos · 58 sin ver, de 58 1 2 3 .* Explorar la tabla/,
+      /Modo Normal Vacilón Molesto Sin sorpresas\. Oleada Elemento .* Nueva oleada .* Camino .* Dictado Solo .* Radicales Iones .* Tu avance 1 sabido · 5 flojos · 52 sin ver, de 58 1 2 3 .* Explorar la tabla/,
     )
   })
 
   it('dice dónde vive lo estudiado antes de ofrecer la copia', () => {
-    const { estudio } = montar()
+    const { estudio } = conLaPrimeraCadenaRespondida()
 
     expect(pintarPortada(estudio)).toMatch(/Lo estudiado se guarda solo en este navegador\. Guardar copia Recuperar copia$/)
   })
@@ -99,7 +136,7 @@ describe('Portada', () => {
   })
 
   it('ofrece los tres Modos y describe el elegido', () => {
-    const { estudio } = montar()
+    const { estudio } = conLaPrimeraCadenaRespondida()
 
     expect(pintarPortada(estudio)).toContain('Modo Normal Vacilón Molesto Sin sorpresas.')
 

@@ -51,7 +51,7 @@ La hoja «Tabla de No. de oxidación y Radicales». Trae los 39 Radicales y da l
 _Evitar_: hoja, tabla de valencias
 
 **Radical**:
-Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: se puede hacer desde el principio y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. Los del F llegan los últimos, porque FO₂⁻, FO₃⁻ y FO₄⁻ no existen en la química real. Presenta antes los que no ha visto. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
+Ion de una sal ternaria: un Elemento central con oxígenos y una carga, como ClO₃⁻, el clorato. El número de su Elemento central se deduce de la cuenta: cada oxígeno lleva −2 y todo suma la carga. Tiene su propio ejercicio, aparte del Dictado: no depende de las Oleadas y cada vez trae 10 Radicales, por el orden del Camino y con su propia Serie de repaso. Los del F llegan los últimos, porque FO₂⁻, FO₃⁻ y FO₄⁻ no existen en la química real. Presenta antes los que no ha visto. De cada uno se da la fórmula y se escribe el nombre, o al revés, y después se marca su número. Al escribir dan igual las mayúsculas, los espacios y los signos, pero no vale escribir de más: «hipoclorito» no es «clorito». Fallarlo solo cambia su Intervalo, no a los Elementos.
 _Evitar_: anión, oxoanión
 
 **Compuesto**:
@@ -121,7 +121,7 @@ Los Elementos que entran en una Oleada antes de que les toque volver, cuando lo 
 _Evitar_: repaso adelantado, extra, entrenamiento
 
 **Dictado**:
-Ejercicio aparte de la Oleada para marcar Números de oxidación de memoria, sin Configuración ni Cajas, en un teclado que siempre es el mismo. La Tabla va debajo como refuerzo: señala dónde están los Elementos preguntados y, al corregir, cuáles se acertaron y cuáles no. Se puede hacer desde el principio y avanza por su cuenta, sin depender de las Oleadas: trae 2 Bloques, los siguientes del Camino. Antes de preguntar, presenta los Elementos sin ver. Los gases nobles no salen. También repasa: recuerda cada Bloque y cada Radical, con los mismos Intervalos que un Elemento, y reparte lo nuevo y lo que toca con su Serie de repaso. Entre lo ya visto, sale primero lo que lleva más tiempo sin salir. Acertar no cambia a los Elementos. Fallar uno ya preguntado en una Oleada lo devuelve a Flojo; uno solo presentado sigue entre los nuevos. Lo fallado vuelve una vez en el mismo Dictado.
+Ejercicio aparte de la Oleada para marcar Números de oxidación de memoria, sin Configuración ni Cajas, en un teclado que siempre es el mismo. La Tabla va debajo como refuerzo: señala dónde están los Elementos preguntados y, al corregir, cuáles se acertaron y cuáles no. Avanza por su cuenta, sin depender de las Oleadas: trae 2 Bloques, los siguientes del Camino. Antes de preguntar, presenta los Elementos sin ver. Los gases nobles no salen. También repasa: recuerda cada Bloque y cada Radical, con los mismos Intervalos que un Elemento, y reparte lo nuevo y lo que toca con su Serie de repaso. Entre lo ya visto, sale primero lo que lleva más tiempo sin salir. Acertar no cambia a los Elementos. Fallar uno ya preguntado en una Oleada lo devuelve a Flojo; uno solo presentado sigue entre los nuevos. Lo fallado vuelve una vez en el mismo Dictado.
 _Evitar_: examen, prueba, test
 
 **Modo**:
@@ -211,6 +211,7 @@ _Evitar_: caja, nivel, plazo
 - Las Historias son fijas e iguales para todos: se proponen en la spec y entran una a una cuando se aprueban.
 - El rojo y el azul quedan reservados al signo de los Números de oxidación. Por eso el fallo no es rojo, como en Ubícalo, sino naranja.
 - Fuera de la primera versión: simulacro, hoja imprimible, puntuación, marcas, retos e Historias escritas por el Alumno.
+- Hasta responder la primera Cadena, la Portada solo ofrece la Oleada y recuperar una copia. Dictado y Radicales no dependen de las Oleadas, pero se ofrecen después.
 - Al terminar una Oleada se dice «acertados hoy» y no «sabidos»: lo recién acertado vuelve mañana y decir que ya se sabe promete de más. Sabido sigue siendo el estado del Dominio.
 - Los comentarios del Modo no son marcas ni puntuación: ni se guardan ni se acumulan.
 - No hay examen. El objetivo es saberse los Elementos para formular después, así que nada imita un examen ni corre contra una fecha.

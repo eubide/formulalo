@@ -99,6 +99,12 @@ function trozosEnteros(trozos: string[][], minimo: number): string[] {
   return tomados
 }
 
+function preguntadosDe(entradas: Record<string, Entrada>): string[] {
+  return elementos()
+    .map((elemento) => elemento.simbolo)
+    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]))
+}
+
 function componer(
   entradas: Record<string, Entrada>,
   camino: Camino,
@@ -110,9 +116,7 @@ function componer(
   const sinVer = trozosDe(camino)
     .map((trozo) => trozo.filter((simbolo) => !entradas[simbolo]))
     .filter((trozo) => trozo.length > 0)
-  const preguntados = elementos()
-    .map((elemento) => elemento.simbolo)
-    .filter((simbolo) => entradas[simbolo] && !sinPreguntar(entradas[simbolo]))
+  const preguntados = preguntadosDe(entradas)
 
   const minimoDeNuevos = preguntados.length > 0 ? NUEVOS_MINIMOS_POR_OLEADA : 1
   const presentacion = esperan.length === 0 && sinVer.length > 0 ? trozosEnteros(sinVer, minimoDeNuevos) : null
@@ -349,6 +353,10 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
 
     dejarDeFormular(oleada: Oleada): Oleada {
       return { ...oleada, formulando: null }
+    },
+
+    esPrimeraVez(): boolean {
+      return dominio.oleadas().length === 0 && preguntadosDe(dominio.entradas()).length === 0
     },
 
     copia(): string {
