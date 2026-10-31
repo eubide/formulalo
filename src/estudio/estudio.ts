@@ -12,7 +12,7 @@ import {
   type Pregunta,
   type Respuesta,
 } from './cadena'
-import { crearDictados, type Dictada } from './dictado'
+import { crearDictados, sitiosDeSorpresa, type Dictada } from './dictado'
 import { crearDominio, diaLocal, sinPreguntar, type Almacen, type Entrada } from './dominio'
 import { parteDeRepaso } from './serie'
 
@@ -35,6 +35,11 @@ export interface Oleada {
   sorpresa: Dictada | null
   respuestaDeSorpresa: number[][] | null
   comentario: string | null
+}
+
+interface ConSorpresa {
+  sorpresa: Dictada | null
+  respuestaDeSorpresa: number[][] | null
 }
 
 export interface Anuncio {
@@ -202,12 +207,12 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
       dominio.elegirModo(modo)
     },
 
-    responderSorpresa(oleada: Oleada, respuesta: number[][]): Oleada {
-      return oleada.sorpresa && !oleada.respuestaDeSorpresa ? { ...oleada, respuestaDeSorpresa: respuesta } : oleada
+    responderSorpresa<Ejercicio extends ConSorpresa>(ejercicio: Ejercicio, respuesta: number[][]): Ejercicio {
+      return ejercicio.sorpresa && !ejercicio.respuestaDeSorpresa ? { ...ejercicio, respuestaDeSorpresa: respuesta } : ejercicio
     },
 
-    cerrarSorpresa(oleada: Oleada): Oleada {
-      return { ...oleada, sorpresa: null, respuestaDeSorpresa: null }
+    cerrarSorpresa<Ejercicio extends ConSorpresa>(ejercicio: Ejercicio): Ejercicio {
+      return { ...ejercicio, sorpresa: null, respuestaDeSorpresa: null }
     },
 
     seguimiento(): Seguimiento | null {
@@ -278,7 +283,6 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
     abrirOleada(): Oleada {
       const { presentacion, repaso, nuevos, practica } = componer(dominio.entradas(), dominio.camino(), hoy(), azar, oleadasHechas())
       const pendientes = barajar([...repaso, ...nuevos, ...practica], azar)
-      const sitios = Array.from({ length: Math.max(0, pendientes.length - 1) }, (_, sitio) => sitio)
       const oleada: Oleada = {
         presentacion,
         pregunta: null,
@@ -287,7 +291,7 @@ export function crearEstudio(almacen: Almacen, hoy: () => string, azar: Azar, ah
         rotulados: [],
         sabidos: [],
         vuelven: [],
-        sorpresasEn: barajar(sitios, azar).slice(0, ajustesDe(dominio.modo()).sorpresas),
+        sorpresasEn: sitiosDeSorpresa(pendientes.length, ajustesDe(dominio.modo()).sorpresas, azar),
         sorpresa: null,
         respuestaDeSorpresa: null,
         comentario: null,

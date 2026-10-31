@@ -21,6 +21,11 @@ function pintarDictado(cambios: Partial<DictadoEnCurso>): string {
     radicalesFallados: [],
     anotadas: [],
     vueltas: [],
+    pideSeguridad: false,
+    comentario: null,
+    sorpresasEn: [],
+    sorpresa: null,
+    respuestaDeSorpresa: null,
     ...cambios,
   }
   return pintar(Dictado, {
@@ -92,6 +97,39 @@ describe('Pregunta de un Dictado', () => {
   it('tras un acierto enseña lo acertado', () => {
     expect(pintarDictado({ pregunta: deRadical('clorato'), acertada: deBloque(GRUPO_16) })).toContain('Quedan 1 ✓ O, S, Se, Te, Po ¿Qué')
     expect(pintarDictado({ pregunta: deBloque(GRUPO_16), acertada: deRadical('clorato') })).toContain('Quedan 1 ✓ ClO₃⁻ +5 Toca')
+  })
+})
+
+describe('Modo en un Dictado', () => {
+  it('de un Bloque pregunta si vas seguro en lugar de Comprobar', () => {
+    const texto = pintarDictado({ pregunta: deBloque(GRUPO_16), pideSeguridad: true })
+
+    expect(texto).toContain(`${TECLADO} Seguro Dudo 1 2 3`)
+    expect(texto).not.toContain('Comprobar')
+  })
+
+  it('de un Radical pregunta si vas seguro, también al escribir', () => {
+    expect(pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato'), pideSeguridad: true })).toContain(`${TECLADO} Seguro Dudo`)
+    expect(pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato', 'escritura'), pideSeguridad: true })).toContain(
+      'Da igual mayúsculas o minúsculas. Seguro Dudo',
+    )
+  })
+
+  it('tras un acierto enseña el comentario junto a lo acertado', () => {
+    const texto = pintarDictado({ pregunta: deRadical('clorato'), acertada: deBloque(GRUPO_16), comentario: 'Hoy vienes fino.' })
+
+    expect(texto).toContain('Quedan 1 ✓ O, S, Se, Te, Po Hoy vienes fino. ¿Qué')
+  })
+
+  it('al terminar enseña el comentario del último acierto', () => {
+    expect(pintarDictado({ comentario: 'Hoy vienes fino.' })).toBe('Dictado terminado ✓ Sin fallos. Hoy vienes fino. Otro dictado Portada')
+  })
+
+  it('en la Corrección enseña el comentario', () => {
+    const comentario = 'Seguro, decías. Apuntado queda.'
+
+    expect(pintarDictado({ pregunta: deBloque(['S']), respuesta: [[]], comentario })).toMatch(/^Seguro, decías\. Apuntado queda\. ✗ S /)
+    expect(pintarDictado({ pregunta: deRadical('clorato'), respuesta: [[3]], comentario })).toContain('✗ Radical ClO₃⁻ · clorato Seguro, decías. Apuntado queda. Cada oxígeno')
   })
 })
 

@@ -7,14 +7,18 @@
   interface Props {
     radical: Radical
     escrito: string | null
+    comentario?: string | null
     alSeguir: () => void
   }
 
-  let { radical, escrito, alSeguir }: Props = $props()
+  let { radical, escrito, comentario = null, alSeguir }: Props = $props()
 </script>
 
 <section class="correccion">
   <h2><span aria-hidden="true">✗</span> Radical {formulaDe(radical)} · {radical.nombre}</h2>
+  {#if comentario}
+    <p class="comentario">{comentario}</p>
+  {/if}
   {#if escrito !== null}
     <p>Escribiste: <b>{escrito}</b></p>
   {/if}
@@ -32,6 +36,10 @@
 <TablaDeRefuerzo casillas={casillasDeRadical(radical)} />
 
 <style>
+  .comentario {
+    font-weight: 700;
+  }
+
   .correccion {
     border: 2px solid var(--fallo);
     border-radius: 10px;

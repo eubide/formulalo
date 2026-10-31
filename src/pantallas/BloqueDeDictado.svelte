@@ -9,10 +9,11 @@
   interface Props {
     elementos: Elemento[]
     dadoPor: 'simbolo' | 'nombre'
-    alResponder: (respuesta: number[][]) => void
+    pideSeguridad?: boolean
+    alResponder: (respuesta: number[][], seguro?: boolean) => void
   }
 
-  let { elementos, dadoPor, alResponder }: Props = $props()
+  let { elementos, dadoPor, pideSeguridad = false, alResponder }: Props = $props()
 
   let marcados = $state<Record<string, number[]>>({})
   let fila = $state(0)
@@ -44,11 +45,23 @@
 
 <Teclado opciones={TECLADO} marcados={delElemento(actual)} alAlternar={alternar} />
 
-<button type="button" class="boton" disabled={!completo} onclick={() => alResponder(elementos.map(delElemento))}>Comprobar</button>
+{#if pideSeguridad}
+  <div class="botones">
+    <button type="button" class="boton" disabled={!completo} onclick={() => alResponder(elementos.map(delElemento), true)}>Seguro</button>
+    <button type="button" class="boton" disabled={!completo} onclick={() => alResponder(elementos.map(delElemento), false)}>Dudo</button>
+  </div>
+{:else}
+  <button type="button" class="boton" disabled={!completo} onclick={() => alResponder(elementos.map(delElemento))}>Comprobar</button>
+{/if}
 
 <TablaDeRefuerzo casillas={casillasDeBloque(elementos, actual)} />
 
 <style>
+  .botones {
+    display: flex;
+    gap: 8px;
+  }
+
   p {
     margin: 10px 0 8px;
   }

@@ -1,6 +1,7 @@
 import { bloques } from '../catalogo/bloques'
 import { trozosDe, type Camino } from '../catalogo/caminos'
 import { elementos, type Elemento } from '../catalogo/catalogo'
+import { ajustesDe, comentarioAlAcertar } from '../catalogo/modos'
 import { esSuFormula, esSuNombre, numeroDeRadical, radicales, type Radical } from '../catalogo/radicales'
 import { barajar, correccionDe, mismosNumeros, RANGO, type Azar, type Correccion, type Pregunta } from './cadena'
 import { sinPreguntar, type DelDictado, type Dominio } from './dominio'
@@ -24,6 +25,11 @@ export interface DictadoEnCurso {
   radicalesFallados: Radical[]
   anotadas: string[]
   vueltas: Dictada[]
+  pideSeguridad: boolean
+  comentario: string | null
+  sorpresasEn: number[]
+  sorpresa: Dictada | null
+  respuestaDeSorpresa: number[][] | null
 }
 
 export interface ResumenDeEjercicio {
@@ -130,6 +136,11 @@ function fallidos(elementosDelBloque: Elemento[], respuesta: number[][]): Elemen
   return elementosDelBloque.filter((elemento, fila) => !mismosNumeros(elemento.numeros, respuesta[fila]))
 }
 
+export function sitiosDeSorpresa(preguntas: number, sorpresas: number, azar: Azar): number[] {
+  const sitios = Array.from({ length: Math.max(0, preguntas - 1) }, (_, sitio) => sitio)
+  return barajar(sitios, azar).slice(0, sorpresas)
+}
+
 export function aciertaDictada(dictada: Dictada, respuesta: RespuestaDictada): boolean {
   if (typeof respuesta === 'string') {
     if (dictada.tipo !== 'radical') return false
@@ -181,10 +192,37 @@ export function crearDictados(dominio: Dominio, hoy: () => string, azar: Azar) {
     )
   }
 
+  function elegirSorpresa(tipo?: Dictada['tipo']): Dictada | null {
+    const conocidos = preguntados()
+    const deBloques = bloquesEntre(conocidos).map(
+      (bloque): Dictada => ({ tipo: 'bloque', ...bloque, dadoPor: azar() < 0.5 ? 'simbolo' : 'nombre', numero: 1 }),
+    )
+    const deRadicales = radicales()
+      .filter((radical) => conocidos.some((elemento) => elemento.simbolo === radical.central))
+      .map((radical): Dictada => ({ tipo: 'radical', radical, dadoPor: 'formula', pide: 'numero' }))
+    const candidatas = [...deBloques, ...deRadicales].filter((candidata) => !tipo || candidata.tipo === tipo)
+    return barajar(candidatas, azar)[0] ?? null
+  }
+
   function preguntarLaSiguiente(dictado: DictadoEnCurso): DictadoEnCurso {
     const [pregunta = null, ...pendientes] = dictado.pendientes
     if (!pregunta && dictado.pregunta) dominio.registrarOleada(dictado.tipo)
-    return { ...dictado, pregunta, pendientes }
+    const tocaSorpresa = pregunta !== null && dictado.sorpresasEn.includes(pendientes.length)
+    return {
+      ...dictado,
+      pregunta,
+      pendientes,
+      pideSeguridad: azar() < ajustesDe(dominio.modo()).seguro,
+      sorpresasEn: tocaSorpresa ? dictado.sorpresasEn.filter((sitio) => sitio !== pendientes.length) : dictado.sorpresasEn,
+      sorpresa: tocaSorpresa ? elegirSorpresa(dictado.tipo === 'dictado' ? 'radical' : 'bloque') : null,
+    }
+  }
+
+  function comentarioDe(bien: boolean, seguro: boolean | undefined): string | null {
+    const modo = dominio.modo()
+    const { alAcertarDudando, alFallarSeguro } = ajustesDe(modo)
+    if (!bien) return seguro ? alFallarSeguro : null
+    return (seguro === false ? alAcertarDudando : null) ?? comentarioAlAcertar(modo, azar)
   }
 
   function vacio(tipo: DictadoEnCurso['tipo'], pendientes: Dictada[], presentacion: string[] | null): DictadoEnCurso {
@@ -200,6 +238,11 @@ export function crearDictados(dominio: Dominio, hoy: () => string, azar: Azar) {
       radicalesFallados: [],
       anotadas: [],
       vueltas: [],
+      pideSeguridad: false,
+      comentario: null,
+      sorpresasEn: sitiosDeSorpresa(pendientes.length, ajustesDe(dominio.modo()).sorpresas, azar),
+      sorpresa: null,
+      respuestaDeSorpresa: null,
     }
   }
 
@@ -218,16 +261,7 @@ export function crearDictados(dominio: Dominio, hoy: () => string, azar: Azar) {
   }
 
   return {
-    elegirSorpresa(): Dictada | null {
-      const conocidos = preguntados()
-      const deBloques = bloquesEntre(conocidos).map(
-        (bloque): Dictada => ({ tipo: 'bloque', ...bloque, dadoPor: azar() < 0.5 ? 'simbolo' : 'nombre', numero: 1 }),
-      )
-      const deRadicales = radicales()
-        .filter((radical) => conocidos.some((elemento) => elemento.simbolo === radical.central))
-        .map((radical): Dictada => ({ tipo: 'radical', radical, dadoPor: 'formula', pide: 'numero' }))
-      return barajar([...deBloques, ...deRadicales], azar)[0] ?? null
-    },
+    elegirSorpresa,
 
     memoriaDelDictado(): Record<string, DelDictado> {
       return dominio.delDictado()
@@ -271,22 +305,23 @@ export function crearDictados(dominio: Dominio, hoy: () => string, azar: Azar) {
       return preguntarLaSiguiente({ ...dictado, presentacion: null })
     },
 
-    responderDictado(dictado: DictadoEnCurso, respuesta: RespuestaDictada): DictadoEnCurso {
+    responderDictado(dictado: DictadoEnCurso, respuesta: RespuestaDictada, seguro?: boolean): DictadoEnCurso {
       const { pregunta } = dictado
-      if (!pregunta || dictado.respuesta !== null) return dictado
+      if (!pregunta || dictado.respuesta !== null || dictado.sorpresa) return dictado
       const clave = claveDeDictada(pregunta)
       const yaAnotada = dictado.anotadas.includes(clave)
       const anotadas = yaAnotada ? dictado.anotadas : [...dictado.anotadas, clave]
       const bien = aciertaDictada(pregunta, respuesta)
       if (!yaAnotada || !bien) dominio.anotarDictado(clave, bien)
-      if (bien) return preguntarLaSiguiente({ ...dictado, anotadas, acertada: pregunta })
+      const comentario = comentarioDe(bien, seguro)
+      if (bien) return preguntarLaSiguiente({ ...dictado, anotadas, acertada: pregunta, comentario })
       if (pregunta.tipo === 'bloque' && typeof respuesta !== 'string') {
         const entradas = dominio.entradas()
         for (const { simbolo } of fallidos(pregunta.elementos, respuesta).filter((elemento) => !dictado.elementosFallados.includes(elemento))) {
           if (!sinPreguntar(entradas[simbolo])) dominio.anotar(simbolo, ['numeros'])
         }
       }
-      return { ...dictado, anotadas, respuesta, acertada: null }
+      return { ...dictado, anotadas, respuesta, acertada: null, comentario }
     },
 
     cerrarCorreccionDeDictado(dictado: DictadoEnCurso): DictadoEnCurso {
@@ -299,6 +334,7 @@ export function crearDictados(dominio: Dominio, hoy: () => string, azar: Azar) {
         return preguntarLaSiguiente({
           ...dictado,
           respuesta: null,
+          comentario: null,
           pendientes,
           vueltas: primeraVez ? [...dictado.vueltas, pregunta] : dictado.vueltas,
           radicalesFallados: dictado.radicalesFallados.includes(pregunta.radical)
@@ -311,6 +347,7 @@ export function crearDictados(dominio: Dominio, hoy: () => string, azar: Azar) {
       return preguntarLaSiguiente({
         ...dictado,
         respuesta: null,
+        comentario: null,
         pendientes,
         elementosFallados: [...dictado.elementosFallados, ...nuevos],
       })

@@ -15,7 +15,7 @@
   interface Props {
     dictado: DictadoEnCurso
     alDescartarPresentacion: () => void
-    alResponder: (respuesta: RespuestaDictada) => void
+    alResponder: (respuesta: RespuestaDictada, seguro?: boolean) => void
     alCerrarCorreccion: () => void
     alOtro: () => void
     alSalir: () => void
@@ -45,14 +45,17 @@
         <p>Los Elementos fallados vuelven mañana.</p>
       {/if}
     {/if}
+    {#if dictado.comentario}
+      <p class="comentario">{dictado.comentario}</p>
+    {/if}
     <div class="botones">
       <button type="button" class="boton" onclick={alOtro}>{dictado.tipo === 'radicales' ? 'Otros radicales' : 'Otro dictado'}</button>
       <button type="button" class="boton secundario" onclick={alSalir}>Portada</button>
     </div>
   {:else if dictado.respuesta !== null && pregunta.tipo === 'radical'}
-    <CorreccionDeRadical radical={pregunta.radical} escrito={typeof dictado.respuesta === 'string' ? dictado.respuesta : null} alSeguir={alCerrarCorreccion} />
+    <CorreccionDeRadical radical={pregunta.radical} escrito={typeof dictado.respuesta === 'string' ? dictado.respuesta : null} comentario={dictado.comentario} alSeguir={alCerrarCorreccion} />
   {:else if dictado.respuesta !== null && pregunta.tipo === 'bloque'}
-    <CorreccionDeBloque elementos={pregunta.elementos} respuesta={dictado.respuesta as number[][]} alSeguir={alCerrarCorreccion} />
+    <CorreccionDeBloque elementos={pregunta.elementos} respuesta={dictado.respuesta as number[][]} comentario={dictado.comentario} alSeguir={alCerrarCorreccion} />
   {:else}
     <header>
       {#if pregunta.tipo === 'bloque'}
@@ -70,18 +73,22 @@
         <span class="acierto"><span aria-hidden="true">✓</span> {formulaDe(acertada.radical)}</span>
         <Numeros numeros={[numeroDeRadical(acertada.radical)]} />
       {/if}
+      {#if acertada && dictado.comentario}
+        <span class="comentario">{dictado.comentario}</span>
+      {/if}
     </p>
     {#key pregunta}
       {#if pregunta.tipo === 'bloque'}
-        <BloqueDeDictado elementos={pregunta.elementos} dadoPor={pregunta.dadoPor} {alResponder} />
+        <BloqueDeDictado elementos={pregunta.elementos} dadoPor={pregunta.dadoPor} pideSeguridad={dictado.pideSeguridad} {alResponder} />
       {:else if pregunta.pide === 'escritura'}
-        <EscrituraDeRadical pide={pregunta.dadoPor === 'formula' ? 'nombre' : 'formula'} {alResponder} />
+        <EscrituraDeRadical pide={pregunta.dadoPor === 'formula' ? 'nombre' : 'formula'} pideSeguridad={dictado.pideSeguridad} {alResponder} />
         <TablaDeRefuerzo casillas={casillasDeRadical(pregunta.radical)} />
       {:else}
         <PasoNumeros
           opciones={TECLADO}
           enunciado={`¿Qué número lleva el ${pregunta.radical.central}?`}
-          alResponder={(numeros) => alResponder([numeros])}
+          pideSeguridad={dictado.pideSeguridad}
+          alResponder={(numeros, seguro) => alResponder([numeros], seguro)}
         />
         <TablaDeRefuerzo casillas={casillasDeRadical(pregunta.radical)} />
       {/if}
@@ -127,6 +134,11 @@
 
   .acierto {
     color: var(--acierto);
+  }
+
+  .comentario {
+    color: var(--tinta);
+    font-weight: 700;
   }
 
   .botones {
