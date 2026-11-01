@@ -17,6 +17,7 @@
 
   let marcados = $state<Record<string, number[]>>({})
   let fila = $state(0)
+  let preguntandoSeguro = $state(false)
 
   const delElemento = (elemento: Elemento) => marcados[elemento.simbolo] ?? []
   const actual = $derived(elementos[fila])
@@ -27,6 +28,11 @@
     marcados[actual.simbolo] = puestos.includes(numero)
       ? puestos.filter((otro) => otro !== numero)
       : [...puestos, numero].sort((a, b) => a - b)
+  }
+
+  function comprobar() {
+    if (pideSeguridad) preguntandoSeguro = true
+    else alResponder(elementos.map(delElemento))
   }
 </script>
 
@@ -45,13 +51,14 @@
 
 <Teclado opciones={TECLADO} marcados={delElemento(actual)} alAlternar={alternar} />
 
-{#if pideSeguridad}
+{#if preguntandoSeguro}
   <div class="botones">
+    <b>¿Seguro?</b>
     <button type="button" class="boton" disabled={!completo} onclick={() => alResponder(elementos.map(delElemento), true)}>Seguro</button>
     <button type="button" class="boton" disabled={!completo} onclick={() => alResponder(elementos.map(delElemento), false)}>Dudo</button>
   </div>
 {:else}
-  <button type="button" class="boton" disabled={!completo} onclick={() => alResponder(elementos.map(delElemento))}>Comprobar</button>
+  <button type="button" class="boton" disabled={!completo} onclick={comprobar}>Comprobar</button>
 {/if}
 
 <TablaDeRefuerzo casillas={casillasDeBloque(elementos, actual)} />
@@ -59,6 +66,7 @@
 <style>
   .botones {
     display: flex;
+    align-items: center;
     gap: 8px;
   }
 

@@ -10,13 +10,16 @@
   let { pide, pideSeguridad = false, alResponder }: Props = $props()
 
   let texto = $state('')
+  let preguntandoSeguro = $state(false)
   let caja: HTMLInputElement
 
   onMount(() => caja.focus())
 
   function comprobar(evento: SubmitEvent) {
     evento.preventDefault()
-    if (texto.trim() !== '') alResponder(texto, pideSeguridad ? true : undefined)
+    if (texto.trim() === '') return
+    if (pideSeguridad && !preguntandoSeguro) preguntandoSeguro = true
+    else alResponder(texto, pideSeguridad ? true : undefined)
   }
 </script>
 
@@ -32,8 +35,9 @@
     spellcheck="false"
   />
   <small>{pide === 'formula' ? 'Da igual mayúsculas o minúsculas. Los subíndices, como números normales.' : 'Da igual mayúsculas o minúsculas.'}</small>
-  {#if pideSeguridad}
+  {#if preguntandoSeguro}
     <div class="botones">
+      <b>¿Seguro?</b>
       <button type="submit" class="boton" disabled={texto.trim() === ''}>Seguro</button>
       <button type="button" class="boton" disabled={texto.trim() === ''} onclick={() => alResponder(texto, false)}>Dudo</button>
     </div>
@@ -68,6 +72,7 @@
 
   .botones {
     display: flex;
+    align-items: center;
     gap: 8px;
   }
 </style>

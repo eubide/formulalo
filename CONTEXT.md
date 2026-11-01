@@ -129,7 +129,7 @@ Cuánto vacila la aplicación al Alumno en cualquier ejercicio: se elige en la P
 _Evitar_: dificultad, nivel, tono
 
 **¿Seguro?**:
-Lo que el Modo pide al responder los Números de oxidación de la Cadena, o cualquier pregunta del Dictado y de Radicales: «Seguro» o «Dudo» en lugar de Comprobar. Fallar yendo seguro, o acertar dudando, trae su comentario.
+Lo que el Modo pregunta tras pulsar Comprobar en los Números de oxidación de la Cadena, o en cualquier pregunta del Dictado y de Radicales, antes de corregir: «Seguro» o «Dudo». Se pregunta acierte o no, y hasta contestar se puede cambiar la respuesta. Fallar yendo seguro, o acertar dudando, trae su comentario.
 _Evitar_: confianza, certeza
 
 **Sorpresa**:

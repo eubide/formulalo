@@ -15,9 +15,15 @@
 
   let elegidos = $state<number[]>([])
   let conAyuda = $state(false)
+  let preguntandoSeguro = $state(false)
 
   function alternar(numero: number) {
     elegidos = elegidos.includes(numero) ? elegidos.filter((otro) => otro !== numero) : [...elegidos, numero]
+  }
+
+  function comprobar() {
+    if (pideSeguridad) preguntandoSeguro = true
+    else alResponder(elegidos)
   }
 </script>
 
@@ -26,13 +32,12 @@
 <Teclado {opciones} marcados={elegidos} alAlternar={alternar} />
 
 <div class="botones">
-  {#if pideSeguridad}
+  {#if preguntandoSeguro}
+    <b>¿Seguro?</b>
     <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos, true)}>Seguro</button>
     <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos, false)}>Dudo</button>
   {:else}
-    <button type="button" class="boton" disabled={elegidos.length === 0} onclick={() => alResponder(elegidos)}>
-      Comprobar
-    </button>
+    <button type="button" class="boton" disabled={elegidos.length === 0} onclick={comprobar}>Comprobar</button>
   {/if}
   {#if elemento && !conAyuda}
     <button type="button" class="boton secundario" onclick={() => (conAyuda = true)}>Ver sus cajas</button>
@@ -54,6 +59,7 @@
   .botones {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
   }
 

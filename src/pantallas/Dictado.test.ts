@@ -118,18 +118,21 @@ describe('Pregunta de un Dictado', () => {
 })
 
 describe('Modo en un Dictado', () => {
-  it('de un Bloque pregunta si vas seguro en lugar de Comprobar', () => {
+  it('de un Bloque no pregunta si vas seguro antes de responder', () => {
     const texto = pintarDictado({ pregunta: deBloque(GRUPO_16), pideSeguridad: true })
 
-    expect(texto).toContain(`${TECLADO} Seguro Dudo 1 2 3`)
-    expect(texto).not.toContain('Comprobar')
+    expect(texto).toContain(`${TECLADO} Comprobar 1 2 3`)
+    expect(texto).not.toContain('Seguro')
   })
 
-  it('de un Radical pregunta si vas seguro, también al escribir', () => {
-    expect(pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato'), pideSeguridad: true })).toContain(`${TECLADO} Seguro Dudo`)
-    expect(pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato', 'escritura'), pideSeguridad: true })).toContain(
-      'Da igual mayúsculas o minúsculas. Seguro Dudo',
-    )
+  it('de un Radical no pregunta si vas seguro antes de responder, tampoco al escribir', () => {
+    const delNumero = pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato'), pideSeguridad: true })
+    const escrita = pintarDictado({ tipo: 'radicales', pregunta: deRadical('clorato', 'escritura'), pideSeguridad: true })
+
+    expect(delNumero).toContain(`${TECLADO} Comprobar`)
+    expect(delNumero).not.toContain('Seguro')
+    expect(escrita).toContain('Da igual mayúsculas o minúsculas. Comprobar')
+    expect(escrita).not.toContain('Seguro')
   })
 
   it('tras un acierto enseña el comentario junto a lo acertado', () => {
